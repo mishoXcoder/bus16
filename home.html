@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070b16">
+<title>باص 16</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #070b16;
+    --panel: #0f1629;
+    --panel2: #151d34;
+    --line: rgba(255,255,255,.10);
+    --text: #eef1f7;
+    --muted: #93a0b8;
+    --amber: #f4a62a;
+    --amber-soft: #ffd58a;
+    --red: #e5484d;
+    --font: 'IBM Plex Sans Arabic', 'Noto Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; height: 100%; background: #04060d; }
+  body { font-family: var(--font); color: var(--text); }
+  button { font: inherit; color: inherit; border: 0; background: none; padding: 0; margin: 0; cursor: pointer; text-align: inherit; }
+  button:focus-visible { outline: 3px solid var(--amber-soft); outline-offset: 2px; }
+  svg { display: block; }
+
+  .app { position: relative; max-width: 440px; height: 100dvh; min-height: 640px; margin: 0 auto; overflow: hidden; background: var(--ink); }
+
+  /* ---------- background: dusk sky, ridge line, dark ground ---------- */
+  .sky {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(70% 22% at 74% 41%, rgba(255,150,92,.42), rgba(255,140,90,0) 72%),
+      radial-gradient(80% 22% at 76% 53%, rgba(255,160,96,.40), rgba(255,140,90,0) 70%),
+      linear-gradient(180deg, #050813 0%, #0d1740 24%, #1c2a68 38%, #52437e 49%, #c1694d 53%, #231821 53.4%, #0b0e19 63%, #070a14 100%);
+  }
+  .ridge { position: absolute; left: 0; width: 100%; height: 250px; top: calc(53% - 250px); opacity: .95; }
+
+  /* ---------- header ---------- */
+  .top {
+    position: absolute; z-index: 5; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between;
+    padding: calc(16px + env(safe-area-inset-top)) 18px 0;
+  }
+  .brand { display: flex; align-items: center; gap: 11px; }
+  .mark { width: 38px; height: 38px; border-radius: 11px; background: var(--amber); color: #1a1205; display: grid; place-items: center; font-weight: 700; font-size: 18px; letter-spacing: -.5px; }
+  .brand b { display: block; font-size: 19px; font-weight: 700; line-height: 1.15; }
+  .brand small { display: block; margin-top: 2px; font-size: 12.5px; color: var(--muted); }
+  .tag { font-size: 11.5px; color: var(--muted); padding: 4px 10px; border-radius: 99px; border: 1px solid var(--line); }
+
+  /* ---------- the bus ---------- */
+  .hero { position: absolute; left: 0; right: 0; z-index: 2; }
+  .stage { position: absolute; left: 50%; top: 0; width: 390px; height: 414px; margin-left: -195px; transform-origin: 50% 0; }
+  .busart { position: absolute; left: 0; top: 0; }
+  .hs { position: absolute; left: 0; top: 0; transform-origin: 0 0; display: block; overflow: hidden; }
+
+  /* windshield screen */
+  .led { background: #04060c; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(244,166,42,.38), inset 0 0 14px rgba(244,166,42,.12); }
+  .led .tagad { position: absolute; z-index: 2; left: 6px; bottom: 5px; font-size: 8px; line-height: 1; color: rgba(255,255,255,.55); }
+  .slide { position: absolute; inset: 0; display: flex; align-items: center; gap: 9px; padding: 0 11px; opacity: 0; transform: translateY(6px); transition: opacity .5s ease, transform .5s ease; }
+  .slide.on { opacity: 1; transform: none; }
+  .slide .ico { flex: none; width: 33px; height: 33px; border-radius: 8px; background: rgba(244,166,42,.14); color: var(--amber); display: grid; place-items: center; }
+  .slide small { display: block; font-size: 9.5px; color: var(--amber-soft); white-space: nowrap; line-height: 1.3; }
+  .slide b { display: block; font-size: 16px; font-weight: 700; line-height: 1.2; color: #fff; white-space: nowrap; }
+  .slide i { display: block; font-style: normal; font-size: 9.5px; color: rgba(255,255,255,.55); white-space: nowrap; line-height: 1.3; }
+
+  /* news strip on the black band */
+  .news { display: flex; background: #05070d; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+  .news .alert { flex: none; display: grid; place-items: center; padding: 0 9px; background: var(--red); font-size: 11px; font-weight: 700; color: #fff; }
+  .crawl { position: relative; flex: 1; overflow: hidden; }
+  .track { position: absolute; top: 50%; left: 0; transform: translate(-100%, -50%); white-space: nowrap; font-size: 12px; font-weight: 500; animation: crawl var(--dur, 18s) linear infinite; }
+  @keyframes crawl { from { left: 0; transform: translate(-100%, -50%); } to { left: 100%; transform: translate(0, -50%); } }
+
+  /* game plaque on the grille */
+  .game { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: linear-gradient(180deg, #0a0e18, #04060b); border-radius: 4px;
+    box-shadow: inset 0 0 0 1px rgba(244,166,42,.6), inset 0 0 12px rgba(244,166,42,.14); }
+  .game .l1 { display: flex; align-items: center; gap: 5px; color: var(--amber-soft); font-size: 13px; font-weight: 700; line-height: 1.1; }
+  .game .l2 { font-size: 8.5px; color: rgba(255,255,255,.72); line-height: 1.1; white-space: nowrap; }
+
+  /* primary map button, sits on the side of the bus */
+  .where {
+    position: absolute; z-index: 6; display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 13px 0 11px; border-radius: 99px;
+    background: var(--amber); color: #1a1205; font-size: 15px; font-weight: 700; box-shadow: 0 6px 18px rgba(0,0,0,.45);
+  }
+  .where svg { flex: none; }
+
+  .hot { animation: flash 1.2s ease-out backwards; animation-delay: var(--d, 0s); }
+  @keyframes flash {
+    0% { box-shadow: 0 0 0 0 rgba(255,213,138,0); }
+    35% { box-shadow: 0 0 0 3px rgba(255,213,138,.95), 0 0 20px rgba(255,213,138,.6); }
+    100% { box-shadow: 0 0 0 0 rgba(255,213,138,0); }
+  }
+  .hint { position: absolute; left: 0; right: 0; text-align: center; margin: 0; font-size: 12.5px; color: var(--muted); }
+
+  /* ---------- bottom dock ---------- */
+  .dock { position: absolute; z-index: 4; left: 16px; right: 16px; bottom: calc(18px + env(safe-area-inset-bottom)); display: flex; gap: 10px; }
+  .dbtn {
+    display: flex; align-items: center; gap: 10px; height: 54px; padding: 0 16px; border-radius: 15px;
+    background: rgba(15,22,41,.9); border: 1px solid var(--line); box-shadow: 0 8px 22px rgba(0,0,0,.35);
+    font-size: 15.5px; font-weight: 600; white-space: nowrap;
+  }
+  .dbtn svg { flex: none; color: var(--amber); }
+  .dbtn.wide { flex: 1; }
+  .dbtn .count { margin-inline-start: auto; min-width: 24px; height: 24px; padding: 0 7px; border-radius: 99px; background: rgba(244,166,42,.16); color: var(--amber-soft); font-size: 12.5px; font-weight: 700; display: grid; place-items: center; }
+
+  /* ---------- sheets ---------- */
+  .veil { position: absolute; inset: 0; z-index: 20; background: rgba(3,5,12,.62); opacity: 0; visibility: hidden; transition: opacity .25s, visibility 0s .25s; }
+  .veil.open { opacity: 1; visibility: visible; transition: opacity .25s; }
+  .sheet {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 21; max-height: 82%; display: flex; flex-direction: column;
+    background: var(--panel); border-top: 1px solid var(--line); border-radius: 20px 20px 0 0; box-shadow: 0 -14px 40px rgba(0,0,0,.5);
+    transform: translateY(105%); visibility: hidden; transition: transform .3s cubic-bezier(.2,.8,.2,1), visibility 0s .3s;
+  }
+  .sheet.open { transform: none; visibility: visible; transition: transform .3s cubic-bezier(.2,.8,.2,1); }
+  .grab { width: 38px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.22); margin: 9px auto 0; }
+  .sheet header { display: flex; align-items: center; justify-content: space-between; padding: 8px 20px 2px; }
+  .sheet h2 { margin: 0; font-size: 21px; font-weight: 700; line-height: 1.3; }
+  .x { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,.07); display: grid; place-items: center; color: var(--muted); }
+  .body { overflow-y: auto; padding: 6px 20px calc(24px + env(safe-area-inset-bottom)); line-height: 1.75; color: rgba(238,241,247,.88); font-size: 15px; }
+  .body p { margin: 0 0 10px; }
+  .muted { color: var(--muted); font-size: 13px; }
+
+  .row { display: flex; align-items: center; gap: 13px; width: 100%; min-height: 64px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+  .row:last-of-type { border-bottom: 0; }
+  .tile { flex: none; width: 42px; height: 42px; border-radius: 11px; background: rgba(255,255,255,.06); color: var(--amber); display: grid; place-items: center; }
+  .tile.big { width: 56px; height: 56px; border-radius: 15px; margin-bottom: 12px; }
+  .row b { display: block; font-size: 16px; font-weight: 600; color: #fff; line-height: 1.35; }
+  .row small { display: block; font-size: 13px; color: var(--muted); }
+  .row .go { margin-inline-start: auto; color: rgba(255,255,255,.35); }
+  .nrow { display: flex; gap: 12px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .nrow .dot { flex: none; width: 8px; height: 8px; margin-top: 10px; border-radius: 50%; background: var(--red); }
+  .nrow b { display: block; font-weight: 600; color: #fff; }
+  .chip { display: inline-block; font-size: 12.5px; padding: 2px 11px; border-radius: 99px; border: 1px solid var(--line); color: var(--amber-soft); margin-bottom: 12px; }
+  .btn { display: block; width: 100%; height: 50px; margin-top: 14px; border-radius: 14px; background: var(--amber); color: #1a1205; font-weight: 700; font-size: 16px; text-align: center; line-height: 50px; }
+  .btn.ghost { background: rgba(255,255,255,.07); color: #fff; font-weight: 600; }
+  ul.plain { margin: 0 0 8px; padding: 0; list-style: none; }
+  ul.plain li { padding: 6px 0; }
+  ul.plain li::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-inline-end: 10px; border-radius: 50%; background: var(--amber); vertical-align: middle; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .track { animation: none; position: static; transform: none; display: block; padding: 0 8px; line-height: 26px; overflow: hidden; text-overflow: ellipsis; }
+    .hot { animation: none; }
+    .slide, .sheet, .veil { transition: none; }
+  }
+</style>
+</head>
+<body>
+<main class="app" id="app">
+
+  <div class="sky" aria-hidden="true"></div>
+  <svg class="ridge" viewBox="0 0 390 160" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="rf" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#52497f"/><stop offset="1" stop-color="#2a2756"/></linearGradient>
+      <linearGradient id="rn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c2a5c"/><stop offset="1" stop-color="#141232"/></linearGradient>
+    </defs>
+    <path d="M0 160V70L28 48l30 26 40-52 42 40 38-34 46 46 40-58 46 52 36-30 44 40V160Z" fill="url(#rf)" opacity=".8"/>
+    <path d="M0 160V112l44-28 40 22 48-36 50 36 46-26 54 30 40-20 68 22V160Z" fill="url(#rn)"/>
+  </svg>
+
+  <header class="top">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">16</div>
+      <div><b>باص 16</b><small>قرنايل ← بحمدون</small></div>
+    </div>
+    <div class="tag">نسخة تجريبية</div>
+  </header>
+
+  <section class="hero" id="hero" aria-label="باص 16">
+    <div class="stage" id="stage">
+      <svg class="busart" viewBox="0 0 390 414" width="390" height="414" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><filter id="blur" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="9"/></filter><linearGradient id="g0" gradientUnits="userSpaceOnUse" x1="136.44" y1="83.10" x2="3.00" y2="110.18"><stop offset="0" stop-color="#d4d9e2"/><stop offset="1" stop-color="#8c95a4"/></linearGradient><linearGradient id="g1" gradientUnits="userSpaceOnUse" x1="123.81" y1="62.37" x2="2.97" y2="92.68"><stop offset="0" stop-color="#eceff4"/><stop offset="1" stop-color="#a9b1be"/></linearGradient><linearGradient id="g2" gradientUnits="userSpaceOnUse" x1="227.70" y1="54.68" x2="240.83" y2="86.44"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e4e8ef"/></linearGradient><linearGradient id="g3" gradientUnits="userSpaceOnUse" x1="136.43" y1="202.36" x2="3.12" y2="197.59"><stop offset="0" stop-color="#f1f3f7"/><stop offset="0.55" stop-color="#d8dde6"/><stop offset="1" stop-color="#9aa3b2"/></linearGradient><linearGradient id="g4" gradientUnits="userSpaceOnUse" x1="136.43" y1="285.66" x2="3.21" y2="258.68"><stop offset="0" stop-color="#d6dbe3"/><stop offset="1" stop-color="#7e8797"/></linearGradient><linearGradient id="g5" gradientUnits="userSpaceOnUse" x1="136.43" y1="232.13" x2="3.15" y2="219.42"><stop offset="0" stop-color="#f6a93b"/><stop offset="1" stop-color="#a8751f"/></linearGradient><linearGradient id="g6" gradientUnits="userSpaceOnUse" x1="134.29" y1="154.82" x2="3.07" y2="162.65"><stop offset="0" stop-color="#151a24"/><stop offset="1" stop-color="#0a0d13"/></linearGradient><linearGradient id="g7" gradientUnits="userSpaceOnUse" x1="130.04" y1="105.61" x2="130.05" y2="202.13"><stop offset="0" stop-color="#56688a"/><stop offset="0.45" stop-color="#26334d"/><stop offset="1" stop-color="#101726"/></linearGradient><linearGradient id="g8" gradientUnits="userSpaceOnUse" x1="87.19" y1="200.60" x2="60.80" y2="199.66"><stop offset="0" stop-color="#f6f7fa"/><stop offset="1" stop-color="#dfe3ea"/></linearGradient><linearGradient id="g9" gradientUnits="userSpaceOnUse" x1="84.24" y1="112.94" x2="84.31" y2="234.62"><stop offset="0" stop-color="#56688a"/><stop offset="0.45" stop-color="#26334d"/><stop offset="1" stop-color="#101726"/></linearGradient><linearGradient id="g10" gradientUnits="userSpaceOnUse" x1="72.45" y1="114.82" x2="72.53" y2="233.30"><stop offset="0" stop-color="#56688a"/><stop offset="0.45" stop-color="#26334d"/><stop offset="1" stop-color="#101726"/></linearGradient><linearGradient id="g11" gradientUnits="userSpaceOnUse" x1="56.13" y1="117.43" x2="56.19" y2="199.49"><stop offset="0" stop-color="#56688a"/><stop offset="0.45" stop-color="#26334d"/><stop offset="1" stop-color="#101726"/></linearGradient><linearGradient id="g12" gradientUnits="userSpaceOnUse" x1="30.44" y1="121.54" x2="30.52" y2="198.57"><stop offset="0" stop-color="#56688a"/><stop offset="0.45" stop-color="#26334d"/><stop offset="1" stop-color="#101726"/></linearGradient><linearGradient id="g13" gradientUnits="userSpaceOnUse" x1="103.55" y1="247.89" x2="103.58" y2="343.38"><stop offset="0" stop-color="#2a2e37"/><stop offset="1" stop-color="#07080b"/></linearGradient><linearGradient id="g14" gradientUnits="userSpaceOnUse" x1="103.55" y1="264.56" x2="103.57" y2="326.74"><stop offset="0" stop-color="#e6e9ee"/><stop offset="0.5" stop-color="#9aa2af"/><stop offset="1" stop-color="#5e6673"/></linearGradient><linearGradient id="g15" gradientUnits="userSpaceOnUse" x1="152.91" y1="358.29" x2="349.86" y2="351.47"><stop offset="0" stop-color="#e4e8ee"/><stop offset="0.5" stop-color="#fafbfc"/><stop offset="1" stop-color="#dde1e8"/></linearGradient><linearGradient id="g16" gradientUnits="userSpaceOnUse" x1="253.58" y1="188.02" x2="253.52" y2="230.36"><stop offset="0" stop-color="#1a1f2a"/><stop offset="1" stop-color="#090b10"/></linearGradient><linearGradient id="g17" gradientUnits="userSpaceOnUse" x1="240.83" y1="86.44" x2="253.58" y2="188.02"><stop offset="0" stop-color="#5c7298"/><stop offset="0.45" stop-color="#1d2a42"/><stop offset="1" stop-color="#0b101b"/></linearGradient><linearGradient id="g18" gradientUnits="userSpaceOnUse" x1="147.43" y1="360.74" x2="368.47" y2="352.97"><stop offset="0" stop-color="#dde1e8"/><stop offset="0.5" stop-color="#f7f8fa"/><stop offset="1" stop-color="#d3d8e0"/></linearGradient><linearGradient id="g19" gradientUnits="userSpaceOnUse" x1="249.31" y1="122.52" x2="249.24" y2="178.65"><stop offset="0" stop-color="#2b313d"/><stop offset="1" stop-color="#0a0c11"/></linearGradient><linearGradient id="g20" gradientUnits="userSpaceOnUse" x1="249.31" y1="122.52" x2="249.24" y2="178.65"><stop offset="0" stop-color="#2b313d"/><stop offset="1" stop-color="#0a0c11"/></linearGradient><linearGradient id="fadeL" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#000"/><stop offset="1" stop-color="#fff"/></linearGradient><mask id="fadeMask" maskUnits="userSpaceOnUse" x="-60" y="0" width="520" height="414"><rect x="-60" y="0" width="520" height="414" fill="#fff"/><rect x="-10" y="0" width="110" height="414" fill="url(#fadeL)"/></mask></defs><g mask="url(#fadeMask)"><path d="M140.79 365.21 L410.39 355.51 L188.44 306.43 L-9.55 311.28Z" fill="#000" fill-opacity="0.5" filter="url(#blur)"/><path d="M136.44 85.48 L131.58 67.21 L8.96 96.29 L3.00 111.93Z" fill="url(#g0)"/><path d="M131.58 67.21 L152.62 52.71 L28.50 84.43 L8.96 96.29Z" fill="url(#g1)"/><path d="M152.62 52.71 L300.56 56.60 L335.87 88.34 L141.97 84.48Z" fill="url(#g2)"/><path d="M152.62 52.71 L141.97 84.48 L136.44 85.48 L131.58 67.21Z" fill="#e0e4ec"/><path d="M136.43 309.43 L136.44 85.48 L3.00 111.93 L3.23 276.11Z" fill="url(#g3)"/><path d="M136.43 309.43 L136.43 264.26 L3.19 242.98 L3.23 276.11Z" fill="url(#g4)"/><line x1="136.43" y1="264.26" x2="3.19" y2="242.98" stroke="#aab2bf" stroke-width="1.21" stroke-linecap="round" stroke-opacity="0.9"/><path d="M136.43 235.70 L136.43 228.56 L3.15 216.80 L3.16 222.04Z" fill="url(#g5)"/><path d="M133.57 211.73 L133.58 95.55 L3.01 118.93 L3.13 204.58Z" fill="url(#g6)"/><path d="M130.05 202.13 L130.04 105.61 L91.87 111.72 L91.91 200.77Z" fill="url(#g7)"/><path d="M130.04 105.61 L115.98 107.86 L125.13 158.98 L130.05 158.72Z" fill="#fff" fill-opacity="0.07"/><path d="M87.23 284.27 L87.14 101.71 L60.73 106.57 L60.86 278.43Z" fill="url(#g8)" stroke="#8b94a3" stroke-width="0.8" stroke-linejoin="round"/><path d="M84.31 234.62 L84.24 112.94 L74.65 114.47 L74.72 233.55Z" fill="url(#g9)"/><path d="M84.24 112.94 L80.84 113.48 L83.11 179.91 L84.28 179.90Z" fill="#fff" fill-opacity="0.07"/><path d="M72.53 233.30 L72.45 114.82 L63.34 116.28 L63.43 232.28Z" fill="url(#g10)"/><path d="M72.45 114.82 L69.22 115.34 L71.38 180.03 L72.49 180.02Z" fill="#fff" fill-opacity="0.07"/><line x1="73.65" y1="272.94" x2="73.54" y2="108.39" stroke="#8b94a3" stroke-width="1.46" stroke-linecap="round"/><line x1="85.46" y1="221.92" x2="61.86" y2="219.95" stroke="#aab2bf" stroke-width="1.04" stroke-linecap="round" stroke-opacity="0.8"/><line x1="76.91" y1="187.64" x2="76.90" y2="172.94" stroke="#6d7686" stroke-width="3.15" stroke-linecap="round"/><path d="M56.19 199.49 L56.13 117.43 L32.23 121.26 L32.32 198.64Z" fill="url(#g11)"/><path d="M56.13 117.43 L47.44 118.82 L53.15 162.74 L56.16 162.58Z" fill="#fff" fill-opacity="0.07"/><path d="M30.52 198.57 L30.44 121.54 L9.31 124.92 L9.41 197.82Z" fill="url(#g12)"/><path d="M30.44 121.54 L22.78 122.77 L27.83 164.06 L30.49 163.93Z" fill="#fff" fill-opacity="0.07"/><line x1="47.59" y1="277.44" x2="31.28" y2="273.75" stroke="#6b7484" stroke-width="2.68" stroke-linecap="round" stroke-opacity="0.85"/><line x1="47.58" y1="270.11" x2="31.27" y2="266.71" stroke="#6b7484" stroke-width="2.68" stroke-linecap="round" stroke-opacity="0.85"/><line x1="47.58" y1="262.78" x2="31.26" y2="259.67" stroke="#6b7484" stroke-width="2.68" stroke-linecap="round" stroke-opacity="0.85"/><line x1="47.57" y1="255.44" x2="31.26" y2="252.62" stroke="#6b7484" stroke-width="2.68" stroke-linecap="round" stroke-opacity="0.85"/><line x1="47.56" y1="248.11" x2="31.25" y2="245.58" stroke="#6b7484" stroke-width="2.68" stroke-linecap="round" stroke-opacity="0.85"/><path d="M86.24 291.64 L86.49 281.29 L87.22 271.33 L88.42 262.04 L90.07 253.69 L92.11 246.51 L94.51 240.73 L97.20 236.53 L100.09 234.07 L103.12 233.44 L106.18 234.72 L109.20 237.89 L112.06 242.88 L114.67 249.58 L116.96 257.79 L118.82 267.26 L120.21 277.69 L121.06 288.73 L121.35 300.01 L121.07 311.16 L120.22 321.78 L118.83 331.54 L116.97 340.10 L114.69 347.21 L112.08 352.65 L109.23 356.27 L106.22 358.00 L103.16 357.81 L100.13 355.75 L97.24 351.91 L94.56 346.45 L92.16 339.54 L90.10 331.39 L88.45 322.27 L87.24 312.41 L86.50 302.11Z" fill="#06080c"/><path d="M89.26 292.41 L89.45 284.03 L90.05 275.98 L91.03 268.48 L92.37 261.75 L94.03 255.99 L95.97 251.37 L98.14 248.04 L100.47 246.11 L102.91 245.68 L105.37 246.76 L107.78 249.36 L110.06 253.42 L112.14 258.82 L113.96 265.42 L115.44 273.00 L116.54 281.33 L117.21 290.14 L117.44 299.14 L117.22 308.03 L116.54 316.51 L115.45 324.31 L113.97 331.18 L112.16 336.90 L110.08 341.30 L107.80 344.26 L105.40 345.71 L102.94 345.62 L100.51 344.02 L98.17 340.99 L96.01 336.63 L94.06 331.09 L92.40 324.54 L91.05 317.18 L90.07 309.22 L89.46 300.89Z" fill="#0c0e13"/><path d="M89.64 292.56 L89.83 284.54 L90.40 276.84 L91.34 269.67 L92.62 263.23 L94.21 257.72 L96.07 253.31 L98.14 250.14 L100.37 248.31 L102.69 247.90 L105.04 248.95 L107.34 251.45 L109.52 255.33 L111.51 260.50 L113.24 266.80 L114.65 274.04 L115.70 281.99 L116.34 290.40 L116.56 298.99 L116.34 307.47 L115.70 315.56 L114.66 323.01 L113.25 329.57 L111.53 335.04 L109.54 339.25 L107.37 342.09 L105.07 343.48 L102.73 343.41 L100.40 341.89 L98.17 339.00 L96.10 334.85 L94.24 329.55 L92.64 323.29 L91.36 316.26 L90.41 308.64 L89.84 300.67Z" fill="url(#g13)"/><path d="M93.75 293.60 L93.88 288.23 L94.27 283.08 L94.90 278.30 L95.76 274.02 L96.83 270.37 L98.07 267.47 L99.46 265.40 L100.94 264.24 L102.49 264.02 L104.04 264.77 L105.56 266.47 L106.99 269.07 L108.29 272.51 L109.42 276.69 L110.34 281.46 L111.02 286.70 L111.44 292.22 L111.58 297.85 L111.44 303.42 L111.03 308.74 L110.35 313.65 L109.43 317.98 L108.30 321.61 L107.00 324.43 L105.57 326.35 L104.06 327.32 L102.51 327.32 L100.97 326.37 L99.48 324.50 L98.09 321.77 L96.85 318.28 L95.78 314.12 L94.91 309.44 L94.28 304.35 L93.89 299.02Z" fill="url(#g14)"/><path d="M96.12 294.22 L96.21 290.43 L96.48 286.80 L96.93 283.43 L97.54 280.42 L98.29 277.86 L99.17 275.83 L100.15 274.40 L101.19 273.60 L102.28 273.47 L103.36 274.02 L104.42 275.23 L105.42 277.07 L106.33 279.49 L107.12 282.42 L107.76 285.76 L108.23 289.42 L108.52 293.27 L108.62 297.20 L108.52 301.09 L108.23 304.80 L107.76 308.23 L107.13 311.27 L106.34 313.82 L105.44 315.80 L104.44 317.17 L103.38 317.87 L102.29 317.90 L101.21 317.25 L100.16 315.95 L99.19 314.05 L98.31 311.60 L97.55 308.69 L96.94 305.39 L96.49 301.80 L96.21 298.04Z" fill="#363c48"/><path d="M99.89 295.17 L99.93 293.84 L100.02 292.56 L100.18 291.37 L100.40 290.31 L100.67 289.42 L100.98 288.72 L101.32 288.22 L101.69 287.95 L102.07 287.92 L102.45 288.12 L102.82 288.55 L103.16 289.21 L103.48 290.06 L103.75 291.08 L103.97 292.24 L104.13 293.52 L104.23 294.85 L104.27 296.22 L104.23 297.57 L104.13 298.86 L103.97 300.05 L103.75 301.11 L103.48 302.00 L103.17 302.70 L102.82 303.19 L102.45 303.45 L102.07 303.47 L101.69 303.25 L101.33 302.81 L100.98 302.15 L100.67 301.30 L100.40 300.27 L100.19 299.11 L100.03 297.85 L99.93 296.52Z" fill="#c9cfd8"/><line x1="100.11" y1="295.17" x2="94.30" y2="293.78" stroke="#a9b1be" stroke-width="3.30" stroke-linecap="round" stroke-opacity="0.9"/><line x1="101.61" y1="288.14" x2="99.78" y2="267.77" stroke="#a9b1be" stroke-width="3.32" stroke-linecap="round" stroke-opacity="0.9"/><line x1="104.06" y1="291.53" x2="108.95" y2="280.06" stroke="#a9b1be" stroke-width="3.37" stroke-linecap="round" stroke-opacity="0.9"/><line x1="104.06" y1="300.70" x2="108.96" y2="314.49" stroke="#a9b1be" stroke-width="3.37" stroke-linecap="round" stroke-opacity="0.9"/><line x1="101.61" y1="302.91" x2="99.80" y2="322.40" stroke="#a9b1be" stroke-width="3.32" stroke-linecap="round" stroke-opacity="0.9"/><path d="M152.93 310.42 L152.94 231.30 L136.43 230.94 L136.43 309.43Z" fill="#dfe3ea"/><path d="M152.94 231.30 L152.98 82.30 L136.44 85.48 L136.43 230.94Z" fill="#171b24"/><path d="M152.93 310.42 L349.97 305.47 L350.15 229.46 L152.94 231.30Z" fill="url(#g15)"/><path d="M152.94 231.30 L350.15 229.46 L350.25 187.95 L152.95 188.09Z" fill="url(#g16)"/><path d="M149.64 193.39 L354.55 193.03 L336.42 84.45 L140.34 80.39Z" fill="#0c0f15"/><path d="M155.23 188.09 L348.14 187.95 L331.72 88.25 L146.45 84.56Z" fill="url(#g17)"/><path d="M165.62 84.95 L203.51 85.70 L179.19 188.08 L155.23 188.09 L152.12 151.37Z" fill="#fff" fill-opacity="0.07"/><path d="M225.97 86.15 L248.23 86.59 L214.71 188.05 L191.09 188.07Z" fill="#fff" fill-opacity="0.05"/><line x1="206.53" y1="184.92" x2="273.84" y2="167.46" stroke="#05070b" stroke-width="2.59" stroke-linecap="round"/><line x1="268.55" y1="184.91" x2="331.89" y2="167.66" stroke="#05070b" stroke-width="2.56" stroke-linecap="round"/><path d="M155.36 267.27 L202.76 266.48 L202.78 237.98 L155.37 238.49Z" fill="#2a303b"/><path d="M157.72 264.85 L200.61 264.16 L200.62 240.39 L157.72 240.87Z" fill="#12161d"/><path d="M155.52 262.50 L164.62 262.35 L164.62 245.59 L155.52 245.71Z" fill="#f08a24"/><path d="M197.98 252.33 L197.85 250.79 L197.47 249.29 L196.85 247.89 L196.01 246.62 L194.98 245.54 L193.78 244.66 L192.45 244.02 L191.03 243.63 L189.56 243.51 L188.10 243.67 L186.68 244.09 L185.34 244.76 L184.14 245.67 L183.09 246.79 L182.25 248.07 L181.62 249.50 L181.24 251.01 L181.11 252.56 L181.24 254.12 L181.62 255.62 L182.24 257.02 L183.09 258.29 L184.13 259.37 L185.33 260.25 L186.67 260.89 L188.09 261.27 L189.55 261.38 L191.02 261.22 L192.44 260.80 L193.77 260.12 L194.97 259.21 L196.01 258.10 L196.85 256.81 L197.47 255.39 L197.85 253.88Z" fill="#d9dce2"/><path d="M195.25 252.38 L195.17 251.35 L194.92 250.35 L194.50 249.42 L193.94 248.57 L193.25 247.85 L192.45 247.26 L191.56 246.84 L190.62 246.58 L189.64 246.50 L188.66 246.60 L187.72 246.88 L186.83 247.33 L186.02 247.94 L185.33 248.68 L184.76 249.54 L184.35 250.49 L184.09 251.50 L184.01 252.53 L184.09 253.57 L184.35 254.57 L184.76 255.51 L185.32 256.35 L186.02 257.07 L186.82 257.66 L187.71 258.08 L188.66 258.34 L189.63 258.42 L190.61 258.31 L191.56 258.03 L192.44 257.58 L193.25 256.97 L193.94 256.23 L194.50 255.37 L194.91 254.42 L195.17 253.42Z" fill="#fffdf2"/><path d="M183.37 252.53 L183.24 250.98 L182.86 249.48 L182.24 248.07 L181.39 246.81 L180.35 245.72 L179.14 244.84 L177.80 244.19 L176.37 243.81 L174.90 243.69 L173.43 243.84 L172.00 244.26 L170.65 244.94 L169.44 245.85 L168.39 246.97 L167.54 248.26 L166.91 249.69 L166.53 251.20 L166.40 252.76 L166.53 254.32 L166.91 255.83 L167.54 257.24 L168.39 258.50 L169.44 259.59 L170.65 260.47 L171.99 261.11 L173.42 261.50 L174.89 261.61 L176.37 261.45 L177.79 261.02 L179.13 260.34 L180.34 259.43 L181.38 258.31 L182.23 257.02 L182.85 255.60 L183.24 254.09Z" fill="#d9dce2"/><path d="M180.62 252.58 L180.54 251.55 L180.29 250.54 L179.87 249.61 L179.31 248.76 L178.61 248.03 L177.80 247.45 L176.91 247.02 L175.96 246.76 L174.98 246.68 L173.99 246.79 L173.04 247.07 L172.15 247.52 L171.34 248.13 L170.64 248.87 L170.07 249.73 L169.65 250.69 L169.40 251.70 L169.31 252.74 L169.40 253.77 L169.65 254.78 L170.07 255.72 L170.64 256.56 L171.33 257.29 L172.14 257.87 L173.04 258.30 L173.99 258.56 L174.97 258.63 L175.95 258.53 L176.91 258.24 L177.80 257.79 L178.61 257.18 L179.30 256.44 L179.87 255.58 L180.28 254.63 L180.54 253.62Z" fill="#fffdf2"/><path d="M303.51 264.82 L348.16 264.08 L348.22 236.41 L303.56 236.90Z" fill="#2a303b"/><path d="M305.76 262.47 L346.16 261.82 L346.21 238.75 L305.80 239.21Z" fill="#12161d"/><path d="M339.93 259.62 L348.37 259.49 L348.41 243.35 L339.96 243.45Z" fill="#f08a24"/><path d="M324.66 250.60 L324.54 249.10 L324.19 247.64 L323.60 246.27 L322.81 245.04 L321.82 243.98 L320.68 243.12 L319.42 242.50 L318.07 242.12 L316.68 242.00 L315.29 242.15 L313.94 242.56 L312.67 243.22 L311.53 244.11 L310.54 245.19 L309.73 246.45 L309.14 247.83 L308.77 249.31 L308.65 250.82 L308.76 252.33 L309.12 253.80 L309.71 255.17 L310.51 256.40 L311.50 257.46 L312.64 258.31 L313.91 258.94 L315.26 259.31 L316.65 259.42 L318.04 259.26 L319.39 258.85 L320.65 258.19 L321.80 257.30 L322.78 256.22 L323.58 254.96 L324.17 253.58 L324.54 252.11Z" fill="#d9dce2"/><path d="M322.10 250.65 L322.02 249.64 L321.78 248.67 L321.39 247.76 L320.86 246.94 L320.20 246.23 L319.44 245.66 L318.60 245.24 L317.70 244.99 L316.77 244.92 L315.85 245.02 L314.95 245.29 L314.10 245.73 L313.34 246.32 L312.68 247.04 L312.14 247.88 L311.74 248.80 L311.50 249.78 L311.42 250.79 L311.50 251.80 L311.74 252.78 L312.13 253.69 L312.66 254.51 L313.32 255.22 L314.08 255.79 L314.92 256.20 L315.82 256.45 L316.75 256.53 L317.68 256.42 L318.58 256.15 L319.42 255.71 L320.18 255.12 L320.84 254.39 L321.38 253.56 L321.77 252.64 L322.01 251.66Z" fill="#fffdf2"/><path d="M338.46 250.41 L338.34 248.91 L337.99 247.46 L337.40 246.09 L336.61 244.87 L335.64 243.81 L334.50 242.96 L333.25 242.33 L331.91 241.96 L330.53 241.84 L329.14 241.99 L327.80 242.40 L326.54 243.05 L325.40 243.93 L324.41 245.02 L323.61 246.27 L323.02 247.65 L322.66 249.12 L322.53 250.63 L322.65 252.14 L323.01 253.60 L323.59 254.96 L324.39 256.19 L325.37 257.25 L326.51 258.10 L327.77 258.72 L329.11 259.09 L330.49 259.20 L331.87 259.05 L333.21 258.64 L334.47 257.98 L335.61 257.10 L336.59 256.01 L337.38 254.76 L337.97 253.39 L338.33 251.92Z" fill="#d9dce2"/><path d="M335.91 250.46 L335.83 249.46 L335.59 248.49 L335.21 247.58 L334.68 246.76 L334.03 246.05 L333.27 245.49 L332.43 245.07 L331.54 244.82 L330.62 244.74 L329.70 244.84 L328.80 245.12 L327.96 245.55 L327.20 246.14 L326.54 246.86 L326.01 247.70 L325.62 248.62 L325.37 249.60 L325.29 250.60 L325.37 251.61 L325.61 252.58 L326.00 253.49 L326.53 254.31 L327.18 255.02 L327.94 255.58 L328.78 256.00 L329.67 256.25 L330.59 256.32 L331.51 256.22 L332.41 255.94 L333.25 255.51 L334.01 254.92 L334.66 254.19 L335.19 253.36 L335.58 252.44 L335.83 251.47Z" fill="#fffdf2"/><path d="M211.67 282.92 L294.88 281.27 L294.97 234.66 L211.71 235.51Z" fill="#0e1117"/><line x1="216.21" y1="275.75" x2="290.68" y2="274.37" stroke="#252b36" stroke-width="2.35" stroke-linecap="butt"/><line x1="216.22" y1="266.87" x2="290.69" y2="265.63" stroke="#252b36" stroke-width="2.35" stroke-linecap="butt"/><line x1="216.23" y1="257.98" x2="290.71" y2="256.88" stroke="#252b36" stroke-width="2.35" stroke-linecap="butt"/><line x1="216.24" y1="249.10" x2="290.72" y2="248.13" stroke="#252b36" stroke-width="2.35" stroke-linecap="butt"/><line x1="216.25" y1="240.22" x2="290.74" y2="239.38" stroke="#252b36" stroke-width="2.35" stroke-linecap="butt"/><path d="M149.75 316.98 L366.46 311.26 L366.55 276.40 L149.75 280.56Z" fill="url(#g18)"/><path d="M143.80 279.44 L358.44 275.38 L366.55 276.40 L149.75 280.56Z" fill="#ffffff"/><path d="M149.75 316.98 L149.75 280.56 L127.42 276.37 L127.42 311.21Z" fill="#c2c8d2"/><path d="M149.75 316.98 L366.46 311.26 L366.74 303.17 L149.94 308.53Z" fill="#12151c"/><path d="M233.07 302.92 L288.36 301.59 L288.39 285.05 L233.09 286.19Z" fill="#c4302b" stroke="#ffffff" stroke-width="0.7" stroke-linejoin="round"/><path d="M239.86 298.00 L244.88 297.89 L244.89 290.73 L239.87 290.84Z" fill="#ffffff" fill-opacity="0.9"/><path d="M248.22 297.81 L253.21 297.70 L253.22 290.55 L248.22 290.66Z" fill="#ffffff" fill-opacity="0.9"/><path d="M256.54 297.62 L261.52 297.50 L261.53 290.37 L256.55 290.48Z" fill="#ffffff" fill-opacity="0.9"/><path d="M264.84 297.43 L269.80 297.31 L269.81 290.20 L264.85 290.30Z" fill="#ffffff" fill-opacity="0.9"/><path d="M273.10 297.24 L278.05 297.12 L278.06 290.02 L273.12 290.12Z" fill="#ffffff" fill-opacity="0.9"/><path d="M281.34 297.05 L286.28 296.93 L286.29 289.84 L281.36 289.95Z" fill="#ffffff" fill-opacity="0.9"/><line x1="351.79" y1="173.10" x2="366.20" y2="173.08" stroke="#0a0c11" stroke-width="3.42" stroke-linecap="round"/><line x1="351.90" y1="127.52" x2="366.31" y2="127.42" stroke="#0a0c11" stroke-width="3.42" stroke-linecap="round"/><path d="M364.10 178.79 L386.85 178.81 L387.00 124.25 L364.24 123.97Z" fill="url(#g19)"/><line x1="136.85" y1="172.59" x2="126.46" y2="172.51" stroke="#0a0c11" stroke-width="3.58" stroke-linecap="round"/><line x1="136.85" y1="124.97" x2="126.46" y2="124.57" stroke="#0a0c11" stroke-width="3.58" stroke-linecap="round"/><path d="M103.48 178.48 L128.75 178.51 L128.75 121.00 L103.46 120.68Z" fill="url(#g20)"/><path d="M103.48 178.48 L103.46 120.68 L100.09 121.14 L100.11 178.52Z" fill="#07080c"/></g></svg>
+
+      <button class="hs led hot" id="adBtn" style="--d:.5s;width:161px;height:55px;transform:matrix3d(1.057495,0.037773,0.000000,0.000205,0.021043,0.944527,0.000000,-0.000424,0.000000,0.000000,1.000000,0.000000,160.432996,90.907365,0.000000,1.000000)" aria-label="محلات على الخط: عروض">
+        <span class="tagad">إعلان</span>
+        <span id="slides"></span>
+      </button>
+
+      <button class="hs news hot" id="newsBtn" style="--d:.9s;width:189px;height:33px;transform:matrix3d(1.069185,0.038190,0.000000,0.000207,0.001489,1.020178,0.000000,0.000011,0.000000,0.000000,1.000000,0.000000,157.586652,192.890954,0.000000,1.000000)" aria-label="آخر الأخبار على الخط">
+        <span class="alert">خبر عاجل</span>
+        <span class="crawl"><span class="track" id="track"></span></span>
+      </button>
+
+      <button class="hs game hot" id="gameBtn" style="--d:1.3s;width:88px;height:46px;transform:matrix3d(1.056966,0.037754,0.000000,0.000205,0.001473,1.008803,0.000000,0.000011,0.000000,0.000000,1.000000,0.000000,209.650029,234.364684,0.000000,1.000000)" aria-label="لعبة 16">
+        <span class="l1"><span id="gameIco"></span>لعبة 16</span>
+        <span class="l2">اجمع النقاط واربح</span>
+      </button>
+
+      <button class="where hot" id="whereBtn" style="--d:1.7s;left:12px;top:150px" aria-label="وين صار؟ افتح الخريطة">
+        <span id="pinIco"></span>
+        <span>وين صار؟</span>
+      </button>
+    </div>
+    <p class="hint" id="hint">اضغط على الباص لتستكشف الخط</p>
+  </section>
+
+  <nav class="dock" aria-label="أقسام">
+    <button class="dbtn wide" id="shopsBtn"><span id="bagIco"></span>محلات عالخط<span class="count" id="shopCount">0</span></button>
+    <button class="dbtn" id="villageBtn"><span id="compassIco"></span>ضيعتنا</button>
+  </nav>
+
+  <div class="veil" id="veil"></div>
+  <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle" aria-hidden="true">
+    <div class="grab"></div>
+    <header><h2 id="shTitle"></h2><button class="x" id="shClose" aria-label="إغلاق"><span id="closeIco"></span></button></header>
+    <div class="body" id="shBody"></div>
+  </section>
+</main>
+
+<script>
+/* ==========================================================
+   1) THINGS YOU EDIT
+   ========================================================== */
+
+// The map page you already built (your current index.html).
+const MAP_PAGE = 'index.html';
+
+// SAMPLE shops. Replace with the real shops that subscribe.
+// icon can be: food, pharmacy, bakery, market, cafe
+const SHOPS = [
+  { name: 'فلافل أبو كريم', cat: 'مطعم',      icon: 'food',     where: 'قرنايل', tag: 'عروض حصرية للأكابر',  offer: 'ساندويش فلافل مع مشروب بسعر خاص لركاب باص 16.' },
+  { name: 'صيدلية الضيعة', cat: 'صيدلية',    icon: 'pharmacy', where: 'قرنايل', tag: 'مفتوحة لحد التاسعة',  offer: 'توصيل مجاني ضمن الضيعة.' },
+  { name: 'فرن الجبل',      cat: 'مخبز',      icon: 'bakery',   where: 'بحمدون', tag: 'مناقيش سخنة كل صباح', offer: 'خصم 10% بعد الظهر لركاب الباص.' },
+  { name: 'سوبرماركت الخط', cat: 'سوبرماركت', icon: 'market',   where: 'بحمدون', tag: 'على الطريق العام',     offer: 'عروض الأسبوع على المواد الأساسية.' },
+  { name: 'كوفي ستوب',      cat: 'كافيه',     icon: 'cafe',     where: 'بحمدون', tag: 'قهوتك قبل الباص',      offer: 'قهوة سريعة بسعر مخفّض لما تعرض تذكرة الباص.' }
+];
+
+// SAMPLE news. Later the drivers send these and they show up here.
+// min = how many minutes ago it was posted.
+const NEWS = [
+  { text: 'جليد على نزلة الأمباسادور، توخّوا الحذر', min: 8 },
+  { text: 'الطريق سالكة بين قرنايل وبحمدون',          min: 35 }
+];
+
+/* ==========================================================
+   2) HELPERS + ICONS
+   ========================================================== */
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const ago = m => m < 60 ? 'قبل ' + m + ' دقيقة' : 'قبل ' + Math.round(m / 60) + ' ساعة';
+
+const ICONS = {
+  food: '<path d="M6 3v7a2 2 0 0 0 2 2v9"/><path d="M10 3v7a2 2 0 0 1-2 2"/><path d="M8 3v5"/><path d="M17 3c-2.2 1.6-3 4-3 6.5V13h3v8"/>',
+  pharmacy: '<rect x="4" y="4" width="16" height="16" rx="3.5"/><path d="M12 8.5v7M8.5 12h7"/>',
+  bakery: '<path d="M4.5 15.5c0-3.4 3.4-6.5 7.5-6.5s7.5 3.1 7.5 6.5V19h-15z"/><path d="M9 12.2v2.3M12.5 11.8v2.7M16 12.4v2.1"/>',
+  market: '<path d="M3 4h2.2l2 11h10.8l2-8H6.2"/><circle cx="9.2" cy="19" r="1.4"/><circle cx="16.8" cy="19" r="1.4"/>',
+  cafe: '<path d="M4 9h12v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3.5v2.2M12 3.5v2.2"/>',
+  game: '<path d="M7 8h10a4 4 0 0 1 3.9 4.9l-.7 3.2a2.3 2.3 0 0 1-3.8 1.2L14.5 16h-5l-1.9 1.3a2.3 2.3 0 0 1-3.8-1.2l-.7-3.2A4 4 0 0 1 7 8z"/><path d="M8.2 10.6v3M6.7 12.1h3"/><circle cx="15.4" cy="11.3" r=".7" fill="currentColor"/><circle cx="17.2" cy="13" r=".7" fill="currentColor"/>',
+  pin: '<path d="M12 21s-6.5-5.6-6.5-10.8a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21z"/><circle cx="12" cy="10.2" r="2.4"/>',
+  compass: '<circle cx="12" cy="12" r="8.5"/><path d="M15.6 8.4l-2 5.2-5.2 2 2-5.2z"/>',
+  bag: '<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',
+  village: '<path d="M3 20h18"/><path d="M5 20v-8l4-3 4 3v8"/><path d="M13 20v-5l3.5-2.6L20 15v5"/>',
+  news: '<path d="M5 5h11v14H7a2 2 0 0 1-2-2z"/><path d="M16 9h3v8a2 2 0 0 1-2 2"/><path d="M8.5 9h4.5M8.5 12.5h4.5M8.5 15.5h3"/>',
+  close: '<path d="M6 6l12 12M18 6L6 18"/>',
+  chev: '<path d="M14.5 6l-6 6 6 6"/>'
+};
+const icon = (n, s) => '<svg viewBox="0 0 24 24" width="' + (s || 22) + '" height="' + (s || 22) + '" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[n] + '</svg>';
+
+$('gameIco').innerHTML = icon('game', 15);
+$('pinIco').innerHTML = icon('pin', 18);
+$('compassIco').innerHTML = icon('compass', 22);
+$('bagIco').innerHTML = icon('bag', 22);
+$('closeIco').innerHTML = icon('close', 18);
+
+/* ==========================================================
+   3) FIT THE BUS TO THE PHONE
+   ========================================================== */
+const app = $('app'), hero = $('hero'), stage = $('stage');
+const GROUND = 358, STAGE_H = 414;
+function fit() {
+  const W = app.clientWidth, H = app.clientHeight;
+  const s = Math.min(W / 390, 1.08);
+  stage.style.transform = 'scale(' + s + ')';
+  const top = Math.max(78, H * 0.64 - GROUND * s);
+  hero.style.top = top + 'px';
+  hero.style.height = (STAGE_H * s) + 'px';
+  $('hint').style.top = (GROUND + 34) * s + 'px';
+}
+addEventListener('resize', fit); fit();
+
+/* ==========================================================
+   4) WINDSHIELD SCREEN (rotating shop ads) + NEWS STRIP
+   ========================================================== */
+let slideIdx = 0;
+$('slides').innerHTML = SHOPS.map((s, i) =>
+  '<span class="slide' + (i === 0 ? ' on' : '') + '"><span class="ico">' + icon(s.icon, 20) + '</span><span><small>' + esc(s.tag) + '</small><b>' + esc(s.name) + '</b><i>' + esc(s.where) + '</i></span></span>'
+).join('');
+setInterval(() => {
+  const els = $('slides').children;
+  els[slideIdx].classList.remove('on');
+  slideIdx = (slideIdx + 1) % els.length;
+  els[slideIdx].classList.add('on');
+}, 4500);
+
+const tickerText = NEWS.map(n => esc(n.text)).join('      •      ');
+$('track').innerHTML = tickerText;
+$('track').style.setProperty('--dur', Math.max(12, tickerText.length * 0.32) + 's');
+$('shopCount').textContent = SHOPS.length;
+
+/* ==========================================================
+   5) SHEETS
+   ========================================================== */
+let lastFocus = null;
+function openSheet(title, html) {
+  lastFocus = document.activeElement;
+  $('shTitle').textContent = title;
+  $('shBody').innerHTML = html;
+  $('shBody').scrollTop = 0;
+  $('veil').classList.add('open');
+  $('sheet').classList.add('open');
+  $('sheet').setAttribute('aria-hidden', 'false');
+  $('shClose').focus();
+}
+function closeSheet() {
+  $('veil').classList.remove('open');
+  $('sheet').classList.remove('open');
+  $('sheet').setAttribute('aria-hidden', 'true');
+  if (lastFocus && lastFocus.focus) lastFocus.focus();
+}
+$('shClose').onclick = closeSheet;
+$('veil').onclick = closeSheet;
+addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+
+function shopDetail(i) {
+  const s = SHOPS[i];
+  openSheet(s.name,
+    '<div class="tile big">' + icon(s.icon, 28) + '</div>' +
+    '<span class="chip">' + esc(s.cat) + ' · ' + esc(s.where) + '</span>' +
+    '<p><b>' + esc(s.tag) + '</b></p>' +
+    '<p>' + esc(s.offer) + '</p>' +
+    '<p class="muted">عرض تجريبي لشرح الفكرة.</p>' +
+    '<button class="btn ghost" id="allShops">كل المحلات على الخط</button>');
+  $('allShops').onclick = shopsList;
+}
+function shopsList() {
+  openSheet('محلات عالخط',
+    '<p class="muted">المحلات اللي على طريق باص 16 من قرنايل لبحمدون.</p>' +
+    SHOPS.map((s, i) =>
+      '<button class="row" data-i="' + i + '"><span class="tile">' + icon(s.icon, 22) + '</span><span><b>' + esc(s.name) + '</b><small>' + esc(s.cat) + ' · ' + esc(s.where) + '</small></span><span class="go">' + icon('chev', 20) + '</span></button>'
+    ).join('') +
+    '<p class="muted" style="margin-top:14px">عندك محل على الخط؟ قريباً بتقدر تنضم وتطلع على شاشة الباص.</p>');
+  $('shBody').querySelectorAll('.row').forEach(b => b.onclick = () => shopDetail(+b.dataset.i));
+}
+function newsList() {
+  openSheet('أخبار الخط',
+    '<p class="muted">أخبار الطريق من سواقين باص 16.</p>' +
+    NEWS.map(n => '<div class="nrow"><span class="dot"></span><div><b>' + esc(n.text) + '</b><span class="muted">' + ago(n.min) + '</span></div></div>').join('') +
+    '<p class="muted" style="margin-top:14px">قريباً: السواقين بيبعتوا الخبر من التطبيق وبيطلع هون مباشرة.</p>');
+}
+function gameInfo() {
+  openSheet('لعبة 16',
+    '<div class="tile big">' + icon('game', 28) + '</div><span class="chip">قريباً</span>' +
+    '<ul class="plain"><li>اجمع نقاط كل ما تركب الباص.</li><li>بدّل نقاطك وفوز بمشوار مجاني.</li></ul>' +
+    '<p class="muted">اللعبة قيد التحضير.</p>');
+}
+function villageInfo() {
+  openSheet('ضيعتنا',
+    '<div class="tile big">' + icon('village', 28) + '</div><span class="chip">قريباً</span>' +
+    '<p>فعاليات وأخبار الضيَع اللي على الخط، بالتعاون مع البلديات.</p>' +
+    '<p class="muted">القسم قيد التحضير.</p>');
+}
+
+$('adBtn').onclick = () => shopDetail(slideIdx);
+$('newsBtn').onclick = newsList;
+$('gameBtn').onclick = gameInfo;
+$('villageBtn').onclick = villageInfo;
+$('shopsBtn').onclick = shopsList;
+$('whereBtn').onclick = () => { location.href = MAP_PAGE; };
+</script>
+</body>
+</html>

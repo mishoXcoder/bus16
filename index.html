@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <title>Bus 16</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        color: #111827;
+      }
+      #map {
+        position: absolute;
+        inset: 0;
+      }
+      #map.crosshair {
+        cursor: crosshair;
+      }
+
+      #panel {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1000;
+        background: #fff;
+        border-radius: 18px 18px 0 0;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.18);
+        max-height: 52vh;
+        overflow-y: auto;
+        padding: 12px 14px 16px;
+      }
+      @media (min-width: 700px) {
+        #panel {
+          left: 16px;
+          right: auto;
+          bottom: 16px;
+          width: 380px;
+          border-radius: 16px;
+          max-height: 80vh;
+        }
+      }
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+      .brand {
+        font-weight: 800;
+        font-size: 20px;
+        letter-spacing: 0.3px;
+      }
+      .brand span {
+        background: #1d4ed8;
+        color: #fff;
+        padding: 2px 8px;
+        border-radius: 8px;
+        margin-right: 6px;
+      }
+      .clock {
+        font-variant-numeric: tabular-nums;
+        font-size: 14px;
+        color: #6b7280;
+      }
+      .clock.demo {
+        color: #b45309;
+        font-weight: 700;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+      .tab {
+        flex: 1;
+        padding: 8px;
+        border: 0;
+        border-radius: 10px;
+        background: #f3f4f6;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .tab.active {
+        background: #111827;
+        color: #fff;
+      }
+
+      .seg {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 10px;
+      }
+      .seg button {
+        flex: 1;
+        padding: 10px 6px;
+        border: 2px solid #e5e7eb;
+        background: #fff;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .seg button.active.kola {
+        border-color: #1d4ed8;
+        background: #eff6ff;
+        color: #1d4ed8;
+      }
+      .seg button.active.korn {
+        border-color: #ea580c;
+        background: #fff7ed;
+        color: #ea580c;
+      }
+
+      label {
+        font-size: 12px;
+        color: #6b7280;
+        display: block;
+        margin-bottom: 4px;
+      }
+      select,
+      input[type="text"],
+      input[type="time"] {
+        width: 100%;
+        padding: 10px;
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        font-size: 15px;
+        background: #fff;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: end;
+        margin-bottom: 10px;
+      }
+      .row > div {
+        flex: 1;
+      }
+      .small-btn {
+        padding: 10px 12px;
+        border: 0;
+        border-radius: 10px;
+        background: #f3f4f6;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .card {
+        border-radius: 14px;
+        padding: 12px 14px;
+        margin-bottom: 8px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+      }
+      .card.next {
+        background: #ecfdf5;
+        border-color: #6ee7b7;
+      }
+      .big {
+        font-size: 30px;
+        font-weight: 800;
+        line-height: 1.1;
+      }
+      .sub {
+        font-size: 13px;
+        color: #4b5563;
+        margin-top: 4px;
+      }
+      .muted {
+        color: #6b7280;
+        font-size: 13px;
+      }
+
+      .demo-box {
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px dashed #d1d5db;
+        border-radius: 12px;
+        font-size: 13px;
+      }
+      .demo-box .row {
+        margin: 8px 0 0;
+      }
+      .btn {
+        display: block;
+        width: 100%;
+        padding: 11px;
+        border: 0;
+        border-radius: 12px;
+        background: #111827;
+        color: #fff;
+        font-weight: 700;
+        font-size: 14px;
+        margin-bottom: 8px;
+        cursor: pointer;
+      }
+      .btn.secondary {
+        background: #f3f4f6;
+        color: #111827;
+      }
+      .btn.on {
+        background: #1d4ed8;
+        color: #fff;
+      }
+      .btn.danger {
+        background: #fee2e2;
+        color: #b91c1c;
+      }
+      .btns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+      .btns .btn {
+        margin: 0;
+      }
+      ol.how {
+        padding-left: 18px;
+        margin: 6px 0 12px;
+        font-size: 13px;
+        color: #374151;
+        line-height: 1.5;
+      }
+      textarea {
+        width: 100%;
+        height: 70px;
+        font-family: monospace;
+        font-size: 11px;
+        margin-top: 8px;
+        border-radius: 8px;
+        border: 1px solid #d1d5db;
+        padding: 6px;
+      }
+
+      .bus-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: #fff;
+        border: 3px solid #1d4ed8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s;
+      }
+      .bus-icon.korn {
+        border-color: #ea580c;
+      }
+      .bus-icon.hl {
+        transform: scale(1.35);
+        box-shadow:
+          0 0 0 5px rgba(16, 185, 129, 0.35),
+          0 2px 8px rgba(0, 0, 0, 0.35);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <div id="panel">
+      <div class="topbar">
+        <div class="brand"><span>16</span>Bus 16</div>
+        <div class="clock" id="clock">--:--</div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" id="tabRider">Rider</button>
+        <button class="tab" id="tabSetup">Setup</button>
+      </div>
+
+      <!-- ============ RIDER VIEW ============ -->
+      <div id="riderView">
+        <div class="seg">
+          <button id="dirKola" class="kola active">To Kola</button>
+          <button id="dirKorn" class="korn">To Kornayel</button>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="stopSelect">I am at</label>
+            <select id="stopSelect"></select>
+          </div>
+          <button class="small-btn" id="locBtn">📍 My location</button>
+        </div>
+
+        <div id="results"></div>
+
+        <div class="demo-box">
+          <label
+            style="
+              display: flex;
+              gap: 8px;
+              align-items: center;
+              margin: 0;
+              color: #111827;
+              font-size: 13px;
+            "
+          >
+            <input type="checkbox" id="demoToggle" />
+            <b>Demo mode</b> (fast-forward time to show the buses moving)
+          </label>
+          <div class="row" id="demoControls" style="display: none">
+            <div>
+              <label>Start at</label
+              ><input type="time" id="demoTime" value="07:00" />
+            </div>
+            <div>
+              <label>Speed</label>
+              <select id="demoSpeed">
+                <option value="30">30x</option>
+                <option value="60" selected>60x</option>
+                <option value="120">120x</option>
+                <option value="300">300x</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <p class="muted" style="margin: 10px 0 0">
+          Prototype: times shown are sample times, not the real timetable.
+        </p>
+      </div>
+
+      <!-- ============ SETUP VIEW ============ -->
+      <div id="setupView" style="display: none">
+        <ol class="how">
+          <li>Find Kornayel on the map (or type it below).</li>
+          <li>
+            Tap <b>Draw route</b>, then click along the bus road
+            <b>from Kornayel to Kola</b>. Zoom in and click often on curves.
+          </li>
+          <li>
+            Tap <b>Add stop</b>, click on the route where a stop is, type its
+            name.
+          </li>
+          <li>
+            Tap <b>Copy route code</b> and paste it into the file (see my
+            instructions).
+          </li>
+        </ol>
+        <div class="row">
+          <div>
+            <input
+              type="text"
+              id="searchBox"
+              placeholder="Search a place, e.g. Bhamdoun"
+            />
+          </div>
+          <button class="small-btn" id="searchBtn">Go</button>
+        </div>
+        <div class="btns" style="margin-bottom: 8px">
+          <button class="btn secondary" id="drawBtn">✏️ Draw route</button>
+          <button class="btn secondary" id="stopBtn">📌 Add stop</button>
+          <button class="btn secondary" id="undoBtn">↩️ Undo last</button>
+          <button class="btn danger" id="clearBtn">🗑 Clear all</button>
+        </div>
+        <button class="btn" id="copyBtn">Copy route code</button>
+        <div class="muted" id="setupInfo"></div>
+        <textarea id="codeBox" readonly style="display: none"></textarea>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+      /* ==========================================================
+   1) THINGS YOU EDIT
+   ========================================================== */
+
+      // How long one full trip takes from one end to the other (minutes).
+      const TRIP_MINUTES = 60;
+
+      // SAMPLE departure times (24-hour format). Replace with the real ones
+      // after you talk to the bus manager.
+      const TIMETABLE = {
+        toKola: [
+          "05:30",
+          "06:00",
+          "06:30",
+          "07:00",
+          "07:30",
+          "08:00",
+          "08:30",
+          "09:30",
+          "10:30",
+          "11:30",
+          "12:30",
+          "13:30",
+          "14:30",
+          "15:00",
+          "15:30",
+          "16:00",
+          "16:30",
+          "17:30",
+          "18:30",
+          "19:30",
+        ],
+        toKornayel: [
+          "06:00",
+          "06:45",
+          "07:15",
+          "07:45",
+          "08:15",
+          "09:00",
+          "10:00",
+          "11:00",
+          "12:00",
+          "13:00",
+          "14:00",
+          "15:15",
+          "16:15",
+          "17:00",
+          "17:45",
+          "18:45",
+          "19:45",
+        ],
+      };
+
+      // After you draw the route, paste the copied code here, replacing "null".
+      const SAVED_ROUTE = {
+        points: [
+          [33.853334, 35.725845],
+          [33.852862, 35.725298],
+          [33.85162, 35.72474],
+          [33.851451, 35.724761],
+          [33.851068, 35.724971],
+          [33.849381, 35.728051],
+          [33.849141, 35.728013],
+          [33.848357, 35.727391],
+          [33.847961, 35.727353],
+          [33.847538, 35.727858],
+          [33.846674, 35.729553],
+          [33.846213, 35.730065],
+          [33.845322, 35.730173],
+          [33.844672, 35.729872],
+          [33.844055, 35.730696],
+          [33.843655, 35.7313],
+          [33.843709, 35.732008],
+          [33.842765, 35.733833],
+          [33.842249, 35.734326],
+          [33.841554, 35.7357],
+          [33.841251, 35.735765],
+          [33.840628, 35.734734],
+          [33.835249, 35.731665],
+          [33.832168, 35.731686],
+          [33.830209, 35.731236],
+          [33.825203, 35.733253],
+          [33.824455, 35.731772],
+          [33.822692, 35.733081],
+          [33.822389, 35.733124],
+          [33.822353, 35.732287],
+          [33.822817, 35.730141],
+          [33.821552, 35.727007],
+          [33.821463, 35.72602],
+          [33.820911, 35.725827],
+          [33.818755, 35.723122],
+          [33.816279, 35.723079],
+          [33.815263, 35.722521],
+          [33.815085, 35.722178],
+          [33.815032, 35.721255],
+          [33.815246, 35.720396],
+          [33.815709, 35.718636],
+          [33.81537, 35.716168],
+          [33.815493, 35.713467],
+          [33.814406, 35.712566],
+          [33.814335, 35.712029],
+          [33.816401, 35.705246],
+          [33.815974, 35.70486],
+          [33.815421, 35.704023],
+          [33.814976, 35.701877],
+          [33.813907, 35.700889],
+          [33.813586, 35.699623],
+          [33.812517, 35.698013],
+          [33.811627, 35.69739],
+          [33.8107, 35.696296],
+          [33.81029, 35.694514],
+          [33.810112, 35.693505],
+          [33.809881, 35.692797],
+          [33.809756, 35.692368],
+          [33.80972, 35.692067],
+          [33.810273, 35.691681],
+          [33.810344, 35.691273],
+          [33.810665, 35.689921],
+          [33.811181, 35.688976],
+          [33.809578, 35.685456],
+          [33.808865, 35.682108],
+          [33.808295, 35.681357],
+          [33.807725, 35.680197],
+          [33.80744, 35.679103],
+          [33.807315, 35.678223],
+          [33.807066, 35.677386],
+          [33.806773, 35.675767],
+          [33.806488, 35.675101],
+          [33.80647, 35.670079],
+          [33.806203, 35.668641],
+          [33.80647, 35.666043],
+          [33.806559, 35.663596],
+          [33.806666, 35.663446],
+          [33.807351, 35.662781],
+          [33.807662, 35.661589],
+        ],
+        stops: [
+          { name: "Qornayel Stop", along: 0 },
+          { name: "Hammana Stop", along: 3945 },
+          { name: "chbeniyeh", along: 6459 },
+          { name: "qobbeih", along: 8614 },
+          { name: "bhamdoun", along: 12111 },
+        ],
+      };
+
+      /* ==========================================================
+   2) MAP SETUP
+   ========================================================== */
+      const $ = (id) => document.getElementById(id);
+
+      const map = L.map("map", { zoomControl: false }).setView(
+        [33.87, 35.6],
+        11,
+      );
+      L.control.zoom({ position: "topright" }).addTo(map);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "&copy; OpenStreetMap contributors",
+      }).addTo(map);
+
+      const routeLine = L.polyline([], {
+        color: "#1d4ed8",
+        weight: 5,
+        opacity: 0.8,
+        interactive: false,
+      }).addTo(map);
+      const stopLayer = L.layerGroup().addTo(map);
+      const busMarkers = {}; // key -> marker
+
+      /* ==========================================================
+   3) ROUTE DATA (points + stops)
+   ========================================================== */
+      let route = { points: [], stops: [] };
+      let cum = []; // cumulative distance (meters) at each route point
+      let total = 0; // total route length (meters)
+
+      function loadRoute() {
+        try {
+          const s = localStorage.getItem("bus16_route");
+          if (s) {
+            route = JSON.parse(s);
+            return;
+          }
+        } catch (e) {}
+        if (SAVED_ROUTE) route = JSON.parse(JSON.stringify(SAVED_ROUTE));
+      }
+      function saveRoute() {
+        try {
+          localStorage.setItem("bus16_route", JSON.stringify(route));
+        } catch (e) {}
+      }
+
+      function dist(a, b) {
+        // meters between two [lat,lng]
+        const R = 6371000,
+          rad = Math.PI / 180;
+        const dLat = (b[0] - a[0]) * rad,
+          dLng = (b[1] - a[1]) * rad;
+        const x =
+          Math.sin(dLat / 2) ** 2 +
+          Math.cos(a[0] * rad) * Math.cos(b[0] * rad) * Math.sin(dLng / 2) ** 2;
+        return 2 * R * Math.asin(Math.sqrt(x));
+      }
+
+      function recompute() {
+        cum = [0];
+        for (let i = 1; i < route.points.length; i++) {
+          cum.push(cum[i - 1] + dist(route.points[i - 1], route.points[i]));
+        }
+        total = route.points.length > 1 ? cum[cum.length - 1] : 0;
+        routeLine.setLatLngs(route.points);
+        fillStopSelect();
+        drawStops();
+        updateSetupInfo();
+        render();
+      }
+
+      // Where along the route (meters from Kornayel) is this point?
+      function project(p) {
+        const pts = route.points;
+        if (pts.length < 2) return 0;
+        const k = Math.cos((p[0] * Math.PI) / 180);
+        let best = Infinity,
+          along = 0;
+        for (let i = 0; i < pts.length - 1; i++) {
+          const ax = pts[i][1] * k,
+            ay = pts[i][0];
+          const bx = pts[i + 1][1] * k,
+            by = pts[i + 1][0];
+          const px = p[1] * k,
+            py = p[0];
+          const dx = bx - ax,
+            dy = by - ay,
+            len2 = dx * dx + dy * dy;
+          let t = len2 ? ((px - ax) * dx + (py - ay) * dy) / len2 : 0;
+          t = Math.max(0, Math.min(1, t));
+          const qx = ax + t * dx,
+            qy = ay + t * dy;
+          const d2 = (px - qx) ** 2 + (py - qy) ** 2;
+          if (d2 < best) {
+            best = d2;
+            along = cum[i] + t * (cum[i + 1] - cum[i]);
+          }
+        }
+        return along;
+      }
+
+      // The map position of a bus that is `s` meters along the route.
+      function pointAt(s) {
+        s = Math.max(0, Math.min(total, s));
+        let i = 1;
+        while (i < cum.length - 1 && cum[i] < s) i++;
+        const seg = cum[i] - cum[i - 1];
+        const t = seg ? (s - cum[i - 1]) / seg : 0;
+        const a = route.points[i - 1],
+          b = route.points[i];
+        return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+      }
+
+      /* ==========================================================
+   4) TIME (real clock or fast-forward demo clock)
+   ========================================================== */
+      const toMin = (s) => {
+        const [h, m] = s.split(":").map(Number);
+        return h * 60 + m;
+      };
+      const fmt = (m) => {
+        m = ((Math.round(m) % 1440) + 1440) % 1440;
+        return (
+          String(Math.floor(m / 60)).padStart(2, "0") +
+          ":" +
+          String(m % 60).padStart(2, "0")
+        );
+      };
+
+      const demo = { on: false, speed: 60, min: 7 * 60 };
+      let lastTick = Date.now();
+
+      function nowMin() {
+        if (demo.on) return demo.min;
+        const d = new Date();
+        return d.getHours() * 60 + d.getMinutes() + d.getSeconds() / 60;
+      }
+
+      /* ==========================================================
+   5) BUS LOGIC
+   ========================================================== */
+      let direction = "toKola";
+      let selectedStop = 0; // index in route.stops
+
+      // Buses currently on the road
+      function activeTrips(now) {
+        const out = [];
+        for (const dir of ["toKola", "toKornayel"]) {
+          for (const t of TIMETABLE[dir]) {
+            const s = toMin(t);
+            const f = (now - s) / TRIP_MINUTES;
+            if (f >= 0 && f <= 1) {
+              out.push({
+                dir,
+                start: s,
+                key: dir + t,
+                f,
+                along: dir === "toKola" ? f * total : (1 - f) * total,
+              });
+            }
+          }
+        }
+        return out;
+      }
+
+      // The next buses to reach a given stop, in a given direction
+      function upcoming(now, dir, stopAlong) {
+        const g = dir === "toKola" ? stopAlong / total : 1 - stopAlong / total;
+        const res = [];
+        for (const t of TIMETABLE[dir]) {
+          const s = toMin(t);
+          const arr = s + g * TRIP_MINUTES;
+          if (arr >= now) {
+            const f = (now - s) / TRIP_MINUTES;
+            const busAlong = dir === "toKola" ? f * total : (1 - f) * total;
+            const away =
+              dir === "toKola" ? stopAlong - busAlong : busAlong - stopAlong;
+            res.push({
+              key: dir + t,
+              start: s,
+              arr,
+              wait: arr - now,
+              onRoad: f >= 0 && f <= 1,
+              away,
+            });
+          }
+        }
+        return res.slice(0, 3);
+      }
+
+      /* ==========================================================
+   6) DRAWING STOPS + BUSES ON THE MAP
+   ========================================================== */
+      function drawStops() {
+        stopLayer.clearLayers();
+        route.stops.forEach((st, i) => {
+          const p = pointAt(st.along);
+          const sel = i === selectedStop;
+          L.circleMarker(p, {
+            radius: sel ? 9 : 6,
+            color: sel ? "#dc2626" : "#111827",
+            fillColor: sel ? "#fecaca" : "#fff",
+            fillOpacity: 1,
+            weight: 3,
+          })
+            .bindTooltip(st.name, {
+              permanent: sel,
+              direction: "top",
+              offset: [0, -8],
+            })
+            .addTo(stopLayer);
+        });
+      }
+
+      function fillStopSelect() {
+        const sel = $("stopSelect");
+        sel.innerHTML = "";
+        if (!route.stops.length) {
+          sel.innerHTML = "<option>No stops yet</option>";
+          return;
+        }
+        route.stops.forEach((st, i) => {
+          const o = document.createElement("option");
+          o.value = i;
+          o.textContent = st.name;
+          sel.appendChild(o);
+        });
+        if (selectedStop >= route.stops.length) selectedStop = 0;
+        sel.value = selectedStop;
+      }
+
+      function busIcon(dir, highlight) {
+        return L.divIcon({
+          className: "",
+          html:
+            '<div class="bus-icon ' +
+            (dir === "toKola" ? "" : "korn") +
+            (highlight ? " hl" : "") +
+            '">🚌</div>',
+          iconSize: [34, 34],
+          iconAnchor: [17, 17],
+        });
+      }
+
+      function updateBuses(now, highlightKey) {
+        const live = activeTrips(now);
+        const liveKeys = new Set(live.map((b) => b.key));
+
+        for (const k of Object.keys(busMarkers)) {
+          if (!liveKeys.has(k)) {
+            map.removeLayer(busMarkers[k]);
+            delete busMarkers[k];
+          }
+        }
+        if (total === 0) return;
+        for (const b of live) {
+          const pos = pointAt(b.along);
+          const icon = busIcon(b.dir, b.key === highlightKey);
+          if (busMarkers[b.key]) {
+            busMarkers[b.key].setLatLng(pos).setIcon(icon);
+          } else {
+            busMarkers[b.key] = L.marker(pos, { icon, zIndexOffset: 1000 })
+              .bindTooltip(
+                "Bus " +
+                  fmt(b.start) +
+                  (b.dir === "toKola" ? " → Kola" : " → Kornayel"),
+              )
+              .addTo(map);
+          }
+        }
+      }
+
+      /* ==========================================================
+   7) RENDER THE RIDER PANEL
+   ========================================================== */
+      function render() {
+        const now = nowMin();
+        $("clock").textContent = (demo.on ? "DEMO " : "") + fmt(now);
+        $("clock").className = "clock" + (demo.on ? " demo" : "");
+
+        const box = $("results");
+        if (route.points.length < 2) {
+          box.innerHTML =
+            '<div class="card"><b>No route yet.</b><div class="sub">Open the <b>Setup</b> tab and draw the route first.</div></div>';
+          updateBuses(now, null);
+          return;
+        }
+        if (!route.stops.length) {
+          box.innerHTML =
+            '<div class="card"><b>No stops yet.</b><div class="sub">Open the <b>Setup</b> tab and add a few stops.</div></div>';
+          updateBuses(now, null);
+          return;
+        }
+
+        const stop = route.stops[selectedStop];
+        const list = upcoming(now, direction, stop.along);
+        const destName = direction === "toKola" ? "Kola" : "Kornayel";
+
+        if (!list.length) {
+          box.innerHTML =
+            '<div class="card"><b>No more buses today</b><div class="sub">Last bus to ' +
+            destName +
+            " has passed " +
+            stop.name +
+            ".</div></div>";
+          updateBuses(now, null);
+          return;
+        }
+
+        let html = "";
+        list.forEach((b, i) => {
+          const mins = Math.max(0, Math.round(b.wait));
+          const big = mins === 0 ? "Arriving now" : mins + " min";
+          let sub;
+          if (b.onRoad)
+            sub =
+              "🟢 On the road, " +
+              (b.away / 1000).toFixed(1) +
+              " km away · reaches " +
+              stop.name +
+              " at " +
+              fmt(b.arr);
+          else
+            sub =
+              "⏳ Not left yet · departs at " +
+              fmt(b.start) +
+              " · reaches " +
+              stop.name +
+              " at " +
+              fmt(b.arr);
+
+          if (i === 0) {
+            html +=
+              '<div class="card next"><div class="muted">Next bus to ' +
+              destName +
+              '</div><div class="big">' +
+              big +
+              '</div><div class="sub">' +
+              sub +
+              "</div></div>";
+          } else {
+            html +=
+              '<div class="card"><div class="sub" style="margin:0"><b>' +
+              big +
+              "</b> · " +
+              sub +
+              "</div></div>";
+          }
+        });
+        box.innerHTML = html;
+        updateBuses(now, list[0].onRoad ? list[0].key : null);
+      }
+
+      /* ==========================================================
+   8) RIDER CONTROLS
+   ========================================================== */
+      $("dirKola").onclick = () => {
+        direction = "toKola";
+        $("dirKola").classList.add("active");
+        $("dirKorn").classList.remove("active");
+        render();
+      };
+      $("dirKorn").onclick = () => {
+        direction = "toKornayel";
+        $("dirKorn").classList.add("active");
+        $("dirKola").classList.remove("active");
+        render();
+      };
+      $("stopSelect").onchange = (e) => {
+        selectedStop = +e.target.value;
+        drawStops();
+        render();
+      };
+
+      $("locBtn").onclick = () => {
+        if (route.points.length < 2 || !route.stops.length) {
+          alert("Draw the route and add stops first.");
+          return;
+        }
+        if (!navigator.geolocation) {
+          alert("Location is not available on this device.");
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const me = [pos.coords.latitude, pos.coords.longitude];
+            const al = project(me);
+            let best = 0,
+              bd = Infinity;
+            route.stops.forEach((s, i) => {
+              const d = Math.abs(s.along - al);
+              if (d < bd) {
+                bd = d;
+                best = i;
+              }
+            });
+            selectedStop = best;
+            $("stopSelect").value = best;
+            drawStops();
+            render();
+            L.circleMarker(me, {
+              radius: 7,
+              color: "#2563eb",
+              fillColor: "#60a5fa",
+              fillOpacity: 1,
+            }).addTo(map);
+          },
+          () => alert("Could not get your location."),
+        );
+      };
+
+      $("demoToggle").onchange = (e) => {
+        demo.on = e.target.checked;
+        $("demoControls").style.display = demo.on ? "flex" : "none";
+        if (demo.on) demo.min = toMin($("demoTime").value || "07:00");
+        render();
+      };
+      $("demoTime").onchange = (e) => {
+        demo.min = toMin(e.target.value || "07:00");
+        render();
+      };
+      $("demoSpeed").onchange = (e) => {
+        demo.speed = +e.target.value;
+      };
+
+      /* ==========================================================
+   9) TABS + SETUP TOOLS
+   ========================================================== */
+      let mode = null; // 'draw' | 'stop' | null
+
+      function setMode(m) {
+        mode = mode === m ? null : m;
+        $("drawBtn").classList.toggle("on", mode === "draw");
+        $("stopBtn").classList.toggle("on", mode === "stop");
+        $("map").classList.toggle("crosshair", !!mode);
+      }
+
+      function showTab(which) {
+        const setup = which === "setup";
+        $("riderView").style.display = setup ? "none" : "block";
+        $("setupView").style.display = setup ? "block" : "none";
+        $("tabRider").classList.toggle("active", !setup);
+        $("tabSetup").classList.toggle("active", setup);
+        if (!setup && mode) setMode(mode);
+      }
+      $("tabRider").onclick = () => showTab("rider");
+      $("tabSetup").onclick = () => showTab("setup");
+
+      $("drawBtn").onclick = () => setMode("draw");
+      $("stopBtn").onclick = () => setMode("stop");
+
+      map.on("click", (e) => {
+        const p = [+e.latlng.lat.toFixed(6), +e.latlng.lng.toFixed(6)];
+        if (mode === "draw") {
+          route.points.push(p);
+          saveRoute();
+          recompute();
+        } else if (mode === "stop") {
+          if (route.points.length < 2) {
+            alert("Draw the route first.");
+            return;
+          }
+          const name = prompt("Stop name?");
+          if (!name) return;
+          route.stops.push({
+            name: name.trim(),
+            along: Math.round(project(p)),
+          });
+          route.stops.sort((a, b) => a.along - b.along);
+          saveRoute();
+          recompute();
+        }
+      });
+
+      $("undoBtn").onclick = () => {
+        if (mode === "stop" && route.stops.length) route.stops.pop();
+        else route.points.pop();
+        saveRoute();
+        recompute();
+      };
+
+      $("clearBtn").onclick = () => {
+        if (!confirm("Delete the whole route and all stops?")) return;
+        route = { points: [], stops: [] };
+        try {
+          localStorage.removeItem("bus16_route");
+        } catch (e) {}
+        recompute();
+      };
+
+      $("copyBtn").onclick = () => {
+        const code = "const SAVED_ROUTE = " + JSON.stringify(route) + ";";
+        const box = $("codeBox");
+        box.style.display = "block";
+        box.value = code;
+        box.select();
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(code).then(
+            () =>
+              alert(
+                "Copied! Now paste it in the file, replacing the line: const SAVED_ROUTE = null;",
+              ),
+            () =>
+              alert("Select the text in the box below and copy it manually."),
+          );
+        } else {
+          alert("Select the text in the box below and copy it manually.");
+        }
+      };
+
+      $("searchBtn").onclick = async () => {
+        const q = $("searchBox").value.trim();
+        if (!q) return;
+        try {
+          const r = await fetch(
+            "https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" +
+              encodeURIComponent(q + ", Lebanon"),
+          );
+          const j = await r.json();
+          if (j.length) map.setView([+j[0].lat, +j[0].lon], 14);
+          else alert("Not found. Try another spelling.");
+        } catch (e) {
+          alert("Search failed. Check your internet.");
+        }
+      };
+
+      function updateSetupInfo() {
+        $("setupInfo").textContent =
+          route.points.length +
+          " route points, " +
+          route.stops.length +
+          " stops, " +
+          (total / 1000).toFixed(1) +
+          " km";
+      }
+
+      /* ==========================================================
+   10) START
+   ========================================================== */
+      loadRoute();
+      recompute();
+      if (route.points.length > 1)
+        map.fitBounds(routeLine.getBounds(), { padding: [30, 30] });
+
+      setInterval(() => {
+        const now = Date.now();
+        const dt = (now - lastTick) / 1000;
+        lastTick = now;
+        if (demo.on) demo.min = (demo.min + (dt * demo.speed) / 60) % 1440;
+        render();
+      }, 1000);
+    </script>
+  </body>
+</html>
