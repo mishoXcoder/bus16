@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#070b16">
 <title>باص 16</title>
+<!-- Login gate: the page stays hidden until the visitor is signed in. Keep these two lines. -->
+<style>html{visibility:hidden}</style>
+<script type="module" src="auth-guard.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -44,6 +47,16 @@
   .mark { width: 38px; height: 38px; border-radius: 11px; background: var(--amber); color: #1a1205; display: grid; place-items: center; font-weight: 700; font-size: 18px; letter-spacing: -.5px; }
   .brand b { display: block; font-size: 19px; font-weight: 700; line-height: 1.15; }
   .brand small { display: block; margin-top: 2px; font-size: 12.5px; color: var(--muted); }
+  .hright { display: flex; align-items: center; gap: 10px; }
+  .acct { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; background: rgba(255,255,255,.09); border: 1px solid var(--line); display: grid; place-items: center; font-size: 15px; font-weight: 700; color: var(--amber-soft); text-transform: uppercase; }
+  .acct svg { display: block; }
+  .acct img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .acct img[hidden] { display: none; }
+  /* "Complete your profile": top-left, under the header, never over the bus */
+  .cp { position: absolute; z-index: 5; left: 16px; top: calc(66px + env(safe-area-inset-top)); display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 13px 0 11px; border-radius: 99px;
+    background: rgba(244,166,42,.14); border: 1px solid rgba(244,166,42,.55); color: var(--amber-soft); font-size: 13px; font-weight: 600; text-decoration: none; direction: ltr; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+  .cp[hidden] { display: none; }
+  .cp svg { flex: none; }
   .tag { font-size: 11.5px; color: var(--muted); padding: 4px 10px; border-radius: 99px; border: 1px solid var(--line); }
 
   /* ---------- the bus ---------- */
@@ -89,7 +102,35 @@
     35% { box-shadow: 0 0 0 3px rgba(255,213,138,.95), 0 0 20px rgba(255,213,138,.6); }
     100% { box-shadow: 0 0 0 0 rgba(255,213,138,0); }
   }
-  .hint { position: absolute; left: 0; right: 0; text-align: center; margin: 0; font-size: 12.5px; color: var(--muted); }
+  /* ---------- under the bus: next-bus cards + price list ---------- */
+  .under { position: absolute; z-index: 3; left: 16px; right: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .card {
+    display: block; width: 100%; padding: 12px 14px 12px; border-radius: 16px; text-align: start;
+    background: rgba(12,18,34,.82); border: 1px solid var(--line); box-shadow: 0 10px 26px rgba(0,0,0,.35);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  }
+  .card .dir { display: flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: #fff; white-space: nowrap; }
+  .card .dir i { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 3px rgba(244,166,42,.18); }
+  .card .lbl { display: block; margin-top: 9px; font-size: 11.5px; color: var(--muted); line-height: 1.2; }
+  .card .cd { display: block; margin-top: 1px; font-size: 29px; font-weight: 700; line-height: 1.15; color: var(--amber-soft); font-variant-numeric: tabular-nums; letter-spacing: .5px; direction: ltr; text-align: start; }
+  .card .sub { display: block; margin-top: 6px; padding-top: 7px; border-top: 1px solid var(--line); font-size: 12px; color: rgba(238,241,247,.78); line-height: 1.5; }
+  .card .sub b { font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
+  .pricebtn { display: flex; align-items: center; gap: 11px; height: 50px; padding: 0 14px; border-radius: 14px; background: rgba(12,18,34,.82); border: 1px solid var(--line); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); font-size: 15px; font-weight: 600; }
+  .pricebtn svg { flex: none; color: var(--amber); }
+  .pricebtn small { margin-inline-start: auto; font-size: 12.5px; font-weight: 500; color: var(--muted); }
+
+  /* price + timetable sheets */
+  .prow { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .prow:last-of-type { border-bottom: 0; }
+  .prow span { font-size: 16px; font-weight: 500; color: #fff; }
+  .prow small { display: block; font-size: 12.5px; color: var(--muted); font-weight: 400; }
+  .prow b { font-size: 17px; font-weight: 700; color: var(--amber-soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .prow b em { font-style: normal; font-size: 12px; font-weight: 500; color: var(--muted); margin-inline-start: 4px; }
+  .times { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 4px 0 6px; direction: ltr; }
+  .times span { text-align: center; padding: 9px 0; border-radius: 10px; background: rgba(255,255,255,.06); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; color: #fff; }
+  .times span.past { color: rgba(255,255,255,.28); background: rgba(255,255,255,.03); }
+  .times span.next { background: var(--amber); color: #1a1205; }
 
   /* ---------- bottom dock ---------- */
   .dock { position: absolute; z-index: 4; left: 16px; right: 16px; bottom: calc(18px + env(safe-area-inset-bottom)); display: flex; gap: 10px; }
@@ -154,8 +195,12 @@
       <div class="mark" aria-hidden="true">16</div>
       <div><b>باص 16</b><small>قرنايل ← بحمدون</small></div>
     </div>
-    <div class="tag">نسخة تجريبية</div>
+    <div class="hright">
+      <div class="tag">نسخة تجريبية</div>
+      <button class="acct" id="acctBtn" aria-label="حسابي"><span id="acctIni"></span><img id="acctImg" alt="" hidden></button>
+    </div>
   </header>
+  <a class="cp" id="cp" href="profile.html" hidden><span id="cpIco"></span>Complete your profile</a>
 
   <section class="hero" id="hero" aria-label="باص 16">
     <div class="stage" id="stage">
@@ -181,7 +226,24 @@
         <span>وين صار؟</span>
       </button>
     </div>
-    <p class="hint" id="hint">اضغط على الباص لتستكشف الخط</p>
+  </section>
+
+  <section class="under" id="under" aria-label="الباص الجاي">
+    <div class="cards">
+      <button class="card" id="cardA" aria-label="أوقات الباص من قرنايل إلى بحمدون">
+        <span class="dir"><i></i>قرنايل ← بحمدون</span>
+        <span class="lbl">الباص الجاي بعد</span>
+        <span class="cd" id="cdA">--:--</span>
+        <span class="sub" id="subA"></span>
+      </button>
+      <button class="card" id="cardB" aria-label="أوقات الباص من بحمدون إلى قرنايل">
+        <span class="dir"><i></i>بحمدون ← قرنايل</span>
+        <span class="lbl">الباص الجاي بعد</span>
+        <span class="cd" id="cdB">--:--</span>
+        <span class="sub" id="subB"></span>
+      </button>
+    </div>
+    <button class="pricebtn" id="priceBtn"><span id="tagIco"></span>قائمة الأسعار<small>من 150,000 ل.ل</small></button>
   </section>
 
   <nav class="dock" aria-label="أقسام">
@@ -218,8 +280,26 @@ const SHOPS = [
 // SAMPLE news. Later the drivers send these and they show up here.
 // min = how many minutes ago it was posted.
 const NEWS = [
-  { text: 'جليد في قرنايل، توخّوا الحذر', min: 8 },
+  { text: 'جليد على نزلة الأمباسادور، توخّوا الحذر', min: 8 },
   { text: 'الطريق سالكة بين قرنايل وبحمدون',          min: 35 }
+];
+
+// SAMPLE departure times (24-hour). Same sample times as the map page.
+// Replace with the real ones after you talk to the bus manager.
+const TIMES = {
+  A: ["05:30","06:00","06:30","07:00","07:30","08:00","08:30","09:30","10:30","11:30","12:30",
+      "13:30","14:30","15:00","15:30","16:00","16:30","17:30","18:30","19:30"],   // قرنايل ← بحمدون
+  B: ["06:00","06:45","07:15","07:45","08:15","09:00","10:00","11:00","12:00","13:00","14:00",
+      "15:15","16:15","17:00","17:45","18:45","19:45"]                           // بحمدون ← قرنايل
+};
+
+// Fares in LBP. "dir" is the direction text shown in the price list.
+const PRICES = [
+  { route: 'قرنايل ← كولا',   p: 350000 },
+  { route: 'قرنايل ← بحمدون', p: 200000 },
+  { route: 'بحمدون ← كولا',   p: 250000 },
+  { route: 'بحمدون ← قرنايل', p: 250000 },
+  { route: 'سرفيس',           p: 150000 }
 ];
 
 /* ==========================================================
@@ -241,6 +321,8 @@ const ICONS = {
   bag: '<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>',
   village: '<path d="M3 20h18"/><path d="M5 20v-8l4-3 4 3v8"/><path d="M13 20v-5l3.5-2.6L20 15v5"/>',
   news: '<path d="M5 5h11v14H7a2 2 0 0 1-2-2z"/><path d="M16 9h3v8a2 2 0 0 1-2 2"/><path d="M8.5 9h4.5M8.5 12.5h4.5M8.5 15.5h3"/>',
+  tag: '<path d="M3.5 12.2V5a1.5 1.5 0 0 1 1.5-1.5h7.2l8.3 8.3a1.5 1.5 0 0 1 0 2.1l-5.9 5.9a1.5 1.5 0 0 1-2.1 0z"/><circle cx="8" cy="8" r="1.3"/>',
+  user: '<circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/>',
   close: '<path d="M6 6l12 12M18 6L6 18"/>',
   chev: '<path d="M14.5 6l-6 6 6 6"/>'
 };
@@ -251,6 +333,7 @@ $('pinIco').innerHTML = icon('pin', 18);
 $('compassIco').innerHTML = icon('compass', 22);
 $('bagIco').innerHTML = icon('bag', 22);
 $('closeIco').innerHTML = icon('close', 18);
+$('tagIco').innerHTML = icon('tag', 22);
 
 /* ==========================================================
    3) FIT THE BUS TO THE PHONE
@@ -261,10 +344,14 @@ function fit() {
   const W = app.clientWidth, H = app.clientHeight;
   const s = Math.min(W / 390, 1.08);
   stage.style.transform = 'scale(' + s + ')';
-  const top = Math.max(78, H * 0.46 - GROUND * s);
+  // stack: header, bus, cards, price button, then the dock. Spread any spare room above the bus.
+  const under = $('under'), busH = STAGE_H * s, underH = under.offsetHeight;
+  const dockTop = H - 18 - 54;
+  const spare = dockTop - 14 - (62 + busH - 14 + underH);
+  const top = 62 + Math.max(0, spare * 0.4);
   hero.style.top = top + 'px';
-  hero.style.height = (STAGE_H * s) + 'px';
-  $('hint').style.top = (GROUND + 34) * s + 'px';
+  hero.style.height = busH + 'px';
+  under.style.top = (top + busH - 14) + 'px';
 }
 addEventListener('resize', fit); fit();
 
@@ -349,6 +436,75 @@ function villageInfo() {
     '<p>فعاليات وأخبار الضيَع اللي على الخط، بالتعاون مع البلديات.</p>' +
     '<p class="muted">القسم قيد التحضير.</p>');
 }
+
+/* ==========================================================
+   6) NEXT-BUS CARDS + PRICE LIST
+   ========================================================== */
+const toSec = t => { const [h, m] = t.split(':'); return (+h * 60 + +m) * 60; };
+const p2 = n => String(n).padStart(2, '0');
+const nowSec = () => { const d = new Date(); return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds(); };
+const fmtCd = s => { const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return (h ? h + ':' + p2(m) : p2(m)) + ':' + p2(s % 60); };
+
+function nextOf(list) {
+  const n = nowSec(), secs = list.map(toSec);
+  let i = secs.findIndex(s => s > n), tomorrow = false;
+  if (i < 0) { i = 0; tomorrow = true; }
+  return { i, left: secs[i] + (tomorrow ? 86400 : 0) - n, tomorrow, cur: list[i], after: list[(i + 1) % list.length] };
+}
+function tickCard(k) {
+  const r = nextOf(TIMES[k]);
+  $('cd' + k).textContent = fmtCd(r.left);
+  $('sub' + k).innerHTML = 'ينطلق <b>' + r.cur + '</b>' + (r.tomorrow ? ' بكرا' : '') + '<br>وبعده <b>' + r.after + '</b>';
+}
+function tickAll() { tickCard('A'); tickCard('B'); }
+tickAll(); setInterval(tickAll, 1000);
+fit();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+
+function timesSheet(k, title) {
+  const r = nextOf(TIMES[k]), n = nowSec();
+  openSheet(title,
+    '<p class="muted">أوقات انطلاق باص 16. الأوقات الجاية بالأصفر.</p>' +
+    '<div class="times">' + TIMES[k].map((t, i) => '<span class="' + (!r.tomorrow && i === r.i ? 'next' : (toSec(t) <= n ? 'past' : '')) + '">' + t + '</span>').join('') + '</div>' +
+    '<p class="muted" style="margin-top:12px">أوقات تجريبية لشرح الفكرة. بتتبدّل بالأوقات الحقيقية بعد ما نحكي مع المسؤول عن الباصات.</p>');
+}
+const money = n => n.toLocaleString('en-US');
+function priceSheet() {
+  openSheet('قائمة الأسعار',
+    '<p class="muted">الأجرة بتختلف حسب وين بتنزل.</p>' +
+    PRICES.map(x => '<div class="prow"><span>' + esc(x.route) + '</span><b>' + money(x.p) + '<em>ل.ل</em></b></div>').join('') +
+    '<p class="muted" style="margin-top:12px">الأسعار بالليرة اللبنانية.</p>');
+}
+/* ==========================================================
+   7) ACCOUNT (the sign-in itself lives in auth-guard.js)
+   ========================================================== */
+$('cpIco').innerHTML = icon('user', 16);
+function showUser() {
+  const u = window.BUS16_USER; if (!u) return;
+  const p = u.profile || {};
+  const ch = (u.name || u.username || u.email || '').trim().charAt(0);
+  $('acctImg').hidden = !p.photo;
+  if (p.photo) $('acctImg').src = p.photo;
+  $('acctIni').hidden = !!p.photo;
+  $('acctIni').innerHTML = ch ? '' : icon('user', 18);
+  if (ch) $('acctIni').textContent = ch;
+  $('cp').hidden = !!p.profileDone;
+}
+addEventListener('bus16:user', showUser); showUser();
+$('acctBtn').onclick = () => {
+  const u = window.BUS16_USER || {};
+  openSheet('حسابي',
+    '<div class="tile big">' + icon('user', 28) + '</div>' +
+    (u.name ? '<p><b>' + esc(u.name) + '</b></p>' : '') +
+    '<p class="muted" dir="ltr" style="text-align:right">' + (u.username ? '@' + esc(u.username) + ' · ' : '') + esc(u.email || '') + '</p>' +
+    '<a class="btn ghost" href="profile.html" style="text-decoration:none">تعديل الملف الشخصي</a>' +
+    '<button class="btn ghost" id="outBtn">تسجيل الخروج</button>');
+  $('outBtn').onclick = () => { if (window.bus16SignOut) window.bus16SignOut(); };
+};
+
+$('cardA').onclick = () => timesSheet('A', 'قرنايل ← بحمدون');
+$('cardB').onclick = () => timesSheet('B', 'بحمدون ← قرنايل');
+$('priceBtn').onclick = priceSheet;
 
 $('adBtn').onclick = () => shopDetail(slideIdx);
 $('newsBtn').onclick = newsList;

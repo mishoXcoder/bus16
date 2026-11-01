@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070b16">
+<title>Complete your profile · Bus 16</title>
+<!-- Login gate: the page stays hidden until the visitor is signed in. Keep these two lines. -->
+<style>html{visibility:hidden}</style>
+<script type="module" src="auth-guard.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #070b16; --line: rgba(255,255,255,.11); --text: #eef1f7; --muted: #93a0b8;
+    --amber: #f4a62a; --amber-soft: #ffd58a; --red: #ff7a7f; --green: #7fd99a;
+    --font: 'IBM Plex Sans Arabic', 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; min-height: 100%; background: var(--ink); }
+  body {
+    font-family: var(--font); color: var(--text); min-height: 100dvh; display: flex; justify-content: center; align-items: flex-start;
+    background: radial-gradient(90% 34% at 50% -6%, rgba(244,166,42,.16), rgba(244,166,42,0) 70%), var(--ink);
+  }
+  button, input, select { font: inherit; color: inherit; }
+  button { cursor: pointer; border: 0; background: none; padding: 0; }
+  button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid var(--amber-soft); outline-offset: 2px; }
+  [hidden] { display: none !important; }
+
+  .wrap { width: 100%; max-width: 420px; padding: calc(22px + env(safe-area-inset-top)) 20px calc(32px + env(safe-area-inset-bottom)); }
+  .back { display: inline-flex; align-items: center; gap: 6px; height: 40px; color: var(--amber-soft); font-size: 15px; font-weight: 600; text-decoration: none; }
+  h1 { margin: 6px 0 4px; font-size: 27px; font-weight: 700; letter-spacing: -.3px; }
+  .lead { margin: 0 0 20px; color: var(--muted); font-size: 15px; line-height: 1.55; }
+  .card { padding: 20px; border-radius: 22px; background: rgba(15,22,41,.88); border: 1px solid var(--line); box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+
+  .avatar { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+  .pic { flex: none; width: 84px; height: 84px; border-radius: 50%; overflow: hidden; background: rgba(255,255,255,.08); border: 1px solid var(--line); display: grid; place-items: center; font-size: 32px; font-weight: 700; color: var(--amber-soft); text-transform: uppercase; }
+  .pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .avatar b { display: block; font-size: 15px; font-weight: 600; }
+  .avatar small { display: block; color: var(--muted); font-size: 13px; margin: 2px 0 8px; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { height: 36px; padding: 0 14px; border-radius: 99px; border: 1px solid rgba(244,166,42,.5); background: rgba(244,166,42,.1); color: var(--amber-soft); font-size: 14px; font-weight: 600; }
+  .chip.plain { border-color: var(--line); background: rgba(255,255,255,.06); color: var(--muted); }
+
+  .f { display: block; margin-bottom: 14px; }
+  .f > span { display: block; margin-bottom: 6px; font-size: 13.5px; font-weight: 500; color: rgba(238,241,247,.8); }
+  .f input, .f select { width: 100%; height: 50px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.05); font-size: 16px; }
+  .f input::placeholder { color: rgba(147,160,184,.6); }
+  .f input:focus, .f select:focus { border-color: rgba(244,166,42,.7); background: rgba(255,255,255,.07); outline: none; box-shadow: 0 0 0 3px rgba(244,166,42,.18); }
+  .f input.bad, .f select.bad { border-color: rgba(255,122,127,.8); }
+  .f select { appearance: none; -webkit-appearance: none; padding-right: 40px; color-scheme: dark; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%2393a0b8' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 15px center; }
+  .f select option { background: #0f1629; color: #eef1f7; }
+  .f small { display: block; margin-top: 6px; font-size: 12.5px; color: var(--muted); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  .msg { min-height: 20px; margin: 4px 0 12px; font-size: 14px; line-height: 1.5; }
+  .msg.err { color: var(--red); } .msg.ok { color: var(--green); }
+  .go { display: grid; place-items: center; width: 100%; height: 52px; border-radius: 13px; background: var(--amber); color: #1a1205; font-size: 16.5px; font-weight: 700; }
+  .go:hover { filter: brightness(1.06); }
+  button:disabled { opacity: .55; cursor: not-allowed; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <a class="back" href="index.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Back</a>
+  <h1>Complete your profile</h1>
+  <p class="lead">Add a few details so Bus 16 can feel like yours. Your photo is optional.</p>
+
+  <form class="card" id="form" novalidate>
+    <div class="avatar">
+      <div class="pic" id="pic" aria-hidden="true"></div>
+      <div>
+        <b>Profile photo</b>
+        <small>Optional</small>
+        <div class="chips">
+          <button type="button" class="chip" id="pickBtn">Add photo</button>
+          <button type="button" class="chip plain" id="rmBtn" hidden>Remove</button>
+        </div>
+        <input type="file" id="file" accept="image/*" hidden>
+      </div>
+    </div>
+
+    <label class="f"><span>Age</span><input id="age" type="number" inputmode="numeric" min="13" max="100" placeholder="Your age"></label>
+
+    <label class="f"><span>Country</span>
+      <select id="country" autocomplete="country-name"><option value="Lebanon" selected>Lebanon</option><option value="__other">Other country</option></select>
+    </label>
+    <label class="f" id="countryOtherRow" hidden><span>Country name</span><input id="countryOther" type="text" maxlength="60" placeholder="Your country"></label>
+    <label class="f" id="districtSelRow"><span>District</span><select id="district"></select></label>
+    <label class="f" id="districtTxtRow" hidden><span>District / region</span><input id="districtTxt" type="text" maxlength="60" placeholder="Your district or region"></label>
+    <label class="f"><span>City / town</span><input id="city" type="text" autocomplete="address-level2" maxlength="60" placeholder="e.g. Kornayel"></label>
+
+    <label class="f"><span>Phone number</span>
+      <input id="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="03 123 456">
+      <small>You can sign in with it later. Outside Lebanon, start with + and your country code.</small>
+    </label>
+
+    <p class="msg" id="msg" role="alert" aria-live="polite"></p>
+    <button type="submit" class="go" id="save">Save profile</button>
+  </form>
+</main>
+
+<script type="module">
+import * as fb from './firebase-config.js';
+import * as C from './bus16-common.js';
+const $ = id => document.getElementById(id);
+function say(text, kind) { $('msg').textContent = text || ''; $('msg').className = 'msg' + (kind ? ' ' + kind : ''); }
+
+/* wait for the gate (auth-guard.js) to tell us who is signed in */
+const whenUser = () => new Promise(res => {
+  if (window.BUS16_USER) return res(window.BUS16_USER);
+  addEventListener('bus16:user', e => res(e.detail), { once: true });
+});
+
+const LB_DISTRICTS = ['Akkar','Aley','Baabda','Baalbek','Batroun','Beirut','Bint Jbeil','Bsharri','Chouf','Hasbaya','Hermel','Jbeil','Jezzine','Keserwan','Koura','Marjeyoun','Matn','Minieh-Danniyeh','Nabatieh','Rashaya','Sidon','Tripoli','Tyre','Western Beqaa','Zahle','Zgharta'];
+$('district').innerHTML = '<option value="">Select your district</option>' + LB_DISTRICTS.map(d => '<option>' + d + '</option>').join('');
+function syncCountry() {
+  const other = $('country').value === '__other';
+  $('countryOtherRow').hidden = !other; $('districtTxtRow').hidden = !other; $('districtSelRow').hidden = other;
+}
+$('country').onchange = syncCountry;
+
+/* ---------- profile photo: shrunk to a small square so it fits the free database ---------- */
+let photo = undefined;                 // undefined = unchanged, null = removed, string = new picture
+let me = null;
+function drawPic(url) {
+  const initial = (me && (me.name || me.username) || '?').trim().charAt(0);
+  $('pic').innerHTML = '';
+  if (url) { const im = new Image(); im.alt = ''; im.src = url; $('pic').appendChild(im); }
+  else $('pic').textContent = initial;
+  $('rmBtn').hidden = !url;
+  $('pickBtn').textContent = url ? 'Change photo' : 'Add photo';
+}
+async function toAvatar(file) {
+  const bmp = await createImageBitmap(file);
+  const size = Math.min(bmp.width, bmp.height), sx = (bmp.width - size) / 2, sy = (bmp.height - size) / 2;
+  for (const [px, q] of [[256, .82], [200, .7], [160, .6]]) {
+    const c = document.createElement('canvas'); c.width = c.height = px;
+    c.getContext('2d').drawImage(bmp, sx, sy, size, size, 0, 0, px, px);
+    const url = c.toDataURL('image/jpeg', q);
+    if (url.length < 60000) return url;
+  }
+  throw new Error('too big');
+}
+$('pickBtn').onclick = () => $('file').click();
+$('rmBtn').onclick = () => { photo = null; $('file').value = ''; drawPic(null); };
+$('file').onchange = async () => {
+  const f = $('file').files[0]; if (!f) return;
+  try { photo = await toAvatar(f); drawPic(photo); say(''); }
+  catch (e) { say('We couldn’t use that picture. Try a JPG or PNG.', 'err'); }
+};
+
+/* ---------- fill in what we already know ---------- */
+(async () => {
+  me = await whenUser();
+  const p = me.profile || {};
+  drawPic(p.photo || null);
+  if (p.age) $('age').value = p.age;
+  if (p.country && p.country !== 'Lebanon') { $('country').value = '__other'; $('countryOther').value = p.country; $('districtTxt').value = p.district || ''; }
+  else if (p.district) $('district').value = p.district;
+  syncCountry();
+  if (p.city) $('city').value = p.city;
+  if (p.phone) $('phone').value = p.phone;
+})();
+
+document.addEventListener('input', e => { if (e.target.classList) e.target.classList.remove('bad'); });
+
+/* ---------- save ---------- */
+$('form').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  if (!me) return;
+  ['age', 'country', 'countryOther', 'district', 'districtTxt', 'city', 'phone'].forEach(i => $(i).classList.remove('bad'));
+  const bad = (id, t) => { $(id).classList.add('bad'); $(id).focus(); say(t, 'err'); };
+  const age = Number($('age').value);
+  const other = $('country').value === '__other';
+  const country = other ? $('countryOther').value.trim() : 'Lebanon';
+  const district = other ? $('districtTxt').value.trim() : $('district').value;
+  const city = $('city').value.trim();
+  const digits = C.normPhone($('phone').value);
+
+  if (!Number.isInteger(age) || age < 13 || age > 100) return bad('age', 'Enter your age (13 to 100).');
+  if (other && country.length < 2) return bad('countryOther', 'Enter your country.');
+  if (!district) return bad(other ? 'districtTxt' : 'district', other ? 'Enter your district or region.' : 'Choose your district.');
+  if (city.length < 2) return bad('city', 'Enter your city or town.');
+  if (!digits) return bad('phone', 'Enter a valid phone number, for example 03 123 456.');
+
+  $('save').disabled = true; $('save').textContent = 'Saving…'; say('');
+  try {
+    const old = ((me.profile || {}).phone || '').replace(/\D/g, '');
+    const email = fb.auth.currentUser.email;
+    const u = {}, base = 'users/' + me.uid + '/';
+    u[base + 'age'] = age; u[base + 'country'] = country; u[base + 'district'] = district; u[base + 'city'] = city;
+    u[base + 'phone'] = '+' + digits; u[base + 'profileDone'] = true;
+    if (photo !== undefined) u[base + 'photo'] = photo;          // string = new, null = delete
+
+    if (old !== digits) {
+      const s = await fb.get(fb.ref(fb.db, 'logins/p_' + digits));
+      if (s.exists() && s.val().uid !== me.uid) { $('save').disabled = false; $('save').textContent = 'Save profile'; return bad('phone', 'That phone number is already linked to another account.'); }
+      u['logins/p_' + digits] = { uid: me.uid, email };
+      if (old) u['logins/p_' + old] = null;
+    }
+    await C.update(fb.ref(fb.db), u);
+    say('Saved.', 'ok');
+    setTimeout(() => location.replace('index.html'), 600);
+  } catch (e) {
+    console.error(e);
+    say(/permission/i.test((e && (e.code || e.message)) || '') ? 'We couldn’t save. The database rules may not be published yet, or that phone number belongs to someone else.' : 'Something went wrong. Please try again.', 'err');
+    $('save').disabled = false; $('save').textContent = 'Save profile';
+  }
+});
+</script>
+</body>
+</html>

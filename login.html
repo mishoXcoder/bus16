@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070b16">
+<title>Sign in · Bus 16</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #070b16; --panel: #0f1629; --line: rgba(255,255,255,.11); --text: #eef1f7; --muted: #93a0b8;
+    --amber: #f4a62a; --amber-soft: #ffd58a; --red: #ff7a7f; --green: #7fd99a;
+    --font: 'IBM Plex Sans Arabic', 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; min-height: 100%; background: var(--ink); }
+  body {
+    font-family: var(--font); color: var(--text); min-height: 100dvh; display: flex; justify-content: center; align-items: flex-start;
+    background:
+      radial-gradient(90% 40% at 50% -6%, rgba(244,166,42,.20), rgba(244,166,42,0) 70%),
+      radial-gradient(70% 36% at 100% 100%, rgba(90,120,200,.16), rgba(90,120,200,0) 70%),
+      var(--ink);
+  }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; border: 0; background: none; padding: 0; }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--amber-soft); outline-offset: 2px; }
+  [hidden] { display: none !important; }
+
+  .wrap { width: 100%; max-width: 420px; padding: calc(40px + env(safe-area-inset-top)) 20px calc(32px + env(safe-area-inset-bottom)); }
+  .brand { text-align: center; margin-bottom: 26px; }
+  .mark { width: 60px; height: 60px; margin: 0 auto 14px; border-radius: 18px; background: var(--amber); color: #1a1205; display: grid; place-items: center; font-size: 27px; font-weight: 700; letter-spacing: -1px; box-shadow: 0 10px 30px rgba(244,166,42,.28); }
+  .brand h1 { margin: 0; font-size: 28px; font-weight: 700; letter-spacing: -.3px; }
+  .brand p { margin: 6px 0 0; color: var(--muted); font-size: 15px; }
+
+  .card { padding: 20px; border-radius: 22px; background: rgba(15,22,41,.88); border: 1px solid var(--line); box-shadow: 0 24px 60px rgba(0,0,0,.45); opacity: 0; transform: translateY(6px); transition: opacity .3s, transform .3s; }
+  body.ready .card { opacity: 1; transform: none; }
+
+  .seg { display: grid; grid-template-columns: 1fr 1fr; padding: 4px; margin-bottom: 18px; border-radius: 13px; background: rgba(255,255,255,.06); }
+  .seg button { height: 40px; border-radius: 10px; font-size: 15px; font-weight: 600; color: var(--muted); transition: background .2s, color .2s; }
+  .seg button[aria-selected="true"] { background: rgba(255,255,255,.12); color: #fff; }
+
+  .gbtn { display: flex; align-items: center; justify-content: center; gap: 11px; width: 100%; height: 50px; border-radius: 13px; background: #fff; color: #1f1f1f; font-size: 16px; font-weight: 600; }
+  .gbtn:hover { background: #f3f4f6; }
+  .or { display: flex; align-items: center; gap: 12px; margin: 18px 0; color: var(--muted); font-size: 13px; }
+  .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  .f { display: block; margin-bottom: 14px; }
+  .f > span { display: block; margin-bottom: 6px; font-size: 13.5px; font-weight: 500; color: rgba(238,241,247,.8); }
+  .f input { width: 100%; height: 50px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.05); font-size: 16px; }
+  .f input::placeholder { color: rgba(147,160,184,.6); }
+  .f input:focus { border-color: rgba(244,166,42,.7); background: rgba(255,255,255,.07); outline: none; box-shadow: 0 0 0 3px rgba(244,166,42,.18); }
+  .f input.bad { border-color: rgba(255,122,127,.8); }
+  .pw { position: relative; }
+  .pw input { padding-right: 70px; }
+  .pw button { position: absolute; right: 4px; top: 4px; height: 42px; padding: 0 12px; border-radius: 9px; color: var(--amber-soft); font-size: 13.5px; font-weight: 600; }
+  .f small { display: block; margin-top: 6px; font-size: 12.5px; color: var(--muted); }
+
+  .link { color: var(--amber-soft); font-size: 14px; font-weight: 500; padding: 4px 0; }
+  .link:hover { text-decoration: underline; }
+  .row { display: flex; justify-content: flex-end; margin: -4px 0 6px; }
+
+  .msg { min-height: 20px; margin: 4px 0 12px; font-size: 14px; line-height: 1.5; }
+  .msg.err { color: var(--red); } .msg.ok { color: var(--green); } .msg.info { color: var(--muted); }
+
+  .go { display: grid; place-items: center; width: 100%; height: 52px; border-radius: 13px; background: var(--amber); color: #1a1205; font-size: 16.5px; font-weight: 700; }
+  .go:hover { filter: brightness(1.06); }
+  .go.ghost { background: rgba(255,255,255,.08); color: #fff; font-weight: 600; margin-top: 10px; }
+  button:disabled { opacity: .55; cursor: not-allowed; filter: none; }
+
+  .notice { margin-bottom: 16px; padding: 12px 14px; border-radius: 12px; font-size: 14px; line-height: 1.55; background: rgba(244,166,42,.1); border: 1px solid rgba(244,166,42,.4); color: var(--amber-soft); }
+
+  .vicon { width: 56px; height: 56px; margin: 4px auto 14px; border-radius: 16px; background: rgba(244,166,42,.14); color: var(--amber); display: grid; place-items: center; }
+  .verify { text-align: center; }
+  .verify h2 { margin: 0 0 8px; font-size: 22px; font-weight: 700; }
+  .verify p { margin: 0 0 6px; color: rgba(238,241,247,.8); font-size: 15px; line-height: 1.6; }
+  .verify .em { color: #fff; font-weight: 600; word-break: break-all; }
+  .verify .sm { color: var(--muted); font-size: 13.5px; margin-top: 12px; }
+  .verify .msg { text-align: center; margin-top: 12px; }
+  .left { text-align: left; }
+  @media (prefers-reduced-motion: reduce) { .card { transition: none; transform: none; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="brand">
+    <div class="mark" aria-hidden="true">16</div>
+    <h1>Bus 16</h1>
+    <p>Know exactly when your bus arrives</p>
+  </div>
+
+  <div class="card">
+
+    <div class="notice" id="notConfigured" hidden>
+      Sign-in isn't connected yet. Open <b>firebase-config.js</b> and paste your Firebase settings.
+    </div>
+
+    <section id="authView">
+      <div class="seg" role="tablist" aria-label="Sign in or create an account">
+        <button type="button" role="tab" id="tabIn" aria-selected="true">Sign in</button>
+        <button type="button" role="tab" id="tabUp" aria-selected="false">Create account</button>
+      </div>
+
+      <button type="button" class="gbtn" id="googleBtn">
+        <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        <span>Continue with Google</span>
+      </button>
+
+      <div class="or"><span>or use your email</span></div>
+
+      <form id="form" novalidate>
+        <label class="f" id="nameRow" hidden>
+          <span>Full name</span>
+          <input id="name" type="text" autocomplete="name" placeholder="Your full name" maxlength="80">
+        </label>
+        <label class="f" id="userRow" hidden>
+          <span>Username</span>
+          <input id="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="e.g. mike_16" maxlength="20">
+          <small>3 to 20 letters, numbers or _ and it must start with a letter.</small>
+        </label>
+        <label class="f">
+          <span id="identLbl">Email, username or phone</span>
+          <input id="email" type="text" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="Email, username or phone">
+        </label>
+        <div class="f">
+          <span>Password</span>
+          <div class="pw">
+            <input id="password" type="password" autocomplete="current-password" placeholder="Your password" aria-label="Password">
+            <button type="button" id="eye" aria-label="Show password">Show</button>
+          </div>
+          <small id="pwHint" hidden>Use at least 8 characters.</small>
+        </div>
+        <div class="row" id="forgotRow"><button type="button" class="link" id="forgot">Forgot password?</button></div>
+        <p class="msg" id="msg" role="alert" aria-live="polite"></p>
+        <button type="submit" class="go" id="submit">Sign in</button>
+      </form>
+    </section>
+
+    <section id="verifyView" class="verify" hidden>
+      <div class="vicon" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4 7.5l8 5.5 8-5.5"/></svg>
+      </div>
+      <h2>Verify your email</h2>
+      <p>We sent a link to</p>
+      <p class="em" id="vEmail"></p>
+      <p class="sm">Open the email and tap the link. This page continues by itself. Can't find it? Check your spam folder.</p>
+      <p class="msg" id="vMsg" role="alert" aria-live="polite"></p>
+      <button type="button" class="go" id="vCheck">I've verified my email</button>
+      <button type="button" class="go ghost" id="vResend">Resend email</button>
+      <button type="button" class="link" id="vOut" style="margin-top:12px">Use a different account</button>
+    </section>
+
+    <section id="usernameView" hidden>
+      <div class="verify">
+        <h2>Choose a username</h2>
+        <p>You'll use it to sign in and it's how you appear in Bus 16.</p>
+      </div>
+      <div style="margin-top:18px">
+        <label class="f" id="uNameRow" hidden>
+          <span>Full name</span>
+          <input id="uName" type="text" autocomplete="name" placeholder="Your full name" maxlength="80">
+        </label>
+        <label class="f">
+          <span>Username</span>
+          <input id="uUser" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="e.g. mike_16" maxlength="20">
+          <small>3 to 20 letters, numbers or _ and it must start with a letter.</small>
+        </label>
+      </div>
+      <p class="msg" id="uMsg" role="alert" aria-live="polite"></p>
+      <button type="button" class="go" id="uSave">Continue</button>
+      <div style="text-align:center"><button type="button" class="link" id="uOut" style="margin-top:12px">Use a different account</button></div>
+    </section>
+  </div>
+
+</main>
+
+<script type="module">
+import * as fb from './firebase-config.js';
+import * as C from './bus16-common.js';
+const { auth, isConfigured } = fb;
+const $ = id => document.getElementById(id);
+
+/* ---------- where to go after signing in (only pages of this site) ---------- */
+function safeNext() {
+  const n = new URLSearchParams(location.search).get('next') || '';
+  return /^[A-Za-z0-9_-]+\.html(\?[A-Za-z0-9_=&.%-]*)?$/.test(n) && !/^(login|profile)\.html/.test(n) ? n : 'index.html';
+}
+let leaving = false;
+function go() { if (leaving) return; leaving = true; location.replace(safeNext()); }
+
+/* ---------- friendly errors ---------- */
+const isPerm = e => /permission/i.test((e && (e.code || e.message)) || '');
+function friendly(e) {
+  const c = (e && e.code) || '';
+  console.warn('Auth error:', c, e && e.message);
+  if (isPerm(e)) return 'The database isn’t ready yet (Firebase > Realtime Database > Rules).';
+  const map = {
+    'auth/invalid-credential': 'Wrong sign-in details or password.',
+    'auth/wrong-password': 'Wrong sign-in details or password.',
+    'auth/user-not-found': 'Wrong sign-in details or password.',
+    'auth/invalid-email': 'That email address doesn’t look right.',
+    'auth/email-already-in-use': 'An account with this email already exists. Try signing in instead.',
+    'auth/weak-password': 'Choose a stronger password (at least 8 characters).',
+    'auth/missing-password': 'Enter your password.',
+    'auth/too-many-requests': 'Too many attempts. Wait a few minutes and try again.',
+    'auth/network-request-failed': 'No connection. Check your internet and try again.',
+    'auth/popup-blocked': 'Your browser blocked the Google window. Allow pop-ups for this site and try again.',
+    'auth/account-exists-with-different-credential': 'This email is already registered with a different sign-in method.',
+    'auth/user-disabled': 'This account has been disabled.',
+    'auth/operation-not-allowed': 'This sign-in method isn’t switched on yet in Firebase (Authentication > Sign-in method).',
+    'auth/unauthorized-domain': 'This website address isn’t approved in Firebase yet (Authentication > Settings > Authorized domains).'
+  };
+  return map[c] || 'Something went wrong. Please try again.';
+}
+const quiet = e => e && (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request');
+function say(node, text, kind) { node.textContent = text || ''; node.className = 'msg' + (kind ? ' ' + kind : ''); }
+
+/* ---------- username + lookup table (this is what lets people sign in with a username or phone) ---------- */
+const USER_HELP = 'Username: 3 to 20 letters, numbers or _, starting with a letter.';
+const usernameTaken = async u => (await fb.get(fb.ref(fb.db, 'logins/u_' + u))).exists();
+async function claimUsername(user, name, username) {
+  const p = {};
+  p['users/' + user.uid + '/name'] = String(name || '').slice(0, 80);
+  p['users/' + user.uid + '/username'] = username;
+  p['users/' + user.uid + '/createdAt'] = fb.serverTimestamp();
+  p['logins/u_' + username] = { uid: user.uid, email: user.email };
+  await C.update(fb.ref(fb.db), p);
+}
+// Whatever was typed in the sign-in box -> the email of that account (or null).
+async function resolveEmail(raw) {
+  const v = raw.trim();
+  if (v.includes('@')) return v;
+  const key = C.loginKey(v); if (!key) return null;
+  const s = await fb.get(fb.ref(fb.db, 'logins/' + key));
+  return s.exists() ? s.val().email : null;
+}
+
+/* ---------- sign in / create account ---------- */
+let mode = 'in';
+const el = { name: $('name'), user: $('username'), email: $('email'), pw: $('password'), msg: $('msg'), submit: $('submit') };
+
+function setBusy(on, label) {
+  ['submit', 'googleBtn', 'forgot', 'tabIn', 'tabUp'].forEach(id => $(id).disabled = on || (!isConfigured));
+  el.submit.textContent = on ? (label || 'Please wait…') : (mode === 'up' ? 'Create account' : 'Sign in');
+}
+function setMode(m) {
+  mode = m;
+  const up = m === 'up';
+  $('tabIn').setAttribute('aria-selected', String(!up));
+  $('tabUp').setAttribute('aria-selected', String(up));
+  $('nameRow').hidden = !up; $('userRow').hidden = !up;
+  $('forgotRow').hidden = up;
+  $('pwHint').hidden = !up;
+  $('identLbl').textContent = up ? 'Email' : 'Email, username or phone';
+  el.email.placeholder = up ? 'you@example.com' : 'Email, username or phone';
+  el.email.type = up ? 'email' : 'text';
+  el.pw.autocomplete = up ? 'new-password' : 'current-password';
+  el.pw.placeholder = up ? 'Create a password' : 'Your password';
+  [el.name, el.user, el.email, el.pw].forEach(i => i.classList.remove('bad'));
+  say(el.msg, '');
+  el.submit.textContent = up ? 'Create account' : 'Sign in';
+}
+$('tabIn').onclick = () => setMode('in');
+$('tabUp').onclick = () => setMode('up');
+$('eye').onclick = () => {
+  const show = el.pw.type === 'password';
+  el.pw.type = show ? 'text' : 'password';
+  $('eye').textContent = show ? 'Hide' : 'Show';
+  $('eye').setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+};
+[el.user, $('uUser')].forEach(i => i.addEventListener('input', () => { i.value = i.value.toLowerCase().replace(/\s/g, ''); }));
+
+const emailOk = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+function check() {
+  [el.name, el.user, el.email, el.pw].forEach(i => i.classList.remove('bad'));
+  const ident = el.email.value.trim(), pw = el.pw.value, name = el.name.value.trim(), username = el.user.value.trim().toLowerCase();
+  const fail = (input, text) => { input.classList.add('bad'); input.focus(); say(el.msg, text, 'err'); return null; };
+  if (mode === 'up') {
+    if (name.length < 2) return fail(el.name, 'Enter your full name.');
+    if (!C.USERNAME_RE.test(username)) return fail(el.user, USER_HELP);
+    if (!emailOk(ident)) return fail(el.email, 'Enter a valid email address.');
+    if (!pw) return fail(el.pw, 'Enter your password.');
+    if (pw.length < 8) return fail(el.pw, 'Use at least 8 characters for your password.');
+    return { ident, pw, name, username };
+  }
+  if (!ident) return fail(el.email, 'Enter your email, username or phone number.');
+  if (ident.includes('@') ? !emailOk(ident) : !C.loginKey(ident)) return fail(el.email, 'That doesn’t look like an email, a username or a phone number.');
+  if (!pw) return fail(el.pw, 'Enter your password.');
+  return { ident, pw };
+}
+
+$('form').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  if (!isConfigured) return;
+  const v = check(); if (!v) return;
+  say(el.msg, '');
+  setBusy(true, mode === 'up' ? 'Creating account…' : 'Signing in…');
+  try {
+    if (mode === 'up') {
+      if (await usernameTaken(v.username)) { el.user.classList.add('bad'); el.user.focus(); return say(el.msg, 'That username is taken. Try another one.', 'err'); }
+      const cred = await fb.createUserWithEmailAndPassword(auth, v.ident, v.pw);
+      try { await fb.updateProfile(cred.user, { displayName: v.name }); } catch (e) { console.warn(e); }
+      try { await claimUsername(cred.user, v.name, v.username); }
+      catch (e) {
+        console.warn('Username claim failed:', e);
+        let taken = false; try { taken = await usernameTaken(v.username); } catch (x) {}
+        if (taken) {                      // someone grabbed it a moment ago: undo this account and ask again
+          try { await C.deleteUser(cred.user); } catch (x) { console.warn(x); }
+          el.user.classList.add('bad'); el.user.focus();
+          return say(el.msg, 'That username was just taken. Try another one.', 'err');
+        }
+        // otherwise the username step will ask again after verification
+      }
+      try { await fb.sendEmailVerification(cred.user); } catch (e) { console.warn(e); }
+    } else {
+      const email = await resolveEmail(v.ident);
+      if (!email) throw { code: 'auth/invalid-credential' };
+      await fb.signInWithEmailAndPassword(auth, email, v.pw);
+    }
+    // the state listener below moves us on
+  } catch (e) {
+    say(el.msg, friendly(e), 'err');
+  } finally { setBusy(false); }
+});
+
+$('googleBtn').onclick = async () => {
+  if (!isConfigured) return;
+  say(el.msg, '');
+  setBusy(true);
+  try {
+    const p = new fb.GoogleAuthProvider();
+    p.setCustomParameters({ prompt: 'select_account' });
+    await fb.signInWithPopup(auth, p);
+  } catch (e) {
+    if (!quiet(e)) say(el.msg, friendly(e), 'err');
+  } finally { setBusy(false); }
+};
+
+$('forgot').onclick = async () => {
+  if (!isConfigured) return;
+  const ident = el.email.value.trim();
+  if (!ident) { el.email.classList.add('bad'); el.email.focus(); return say(el.msg, 'Type your email, username or phone above first, then tap “Forgot password?”.', 'err'); }
+  const done = () => say(el.msg, 'If an account exists for that, we’ve sent a link to its email to reset the password.', 'ok');
+  try {
+    const email = await resolveEmail(ident);
+    if (!email) return done();            // don't reveal whether an account exists
+    await fb.sendPasswordResetEmail(auth, email);
+    done();
+  } catch (e) {
+    if (e && (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential')) done();
+    else say(el.msg, friendly(e), 'err');
+  }
+};
+
+/* ---------- email verification screen ---------- */
+let poll = null, cool = null;
+function stopTimers() { clearInterval(poll); clearInterval(cool); poll = cool = null; $('vResend').disabled = false; $('vResend').textContent = 'Resend email'; }
+
+async function recheck(manual) {
+  const u = auth.currentUser; if (!u) return;
+  try {
+    await u.reload();
+    if (auth.currentUser && auth.currentUser.emailVerified) {
+      await auth.currentUser.getIdToken(true);       // refresh so the server rules see "verified"
+      afterVerified(auth.currentUser);
+    } else if (manual) say($('vMsg'), 'Not verified yet. Open the link in the email, then tap this button again.', 'info');
+  } catch (e) { if (manual) say($('vMsg'), friendly(e), 'err'); }
+}
+function showView(id) { ['authView', 'verifyView', 'usernameView'].forEach(v => $(v).hidden = v !== id); }
+function showVerify(user) {
+  showView('verifyView');
+  $('vEmail').textContent = user.email || '';
+  if (!poll) poll = setInterval(() => recheck(false), 5000);
+}
+function showAuth() { stopTimers(); showView('authView'); say($('vMsg'), ''); }
+$('vCheck').onclick = () => { say($('vMsg'), ''); recheck(true); };
+$('vResend').onclick = async () => {
+  const u = auth.currentUser; if (!u) return;
+  try {
+    await fb.sendEmailVerification(u);
+    say($('vMsg'), 'Email sent again.', 'ok');
+    let left = 30; $('vResend').disabled = true; $('vResend').textContent = 'Resend in ' + left + 's';
+    clearInterval(cool);
+    cool = setInterval(() => {
+      left--; if (left <= 0) { clearInterval(cool); cool = null; $('vResend').disabled = false; $('vResend').textContent = 'Resend email'; }
+      else $('vResend').textContent = 'Resend in ' + left + 's';
+    }, 1000);
+  } catch (e) { say($('vMsg'), friendly(e), 'err'); }
+};
+$('vOut').onclick = () => fb.signOut(auth);
+
+/* ---------- username step (Google sign-in, or a sign-up that didn't finish) ---------- */
+let checking = false;
+async function afterVerified(user) {
+  if (checking || leaving) return;
+  checking = true;
+  try {
+    const snap = await fb.get(fb.ref(fb.db, 'users/' + user.uid + '/username'));
+    if (snap.exists()) return go();
+    showView('usernameView');
+    $('uNameRow').hidden = !!(user.displayName && user.displayName.trim().length >= 2);
+    say($('uMsg'), '');
+  } catch (e) {
+    console.error('Account check failed:', e);
+    showAuth();
+    say(el.msg, 'We couldn’t load your account. ' + (isPerm(e) ? 'The database isn’t ready yet (Firebase > Realtime Database > Rules).' : 'Reload the page and try again.'), 'err');
+  } finally { checking = false; }
+}
+$('uSave').onclick = async () => {
+  const user = auth.currentUser; if (!user) return;
+  const username = $('uUser').value.trim().toLowerCase();
+  const name = $('uNameRow').hidden ? (user.displayName || '').trim() : $('uName').value.trim();
+  [$('uName'), $('uUser')].forEach(i => i.classList.remove('bad'));
+  const bad = (i, t) => { i.classList.add('bad'); i.focus(); say($('uMsg'), t, 'err'); };
+  if (!$('uNameRow').hidden && name.length < 2) return bad($('uName'), 'Enter your full name.');
+  if (!C.USERNAME_RE.test(username)) return bad($('uUser'), USER_HELP);
+  $('uSave').disabled = true; $('uSave').textContent = 'Saving…';
+  try {
+    if (await usernameTaken(username)) return bad($('uUser'), 'That username is taken. Try another one.');
+    await claimUsername(user, name, username);
+    go();
+  } catch (e) {
+    let taken = false; try { taken = await usernameTaken(username); } catch (x) {}
+    say($('uMsg'), taken ? 'That username was just taken. Try another one.' : friendly(e), 'err');
+  } finally { $('uSave').disabled = false; $('uSave').textContent = 'Continue'; }
+};
+$('uOut').onclick = () => fb.signOut(auth);
+
+document.addEventListener('input', e => { if (e.target.classList) e.target.classList.remove('bad'); });
+
+/* ---------- start ---------- */
+if (!isConfigured) {
+  $('notConfigured').hidden = false;
+  setBusy(false);
+  document.body.classList.add('ready');
+} else {
+  fb.onAuthStateChanged(auth, user => {
+    document.body.classList.add('ready');
+    if (!user) return showAuth();
+    if (user.emailVerified) { stopTimers(); afterVerified(user); }
+    else showVerify(user);
+  });
+}
+setMode('in');
+</script>
+</body>
+</html>
