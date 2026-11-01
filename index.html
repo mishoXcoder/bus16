@@ -177,6 +177,22 @@
   ul.plain li { padding: 6px 0; }
   ul.plain li::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-inline-end: 10px; border-radius: 50%; background: var(--amber); vertical-align: middle; }
 
+  /* ضيعتنا */
+  .vhead { position: sticky; top: 0; z-index: 2; margin: -6px -20px 0; padding: 6px 20px 12px; background: var(--panel); }
+  .union { display: flex; align-items: center; gap: 12px; padding: 12px 14px; margin-bottom: 12px; border-radius: 14px; background: rgba(244,166,42,.1); border: 1px solid rgba(244,166,42,.38); }
+  .union .uico { flex: none; width: 38px; height: 38px; border-radius: 11px; background: rgba(244,166,42,.16); color: var(--amber); display: grid; place-items: center; }
+  .union b { display: block; font-size: 17px; font-weight: 700; color: var(--amber-soft); line-height: 1.35; }
+  .union small { display: block; font-size: 12.5px; color: var(--muted); }
+  .search { position: relative; }
+  .search .sico { position: absolute; top: 0; bottom: 0; right: 14px; display: grid; place-items: center; color: var(--muted); pointer-events: none; }
+  .search input { width: 100%; height: 48px; padding: 0 42px 0 14px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.06); font: inherit; font-size: 16px; color: #fff; -webkit-appearance: none; appearance: none; }
+  .search input::placeholder { color: rgba(147,160,184,.7); }
+  .search input:focus { outline: none; border-color: rgba(244,166,42,.7); box-shadow: 0 0 0 3px rgba(244,166,42,.18); }
+  .search input::-webkit-search-cancel-button { display: none; }
+  .town { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 54px; padding: 4px 2px; border-bottom: 1px solid var(--line); font-size: 16.5px; font-weight: 500; color: #fff; }
+  .town .go { color: rgba(255,255,255,.35); }
+  .empty { padding: 40px 0 28px; text-align: center; font-size: 15.5px; color: var(--muted); }
+
   @media (prefers-reduced-motion: reduce) {
     .track { animation: none; position: static; transform: none; display: block; padding: 0 8px; line-height: 26px; overflow: hidden; text-overflow: ellipsis; }
     .hot { animation: none; }
@@ -322,6 +338,7 @@ const ICONS = {
   village: '<path d="M3 20h18"/><path d="M5 20v-8l4-3 4 3v8"/><path d="M13 20v-5l3.5-2.6L20 15v5"/>',
   news: '<path d="M5 5h11v14H7a2 2 0 0 1-2-2z"/><path d="M16 9h3v8a2 2 0 0 1-2 2"/><path d="M8.5 9h4.5M8.5 12.5h4.5M8.5 15.5h3"/>',
   tag: '<path d="M3.5 12.2V5a1.5 1.5 0 0 1 1.5-1.5h7.2l8.3 8.3a1.5 1.5 0 0 1 0 2.1l-5.9 5.9a1.5 1.5 0 0 1-2.1 0z"/><circle cx="8" cy="8" r="1.3"/>',
+  search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/>',
   user: '<circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/>',
   close: '<path d="M6 6l12 12M18 6L6 18"/>',
   chev: '<path d="M14.5 6l-6 6 6 6"/>'
@@ -430,11 +447,47 @@ function gameInfo() {
     '<ul class="plain"><li>اجمع نقاط كل ما تركب الباص.</li><li>بدّل نقاطك وفوز بمشوار مجاني.</li></ul>' +
     '<p class="muted">اللعبة قيد التحضير.</p>');
 }
+// Towns of the municipal union shown in ضيعتنا. Second item = other spellings people may type (only used by the search).
+const UNION = 'اتحاد بلديات المتن الأعلى';
+const VILLAGE_LIST = [
+  ['أرصون', 'عرصون arsoun'], ['الخريبة', 'khoreibeh'], ['الشبانية', 'chbaniyeh'], ['العربانية', 'arabaniyeh'], ['الدليبة', 'dlaibeh'],
+  ['القرية', 'qoreyeh'], ['القصيبة', 'qsaibeh'], ['القلعة', 'qalaa'], ['الكنيسة', 'kneisseh'], ['بتخنيه', 'btekhnay'],
+  ['بزبدين', 'bzebdine'], ['بعلشميه', 'baalchmay'], ['بمريم', 'bmariam'], ['ترشيش', 'tarchich tarshish'], ['جوار الحوز', 'jouar el haouz'],
+  ['جورة أرصون', 'جورة عرصون jouret arsoun'], ['حاصبيا المتن', 'hasbaya'], ['حمانا', 'hammana'], ['دير الحرف', 'deir el harf'], ['رأس الحرف', 'ras el harf'],
+  ['رأس المتن', 'ras el metn'], ['رويسة البلوط', 'rweisset el ballout'], ['شويت', 'chouit'], ['صليما', 'salima'], ['قبيع', 'qbayaa'],
+  ['قرطاظة', 'قرطاضة قرطازة qartada qortada'], ['قرنايل', 'kornayel qornayel'], ['كفرسلوان', 'kfarselwan'], ['الهلالية', 'hilaliyeh']
+];
+// Makes Arabic search forgiving: ignores أ/إ/آ, ة/ه, ى/ي, ظ/ض, the accent marks and capital letters.
+const norm = s => String(s).toLowerCase().replace(/[ً-ْـ]/g, '').replace(/[أإآٱ]/g, 'ا').replace(/ة/g, 'ه').replace(/[ىئ]/g, 'ي').replace(/ؤ/g, 'و').replace(/ظ/g, 'ض').replace(/\s+/g, ' ');
+// Sorted A to Z by the name itself (ignoring the "ال" at the start).
+const byName = v => norm(v.ar).replace(/^ال/, '');
+const VILLAGES = VILLAGE_LIST.map((v, i) => ({ i, ar: v[0], s: norm(v[0] + ' ' + v[1]) })).sort((a, b) => byName(a).localeCompare(byName(b), 'ar'));
+
+function renderVillages(q) {
+  const n = norm(q.trim());
+  const list = VILLAGES.filter(v => !n || v.s.includes(n));
+  $('clist').innerHTML = list.length
+    ? list.map(v => '<button class="town" data-v="' + v.i + '"><span>' + esc(v.ar) + '</span><span class="go">' + icon('chev', 20) + '</span></button>').join('')
+    : '<div class="empty">المزيد من الضيع قريباً</div>';
+  $('clist').querySelectorAll('.town').forEach(b => b.onclick = () => villageSoon(+b.dataset.v));
+}
+function villageSoon(i) {
+  const v = VILLAGE_LIST[i];
+  openSheet(v[0],
+    '<div class="tile big">' + icon('village', 28) + '</div><span class="chip">قريباً</span>' +
+    '<p>معلومات وفعاليات ' + esc(v[0]) + ' قريباً.</p>' +
+    '<button class="btn ghost" id="allV">رجوع للضيع</button>');
+  $('allV').onclick = villageInfo;
+}
 function villageInfo() {
   openSheet('ضيعتنا',
-    '<div class="tile big">' + icon('village', 28) + '</div><span class="chip">قريباً</span>' +
-    '<p>فعاليات وأخبار الضيَع اللي على الخط، بالتعاون مع البلديات.</p>' +
-    '<p class="muted">القسم قيد التحضير.</p>');
+    '<div class="vhead">' +
+      '<div class="union"><span class="uico">' + icon('village', 22) + '</span><span><b>' + UNION + '</b><small>' + VILLAGE_LIST.length + ' ضيعة</small></span></div>' +
+      '<label class="search"><span class="sico">' + icon('search', 18) + '</span><input id="cq" type="search" placeholder="ابحث عن ضيعتك" autocomplete="off" enterkeyhint="search" aria-label="ابحث عن ضيعتك"></label>' +
+    '</div>' +
+    '<div id="clist"></div>');
+  renderVillages('');
+  $('cq').oninput = () => renderVillages($('cq').value);
 }
 
 /* ==========================================================
