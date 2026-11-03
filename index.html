@@ -217,7 +217,10 @@
   .lang button[aria-pressed=true] { background: rgba(244,166,42,.14); border-color: rgba(244,166,42,.6); color: var(--amber-soft); }
 
   @media (prefers-reduced-motion: reduce) {
-    .track { animation: none; position: static; transform: none; display: block; padding: 0 8px; line-height: 26px; overflow: hidden; text-overflow: ellipsis; }
+    /* no motion: show the first headline, wrapped on up to two small lines so nothing is cut off */
+    .track, html[dir=ltr] .track { animation: none; position: static; left: auto; transform: none; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; white-space: normal; padding: 0 8px; font-size: 10.5px; line-height: 12px; overflow: hidden; }
+    .crawl { display: flex; align-items: center; }
+    .track .sep, .track .nitem:not(:first-child) { display: none; }
     .hot { animation: none; }
     .slide, .sheet, .veil { transition: none; }
   }
@@ -337,10 +340,10 @@ const SHOPS = [
 ];
 
 // SAMPLE news. Later the drivers send these and they show up here.
-// min = how many minutes ago it was posted.
+// min = how many minutes ago it was posted.  short = the few words shown on the bus strip (text = the full line in the news list).
 const NEWS = [
-  { min: 8,  text: { ar: 'جليد على نزلة الأمباسادور، توخّوا الحذر', en: 'Ice on the Ambassador descent, drive carefully', fr: 'Verglas dans la descente d’Ambassador, soyez prudents' } },
-  { min: 35, text: { ar: 'الطريق سالكة بين قرنايل وبحمدون', en: 'The road is clear between Kornayel and Bhamdoun', fr: 'La route est dégagée entre Kornayel et Bhamdoun' } }
+  { min: 8,  short: { ar: 'جليد على نزلة الأمباسادور', en: 'Ice on Ambassador road', fr: 'Verglas à Ambassador' }, text: { ar: 'جليد على نزلة الأمباسادور، توخّوا الحذر', en: 'Ice on the Ambassador descent, drive carefully', fr: 'Verglas dans la descente d’Ambassador, soyez prudents' } },
+  { min: 35, short: { ar: 'الطريق سالكة', en: 'Road is clear', fr: 'Route dégagée' }, text: { ar: 'الطريق سالكة بين قرنايل وبحمدون', en: 'The road is clear between Kornayel and Bhamdoun', fr: 'La route est dégagée entre Kornayel et Bhamdoun' } }
 ];
 
 // SAMPLE departure times (24-hour). Same sample times as the map page.
@@ -442,8 +445,9 @@ setInterval(() => {
   els[slideIdx].classList.add('on');
 }, 4500);
 
-const tickerText = NEWS.map(n => esc(L(n.text))).join('      •      ');
-$('track').innerHTML = tickerText;
+const stripText = n => L(n.short || n.text);
+const tickerText = NEWS.map(n => esc(stripText(n))).join('      •      ');
+$('track').innerHTML = NEWS.map(n => '<span class="nitem">' + esc(stripText(n)) + '</span>').join('<span class="sep">      •      </span>');
 $('track').style.setProperty('--dur', Math.max(12, tickerText.length * 0.32) + 's');
 $('shopCount').textContent = SHOPS.length;
 
@@ -508,7 +512,7 @@ function gameInfo() {
 const UNION = 'اتحاد بلديات المتن الأعلى';
 const VILLAGE_LIST = [
   ['أرصون', 'Arsoun', 'عرصون'], ['الخريبة', 'Khoreibeh', ''], ['الشبانية', 'Chbaniyeh', 'shbaniyeh'], ['العربانية', 'Arabaniyeh', 'arbaniyeh'], ['الدليبة', 'Dlaibeh', 'dleibeh'],
-  ['القرية', 'Qoreyeh', 'qrayeh koreyeh'], ['القصيبة', 'Qsaibeh', 'qsaibe'], ['القلعة', 'Qalaa', 'qalaa kalaa'], ['الكنيسة', 'Kneisseh', 'kniseh'], ['بتخنيه', 'Btekhnay', 'btekhnaya'],
+  ['القرية', 'Qrayeh', 'qoreyeh koreyeh'], ['القصيبة', 'Qsaibeh', 'qsaibe'], ['القلعة', 'Qalaa', 'qalaa kalaa'], ['الكنيسة', 'Kneisseh', 'kniseh'], ['بتخنيه', 'Btekhnay', 'btekhnaya'],
   ['بزبدين', 'Bzebdine', 'bzebdin'], ['بعلشميه', 'Baalchmay', 'baalchmaye baalshmay'], ['بمريم', 'Bmariam', 'bmariam'], ['ترشيش', 'Tarchich', 'tarshish'], ['جوار الحوز', 'Jouar el Haouz', 'jouar el hawz'],
   ['جورة أرصون', 'Jouret Arsoun', 'جورة عرصون'], ['حاصبيا المتن', 'Hasbaya el Metn', 'hasbaya'], ['حمانا', 'Hammana', 'hamana'], ['دير الحرف', 'Deir el Harf', 'dayr el harf'], ['رأس الحرف', 'Ras el Harf', ''],
   ['رأس المتن', 'Ras el Metn', 'ras el matn'], ['رويسة البلوط', 'Rweisset el Ballout', 'ruwaysat ballout'], ['شويت', 'Chouit', 'shweit'], ['صليما', 'Salima', 'slima'], ['قبيع', 'Qbayaa', 'kbayaa qbaiaa'],
