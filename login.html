@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#070b16">
-<title>Sign in · Bus 16</title>
+<title>Bus 16</title>
+<script src="i18n.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -53,8 +54,8 @@
   .f input:focus { border-color: rgba(244,166,42,.7); background: rgba(255,255,255,.07); outline: none; box-shadow: 0 0 0 3px rgba(244,166,42,.18); }
   .f input.bad { border-color: rgba(255,122,127,.8); }
   .pw { position: relative; }
-  .pw input { padding-right: 70px; }
-  .pw button { position: absolute; right: 4px; top: 4px; height: 42px; padding: 0 12px; border-radius: 9px; color: var(--amber-soft); font-size: 13.5px; font-weight: 600; }
+  .pw input { padding-inline-end: 70px; }
+  .pw button { position: absolute; inset-inline-end: 4px; top: 4px; height: 42px; padding: 0 12px; border-radius: 9px; color: var(--amber-soft); font-size: 13.5px; font-weight: 600; }
   .f small { display: block; margin-top: 6px; font-size: 12.5px; color: var(--muted); }
 
   .link { color: var(--amber-soft); font-size: 14px; font-weight: 500; padding: 4px 0; }
@@ -78,7 +79,18 @@
   .verify .em { color: #fff; font-weight: 600; word-break: break-all; }
   .verify .sm { color: var(--muted); font-size: 13.5px; margin-top: 12px; }
   .verify .msg { text-align: center; margin-top: 12px; }
-  .left { text-align: left; }
+
+  /* language picker + language chips */
+  .pick h2 { margin: 0 0 4px; text-align: center; font-size: 20px; font-weight: 700; line-height: 1.5; }
+  .pick h2 small { display: block; font-size: 15px; font-weight: 500; color: var(--muted); }
+  .pick .opts { display: grid; gap: 12px; margin-top: 20px; }
+  .lopt { display: flex; align-items: center; justify-content: space-between; height: 58px; padding: 0 20px; border-radius: 14px; border: 1px solid var(--line); background: rgba(255,255,255,.06); font-size: 20px; font-weight: 600; color: #fff; }
+  .lopt:hover { background: rgba(255,255,255,.1); border-color: rgba(244,166,42,.6); }
+  .lopt small { font-size: 13px; font-weight: 500; color: var(--muted); }
+  .langs { display: flex; justify-content: center; gap: 6px; margin-top: 18px; }
+  .langs button { height: 36px; padding: 0 14px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); font-size: 14px; font-weight: 600; }
+  .langs button[aria-pressed="true"] { background: rgba(244,166,42,.14); border-color: rgba(244,166,42,.55); color: var(--amber-soft); }
+  .f input { text-align: start; }
   @media (prefers-reduced-motion: reduce) { .card { transition: none; transform: none; } }
 </style>
 </head>
@@ -87,51 +99,60 @@
   <div class="brand">
     <div class="mark" aria-hidden="true">16</div>
     <h1>Bus 16</h1>
-    <p>Know exactly when your bus arrives</p>
+    <p data-i18n="l.tagline">Know exactly when your bus arrives</p>
   </div>
 
   <div class="card">
 
-    <div class="notice" id="notConfigured" hidden>
+    <div class="notice" id="notConfigured" data-i18n-html="l.notcfg" hidden>
       Sign-in isn't connected yet. Open <b>firebase-config.js</b> and paste your Firebase settings.
     </div>
 
+    <section id="langView" class="pick" hidden>
+      <h2>Choose your language<small lang="ar" dir="rtl">اختر لغتك</small><small lang="fr">Choisissez votre langue</small></h2>
+      <div class="opts">
+        <button type="button" class="lopt" data-l="en" lang="en" dir="ltr"><span>English</span><small>EN</small></button>
+        <button type="button" class="lopt" data-l="ar" lang="ar" dir="rtl"><span>العربية</span><small>AR</small></button>
+        <button type="button" class="lopt" data-l="fr" lang="fr" dir="ltr"><span>Français</span><small>FR</small></button>
+      </div>
+    </section>
+
     <section id="authView">
-      <div class="seg" role="tablist" aria-label="Sign in or create an account">
-        <button type="button" role="tab" id="tabIn" aria-selected="true">Sign in</button>
-        <button type="button" role="tab" id="tabUp" aria-selected="false">Create account</button>
+      <div class="seg" role="tablist" data-i18n-aria="l.tabs.aria" aria-label="Sign in or create an account">
+        <button type="button" role="tab" id="tabIn" aria-selected="true" data-i18n="l.signin">Sign in</button>
+        <button type="button" role="tab" id="tabUp" aria-selected="false" data-i18n="l.signup">Create account</button>
       </div>
 
       <button type="button" class="gbtn" id="googleBtn">
         <svg width="20" height="20" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        <span>Continue with Google</span>
+        <span data-i18n="l.google">Continue with Google</span>
       </button>
 
-      <div class="or"><span>or use your email</span></div>
+      <div class="or"><span data-i18n="l.or">or use your email</span></div>
 
       <form id="form" novalidate>
         <label class="f" id="nameRow" hidden>
-          <span>Full name</span>
-          <input id="name" type="text" autocomplete="name" placeholder="Your full name" maxlength="80">
+          <span data-i18n="l.name">Full name</span>
+          <input id="name" type="text" autocomplete="name" data-i18n-ph="l.name.ph" placeholder="Your full name" maxlength="80">
         </label>
         <label class="f" id="userRow" hidden>
-          <span>Username</span>
-          <input id="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="e.g. mike_16" maxlength="20">
-          <small>3 to 20 letters, numbers or _ and it must start with a letter.</small>
+          <span data-i18n="l.username">Username</span>
+          <input id="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" data-i18n-ph="l.username.ph" placeholder="e.g. mike_16" maxlength="20">
+          <small data-i18n="l.username.help">Username: 3 to 20 letters (a-z), numbers or _, starting with a letter.</small>
         </label>
         <label class="f">
           <span id="identLbl">Email, username or phone</span>
           <input id="email" type="text" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" placeholder="Email, username or phone">
         </label>
         <div class="f">
-          <span>Password</span>
+          <span data-i18n="l.password">Password</span>
           <div class="pw">
-            <input id="password" type="password" autocomplete="current-password" placeholder="Your password" aria-label="Password">
-            <button type="button" id="eye" aria-label="Show password">Show</button>
+            <input id="password" type="password" autocomplete="current-password" placeholder="Your password" data-i18n-aria="l.password" aria-label="Password">
+            <button type="button" id="eye">Show</button>
           </div>
-          <small id="pwHint" hidden>Use at least 8 characters.</small>
+          <small id="pwHint" data-i18n="l.pw.hint" hidden>Use at least 8 characters.</small>
         </div>
-        <div class="row" id="forgotRow"><button type="button" class="link" id="forgot">Forgot password?</button></div>
+        <div class="row" id="forgotRow"><button type="button" class="link" id="forgot" data-i18n="l.forgot">Forgot password?</button></div>
         <p class="msg" id="msg" role="alert" aria-live="polite"></p>
         <button type="submit" class="go" id="submit">Sign in</button>
       </form>
@@ -141,38 +162,43 @@
       <div class="vicon" aria-hidden="true">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4 7.5l8 5.5 8-5.5"/></svg>
       </div>
-      <h2>Verify your email</h2>
-      <p>We sent a link to</p>
-      <p class="em" id="vEmail"></p>
-      <p class="sm">Open the email and tap the link. This page continues by itself. Can't find it? Check your spam folder.</p>
+      <h2 data-i18n="l.v.title">Verify your email</h2>
+      <p data-i18n="l.v.sent">We sent a link to</p>
+      <p class="em" id="vEmail" dir="ltr"></p>
+      <p class="sm" data-i18n="l.v.help">Open the email and tap the link. This page continues by itself. Can't find it? Check your spam folder.</p>
       <p class="msg" id="vMsg" role="alert" aria-live="polite"></p>
-      <button type="button" class="go" id="vCheck">I've verified my email</button>
+      <button type="button" class="go" id="vCheck" data-i18n="l.v.check">I've verified my email</button>
       <button type="button" class="go ghost" id="vResend">Resend email</button>
-      <button type="button" class="link" id="vOut" style="margin-top:12px">Use a different account</button>
+      <button type="button" class="link" id="vOut" style="margin-top:12px" data-i18n="l.other">Use a different account</button>
     </section>
 
     <section id="usernameView" hidden>
       <div class="verify">
-        <h2>Choose a username</h2>
-        <p>You'll use it to sign in and it's how you appear in Bus 16.</p>
+        <h2 data-i18n="l.u.title">Choose a username</h2>
+        <p data-i18n="l.u.sub">You'll use it to sign in and it's how you appear in Bus 16.</p>
       </div>
       <div style="margin-top:18px">
         <label class="f" id="uNameRow" hidden>
-          <span>Full name</span>
-          <input id="uName" type="text" autocomplete="name" placeholder="Your full name" maxlength="80">
+          <span data-i18n="l.name">Full name</span>
+          <input id="uName" type="text" autocomplete="name" data-i18n-ph="l.name.ph" placeholder="Your full name" maxlength="80">
         </label>
         <label class="f">
-          <span>Username</span>
-          <input id="uUser" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="e.g. mike_16" maxlength="20">
-          <small>3 to 20 letters, numbers or _ and it must start with a letter.</small>
+          <span data-i18n="l.username">Username</span>
+          <input id="uUser" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" data-i18n-ph="l.username.ph" placeholder="e.g. mike_16" maxlength="20">
+          <small data-i18n="l.username.help">Username: 3 to 20 letters (a-z), numbers or _, starting with a letter.</small>
         </label>
       </div>
       <p class="msg" id="uMsg" role="alert" aria-live="polite"></p>
-      <button type="button" class="go" id="uSave">Continue</button>
-      <div style="text-align:center"><button type="button" class="link" id="uOut" style="margin-top:12px">Use a different account</button></div>
+      <button type="button" class="go" id="uSave" data-i18n="l.continue">Continue</button>
+      <div style="text-align:center"><button type="button" class="link" id="uOut" style="margin-top:12px" data-i18n="l.other">Use a different account</button></div>
     </section>
   </div>
 
+  <div class="langs" id="langChips" role="group" data-i18n-aria="lang.label" aria-label="Language" hidden>
+    <button type="button" data-l="en" lang="en" dir="ltr">English</button>
+    <button type="button" data-l="ar" lang="ar" dir="rtl">العربية</button>
+    <button type="button" data-l="fr" lang="fr" dir="ltr">Français</button>
+  </div>
 </main>
 
 <script type="module">
@@ -180,6 +206,7 @@ import * as fb from './firebase-config.js';
 import * as C from './bus16-common.js';
 const { auth, isConfigured } = fb;
 const $ = id => document.getElementById(id);
+const t = (k, v) => I18N.t(k, v);
 
 /* ---------- where to go after signing in (only pages of this site) ---------- */
 function safeNext() {
@@ -191,33 +218,23 @@ function go() { if (leaving) return; leaving = true; location.replace(safeNext()
 
 /* ---------- friendly errors ---------- */
 const isPerm = e => /permission/i.test((e && (e.code || e.message)) || '');
+const ERR = {
+  'auth/invalid-credential': 'e.invalid', 'auth/wrong-password': 'e.invalid', 'auth/user-not-found': 'e.invalid',
+  'auth/invalid-email': 'e.email', 'auth/email-already-in-use': 'e.inuse', 'auth/weak-password': 'e.weak',
+  'auth/missing-password': 'e.nopw', 'auth/too-many-requests': 'e.many', 'auth/network-request-failed': 'e.net',
+  'auth/popup-blocked': 'e.popup', 'auth/account-exists-with-different-credential': 'e.exists',
+  'auth/user-disabled': 'e.disabled', 'auth/operation-not-allowed': 'e.notallowed', 'auth/unauthorized-domain': 'e.domain'
+};
 function friendly(e) {
   const c = (e && e.code) || '';
   console.warn('Auth error:', c, e && e.message);
-  if (isPerm(e)) return 'The database isn’t ready yet (Firebase > Realtime Database > Rules).';
-  const map = {
-    'auth/invalid-credential': 'Wrong sign-in details or password.',
-    'auth/wrong-password': 'Wrong sign-in details or password.',
-    'auth/user-not-found': 'Wrong sign-in details or password.',
-    'auth/invalid-email': 'That email address doesn’t look right.',
-    'auth/email-already-in-use': 'An account with this email already exists. Try signing in instead.',
-    'auth/weak-password': 'Choose a stronger password (at least 8 characters).',
-    'auth/missing-password': 'Enter your password.',
-    'auth/too-many-requests': 'Too many attempts. Wait a few minutes and try again.',
-    'auth/network-request-failed': 'No connection. Check your internet and try again.',
-    'auth/popup-blocked': 'Your browser blocked the Google window. Allow pop-ups for this site and try again.',
-    'auth/account-exists-with-different-credential': 'This email is already registered with a different sign-in method.',
-    'auth/user-disabled': 'This account has been disabled.',
-    'auth/operation-not-allowed': 'This sign-in method isn’t switched on yet in Firebase (Authentication > Sign-in method).',
-    'auth/unauthorized-domain': 'This website address isn’t approved in Firebase yet (Authentication > Settings > Authorized domains).'
-  };
-  return map[c] || 'Something went wrong. Please try again.';
+  if (isPerm(e)) return t('e.perm');
+  return t(ERR[c] || 'e.generic');
 }
 const quiet = e => e && (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request');
 function say(node, text, kind) { node.textContent = text || ''; node.className = 'msg' + (kind ? ' ' + kind : ''); }
 
 /* ---------- username + lookup table (this is what lets people sign in with a username or phone) ---------- */
-const USER_HELP = 'Username: 3 to 20 letters, numbers or _, starting with a letter.';
 const usernameTaken = async u => (await fb.get(fb.ref(fb.db, 'logins/u_' + u))).exists();
 async function claimUsername(user, name, username) {
   const p = {};
@@ -239,10 +256,11 @@ async function resolveEmail(raw) {
 /* ---------- sign in / create account ---------- */
 let mode = 'in';
 const el = { name: $('name'), user: $('username'), email: $('email'), pw: $('password'), msg: $('msg'), submit: $('submit') };
+const submitLabel = () => t(mode === 'up' ? 'l.signup' : 'l.signin');
 
 function setBusy(on, label) {
   ['submit', 'googleBtn', 'forgot', 'tabIn', 'tabUp'].forEach(id => $(id).disabled = on || (!isConfigured));
-  el.submit.textContent = on ? (label || 'Please wait…') : (mode === 'up' ? 'Create account' : 'Sign in');
+  el.submit.textContent = on ? (label || t('l.wait')) : submitLabel();
 }
 function setMode(m) {
   mode = m;
@@ -252,23 +270,23 @@ function setMode(m) {
   $('nameRow').hidden = !up; $('userRow').hidden = !up;
   $('forgotRow').hidden = up;
   $('pwHint').hidden = !up;
-  $('identLbl').textContent = up ? 'Email' : 'Email, username or phone';
-  el.email.placeholder = up ? 'you@example.com' : 'Email, username or phone';
+  $('identLbl').textContent = t(up ? 'l.email' : 'l.ident');
+  el.email.placeholder = t(up ? 'l.email.ph' : 'l.ident.ph');
   el.email.type = up ? 'email' : 'text';
   el.pw.autocomplete = up ? 'new-password' : 'current-password';
-  el.pw.placeholder = up ? 'Create a password' : 'Your password';
+  el.pw.placeholder = t(up ? 'l.pw.up' : 'l.pw.in');
   [el.name, el.user, el.email, el.pw].forEach(i => i.classList.remove('bad'));
   say(el.msg, '');
-  el.submit.textContent = up ? 'Create account' : 'Sign in';
+  el.submit.textContent = submitLabel();
 }
 $('tabIn').onclick = () => setMode('in');
 $('tabUp').onclick = () => setMode('up');
-$('eye').onclick = () => {
-  const show = el.pw.type === 'password';
-  el.pw.type = show ? 'text' : 'password';
-  $('eye').textContent = show ? 'Hide' : 'Show';
-  $('eye').setAttribute('aria-label', show ? 'Hide password' : 'Show password');
-};
+function paintEye() {
+  const show = el.pw.type === 'text';
+  $('eye').textContent = t(show ? 'l.hide' : 'l.show');
+  $('eye').setAttribute('aria-label', t(show ? 'l.hide.aria' : 'l.show.aria'));
+}
+$('eye').onclick = () => { el.pw.type = el.pw.type === 'password' ? 'text' : 'password'; paintEye(); };
 [el.user, $('uUser')].forEach(i => i.addEventListener('input', () => { i.value = i.value.toLowerCase().replace(/\s/g, ''); }));
 
 const emailOk = v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
@@ -277,16 +295,16 @@ function check() {
   const ident = el.email.value.trim(), pw = el.pw.value, name = el.name.value.trim(), username = el.user.value.trim().toLowerCase();
   const fail = (input, text) => { input.classList.add('bad'); input.focus(); say(el.msg, text, 'err'); return null; };
   if (mode === 'up') {
-    if (name.length < 2) return fail(el.name, 'Enter your full name.');
-    if (!C.USERNAME_RE.test(username)) return fail(el.user, USER_HELP);
-    if (!emailOk(ident)) return fail(el.email, 'Enter a valid email address.');
-    if (!pw) return fail(el.pw, 'Enter your password.');
-    if (pw.length < 8) return fail(el.pw, 'Use at least 8 characters for your password.');
+    if (name.length < 2) return fail(el.name, t('l.err.name'));
+    if (!C.USERNAME_RE.test(username)) return fail(el.user, t('l.username.help'));
+    if (!emailOk(ident)) return fail(el.email, t('l.err.email'));
+    if (!pw) return fail(el.pw, t('l.err.pw'));
+    if (pw.length < 8) return fail(el.pw, t('l.err.pw8'));
     return { ident, pw, name, username };
   }
-  if (!ident) return fail(el.email, 'Enter your email, username or phone number.');
-  if (ident.includes('@') ? !emailOk(ident) : !C.loginKey(ident)) return fail(el.email, 'That doesn’t look like an email, a username or a phone number.');
-  if (!pw) return fail(el.pw, 'Enter your password.');
+  if (!ident) return fail(el.email, t('l.err.ident'));
+  if (ident.includes('@') ? !emailOk(ident) : !C.loginKey(ident)) return fail(el.email, t('l.err.identbad'));
+  if (!pw) return fail(el.pw, t('l.err.pw'));
   return { ident, pw };
 }
 
@@ -295,10 +313,10 @@ $('form').addEventListener('submit', async ev => {
   if (!isConfigured) return;
   const v = check(); if (!v) return;
   say(el.msg, '');
-  setBusy(true, mode === 'up' ? 'Creating account…' : 'Signing in…');
+  setBusy(true, t(mode === 'up' ? 'l.creating' : 'l.signing'));
   try {
     if (mode === 'up') {
-      if (await usernameTaken(v.username)) { el.user.classList.add('bad'); el.user.focus(); return say(el.msg, 'That username is taken. Try another one.', 'err'); }
+      if (await usernameTaken(v.username)) { el.user.classList.add('bad'); el.user.focus(); return say(el.msg, t('l.err.taken'), 'err'); }
       const cred = await fb.createUserWithEmailAndPassword(auth, v.ident, v.pw);
       try { await fb.updateProfile(cred.user, { displayName: v.name }); } catch (e) { console.warn(e); }
       try { await claimUsername(cred.user, v.name, v.username); }
@@ -308,7 +326,7 @@ $('form').addEventListener('submit', async ev => {
         if (taken) {                      // someone grabbed it a moment ago: undo this account and ask again
           try { await C.deleteUser(cred.user); } catch (x) { console.warn(x); }
           el.user.classList.add('bad'); el.user.focus();
-          return say(el.msg, 'That username was just taken. Try another one.', 'err');
+          return say(el.msg, t('l.err.taken2'), 'err');
         }
         // otherwise the username step will ask again after verification
       }
@@ -340,8 +358,8 @@ $('googleBtn').onclick = async () => {
 $('forgot').onclick = async () => {
   if (!isConfigured) return;
   const ident = el.email.value.trim();
-  if (!ident) { el.email.classList.add('bad'); el.email.focus(); return say(el.msg, 'Type your email, username or phone above first, then tap “Forgot password?”.', 'err'); }
-  const done = () => say(el.msg, 'If an account exists for that, we’ve sent a link to its email to reset the password.', 'ok');
+  if (!ident) { el.email.classList.add('bad'); el.email.focus(); return say(el.msg, t('l.err.forgot'), 'err'); }
+  const done = () => say(el.msg, t('l.ok.forgot'), 'ok');
   try {
     const email = await resolveEmail(ident);
     if (!email) return done();            // don't reveal whether an account exists
@@ -355,7 +373,7 @@ $('forgot').onclick = async () => {
 
 /* ---------- email verification screen ---------- */
 let poll = null, cool = null;
-function stopTimers() { clearInterval(poll); clearInterval(cool); poll = cool = null; $('vResend').disabled = false; $('vResend').textContent = 'Resend email'; }
+function stopTimers() { clearInterval(poll); clearInterval(cool); poll = cool = null; $('vResend').disabled = false; $('vResend').textContent = t('l.v.resend'); }
 
 async function recheck(manual) {
   const u = auth.currentUser; if (!u) return;
@@ -364,10 +382,15 @@ async function recheck(manual) {
     if (auth.currentUser && auth.currentUser.emailVerified) {
       await auth.currentUser.getIdToken(true);       // refresh so the server rules see "verified"
       afterVerified(auth.currentUser);
-    } else if (manual) say($('vMsg'), 'Not verified yet. Open the link in the email, then tap this button again.', 'info');
+    } else if (manual) say($('vMsg'), t('l.v.not'), 'info');
   } catch (e) { if (manual) say($('vMsg'), friendly(e), 'err'); }
 }
-function showView(id) { ['authView', 'verifyView', 'usernameView'].forEach(v => $(v).hidden = v !== id); }
+const VIEWS = ['langView', 'authView', 'verifyView', 'usernameView'];
+function showView(id) {
+  VIEWS.forEach(v => $(v).hidden = v !== id);
+  $('langChips').hidden = id === 'langView';
+  $('notConfigured').hidden = isConfigured || id === 'langView';
+}
 function showVerify(user) {
   showView('verifyView');
   $('vEmail').textContent = user.email || '';
@@ -379,12 +402,12 @@ $('vResend').onclick = async () => {
   const u = auth.currentUser; if (!u) return;
   try {
     await fb.sendEmailVerification(u);
-    say($('vMsg'), 'Email sent again.', 'ok');
-    let left = 30; $('vResend').disabled = true; $('vResend').textContent = 'Resend in ' + left + 's';
+    say($('vMsg'), t('l.v.again'), 'ok');
+    let left = 30; $('vResend').disabled = true; $('vResend').textContent = t('l.v.resendin', { n: left });
     clearInterval(cool);
     cool = setInterval(() => {
-      left--; if (left <= 0) { clearInterval(cool); cool = null; $('vResend').disabled = false; $('vResend').textContent = 'Resend email'; }
-      else $('vResend').textContent = 'Resend in ' + left + 's';
+      left--; if (left <= 0) { clearInterval(cool); cool = null; $('vResend').disabled = false; $('vResend').textContent = t('l.v.resend'); }
+      else $('vResend').textContent = t('l.v.resendin', { n: left });
     }, 1000);
   } catch (e) { say($('vMsg'), friendly(e), 'err'); }
 };
@@ -404,7 +427,7 @@ async function afterVerified(user) {
   } catch (e) {
     console.error('Account check failed:', e);
     showAuth();
-    say(el.msg, 'We couldn’t load your account. ' + (isPerm(e) ? 'The database isn’t ready yet (Firebase > Realtime Database > Rules).' : 'Reload the page and try again.'), 'err');
+    say(el.msg, t('l.err.load') + ' ' + (isPerm(e) ? t('e.perm') : t('l.err.reload')), 'err');
   } finally { checking = false; }
 }
 $('uSave').onclick = async () => {
@@ -412,37 +435,64 @@ $('uSave').onclick = async () => {
   const username = $('uUser').value.trim().toLowerCase();
   const name = $('uNameRow').hidden ? (user.displayName || '').trim() : $('uName').value.trim();
   [$('uName'), $('uUser')].forEach(i => i.classList.remove('bad'));
-  const bad = (i, t) => { i.classList.add('bad'); i.focus(); say($('uMsg'), t, 'err'); };
-  if (!$('uNameRow').hidden && name.length < 2) return bad($('uName'), 'Enter your full name.');
-  if (!C.USERNAME_RE.test(username)) return bad($('uUser'), USER_HELP);
-  $('uSave').disabled = true; $('uSave').textContent = 'Saving…';
+  const bad = (i, m) => { i.classList.add('bad'); i.focus(); say($('uMsg'), m, 'err'); };
+  if (!$('uNameRow').hidden && name.length < 2) return bad($('uName'), t('l.err.name'));
+  if (!C.USERNAME_RE.test(username)) return bad($('uUser'), t('l.username.help'));
+  $('uSave').disabled = true; $('uSave').textContent = t('l.saving');
   try {
-    if (await usernameTaken(username)) return bad($('uUser'), 'That username is taken. Try another one.');
+    if (await usernameTaken(username)) return bad($('uUser'), t('l.err.taken'));
     await claimUsername(user, name, username);
     go();
   } catch (e) {
     let taken = false; try { taken = await usernameTaken(username); } catch (x) {}
-    say($('uMsg'), taken ? 'That username was just taken. Try another one.' : friendly(e), 'err');
-  } finally { $('uSave').disabled = false; $('uSave').textContent = 'Continue'; }
+    say($('uMsg'), taken ? t('l.err.taken2') : friendly(e), 'err');
+  } finally { $('uSave').disabled = false; $('uSave').textContent = t('l.continue'); }
 };
 $('uOut').onclick = () => fb.signOut(auth);
 
 document.addEventListener('input', e => { if (e.target.classList) e.target.classList.remove('bad'); });
 
+/* ---------- language ---------- */
+function paintLang() {
+  document.title = t('l.signin') + ' · Bus 16';
+  document.querySelectorAll('#langChips button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.l === I18N.lang)));
+  setMode(mode);                                   // re-writes labels, placeholders and the button text
+  paintEye();
+  $('vResend').textContent = t('l.v.resend');
+  $('uSave').textContent = t('l.continue');
+  if ($('usernameView').hidden === false) say($('uMsg'), '');
+}
+let langReady = I18N.chosen;      // nobody gets past the language screen without choosing
+let lastUser;                     // undefined until Firebase tells us who is signed in
+function route(user) {
+  if (!user) return showAuth();
+  if (user.emailVerified) { stopTimers(); afterVerified(user); }
+  else showVerify(user);
+}
+function chooseLang(l) {
+  I18N.set(l);
+  paintLang();
+  if (!langReady) {
+    langReady = true;
+    if (!isConfigured || lastUser === undefined) showView('authView'); else route(lastUser);
+  }
+}
+document.querySelectorAll('[data-l]').forEach(b => b.addEventListener('click', () => chooseLang(b.dataset.l)));
+
 /* ---------- start ---------- */
+paintLang();
+if (!langReady) { showView('langView'); document.body.classList.add('ready'); }
 if (!isConfigured) {
-  $('notConfigured').hidden = false;
+  if (langReady) showView('authView');
   setBusy(false);
   document.body.classList.add('ready');
 } else {
   fb.onAuthStateChanged(auth, user => {
     document.body.classList.add('ready');
-    if (!user) return showAuth();
-    if (user.emailVerified) { stopTimers(); afterVerified(user); }
-    else showVerify(user);
+    lastUser = user;
+    if (langReady) route(user);
   });
 }
-setMode('in');
 </script>
 </body>
 </html>

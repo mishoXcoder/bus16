@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#070b16">
-<title>Complete your profile · Bus 16</title>
+<title data-i18n-doc="p.doc">Complete your profile · Bus 16</title>
 <!-- Login gate: the page stays hidden until the visitor is signed in. Keep these two lines. -->
 <style>html{visibility:hidden}</style>
+<script src="i18n.js"></script>
 <script type="module" src="auth-guard.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -49,11 +50,14 @@
   .f input::placeholder { color: rgba(147,160,184,.6); }
   .f input:focus, .f select:focus { border-color: rgba(244,166,42,.7); background: rgba(255,255,255,.07); outline: none; box-shadow: 0 0 0 3px rgba(244,166,42,.18); }
   .f input.bad, .f select.bad { border-color: rgba(255,122,127,.8); }
-  .f select { appearance: none; -webkit-appearance: none; padding-right: 40px; color-scheme: dark; cursor: pointer;
+  .f select { appearance: none; -webkit-appearance: none; padding-inline-end: 40px; color-scheme: dark; cursor: pointer;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%2393a0b8' stroke-width='1.8' stroke-linecap='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");
     background-repeat: no-repeat; background-position: right 15px center; }
+  [dir=rtl] .f select { background-position: left 15px center; }
   .f select option { background: #0f1629; color: #eef1f7; }
   .f small { display: block; margin-top: 6px; font-size: 12.5px; color: var(--muted); }
+  .f input, .f select { text-align: start; }
+  [dir=rtl] .back svg { transform: scaleX(-1); }
   .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
   .msg { min-height: 20px; margin: 4px 0 12px; font-size: 14px; line-height: 1.5; }
@@ -65,41 +69,41 @@
 </head>
 <body>
 <main class="wrap">
-  <a class="back" href="index.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Back</a>
-  <h1>Complete your profile</h1>
-  <p class="lead">Add a few details so Bus 16 can feel like yours. Your photo is optional.</p>
+  <a class="back" href="index.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span data-i18n="p.back">Back</span></a>
+  <h1 data-i18n="p.title">Complete your profile</h1>
+  <p class="lead" data-i18n="p.lead">Add a few details so Bus 16 can feel like yours. Your photo is optional.</p>
 
   <form class="card" id="form" novalidate>
     <div class="avatar">
       <div class="pic" id="pic" aria-hidden="true"></div>
       <div>
-        <b>Profile photo</b>
-        <small>Optional</small>
+        <b data-i18n="p.photo">Profile photo</b>
+        <small data-i18n="p.optional">Optional</small>
         <div class="chips">
-          <button type="button" class="chip" id="pickBtn">Add photo</button>
-          <button type="button" class="chip plain" id="rmBtn" hidden>Remove</button>
+          <button type="button" class="chip" id="pickBtn" data-i18n="p.add">Add photo</button>
+          <button type="button" class="chip plain" id="rmBtn" data-i18n="p.remove" hidden>Remove</button>
         </div>
         <input type="file" id="file" accept="image/*" hidden>
       </div>
     </div>
 
-    <label class="f"><span>Age</span><input id="age" type="number" inputmode="numeric" min="13" max="100" placeholder="Your age"></label>
+    <label class="f"><span data-i18n="p.age">Age</span><input id="age" type="number" inputmode="numeric" min="13" max="100" data-i18n-ph="p.age.ph" placeholder="Your age"></label>
 
-    <label class="f"><span>Country</span>
-      <select id="country" autocomplete="country-name"><option value="Lebanon" selected>Lebanon</option><option value="__other">Other country</option></select>
+    <label class="f"><span data-i18n="p.country">Country</span>
+      <select id="country" autocomplete="country-name"><option value="Lebanon" selected data-i18n="p.lebanon">Lebanon</option><option value="__other" data-i18n="p.other">Other country</option></select>
     </label>
-    <label class="f" id="countryOtherRow" hidden><span>Country name</span><input id="countryOther" type="text" maxlength="60" placeholder="Your country"></label>
-    <label class="f" id="districtSelRow"><span>District</span><select id="district"></select></label>
-    <label class="f" id="districtTxtRow" hidden><span>District / region</span><input id="districtTxt" type="text" maxlength="60" placeholder="Your district or region"></label>
-    <label class="f"><span>City / town</span><input id="city" type="text" autocomplete="address-level2" maxlength="60" placeholder="e.g. Kornayel"></label>
+    <label class="f" id="countryOtherRow" hidden><span data-i18n="p.countryname">Country name</span><input id="countryOther" type="text" maxlength="60" data-i18n-ph="p.countryname.ph" placeholder="Your country"></label>
+    <label class="f" id="districtSelRow"><span data-i18n="p.district">District</span><select id="district"></select></label>
+    <label class="f" id="districtTxtRow" hidden><span data-i18n="p.districttxt">District / region</span><input id="districtTxt" type="text" maxlength="60" data-i18n-ph="p.districttxt.ph" placeholder="Your district or region"></label>
+    <label class="f"><span data-i18n="p.city">City / town</span><input id="city" type="text" autocomplete="address-level2" maxlength="60" data-i18n-ph="p.city.ph" placeholder="e.g. Kornayel"></label>
 
-    <label class="f"><span>Phone number</span>
-      <input id="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="03 123 456">
-      <small>You can sign in with it later. Outside Lebanon, start with + and your country code.</small>
+    <label class="f"><span data-i18n="p.phone">Phone number</span>
+      <input id="phone" type="tel" autocomplete="tel" inputmode="tel" dir="ltr" data-i18n-ph="p.phone.ph" placeholder="03 123 456">
+      <small data-i18n="p.phone.help">You can sign in with it later. Outside Lebanon, start with + and your country code.</small>
     </label>
 
     <p class="msg" id="msg" role="alert" aria-live="polite"></p>
-    <button type="submit" class="go" id="save">Save profile</button>
+    <button type="submit" class="go" id="save" data-i18n="p.save">Save profile</button>
   </form>
 </main>
 
@@ -107,6 +111,7 @@
 import * as fb from './firebase-config.js';
 import * as C from './bus16-common.js';
 const $ = id => document.getElementById(id);
+const t = (k, v) => I18N.t(k, v);
 function say(text, kind) { $('msg').textContent = text || ''; $('msg').className = 'msg' + (kind ? ' ' + kind : ''); }
 
 /* wait for the gate (auth-guard.js) to tell us who is signed in */
@@ -115,8 +120,14 @@ const whenUser = () => new Promise(res => {
   addEventListener('bus16:user', e => res(e.detail), { once: true });
 });
 
-const LB_DISTRICTS = ['Akkar','Aley','Baabda','Baalbek','Batroun','Beirut','Bint Jbeil','Bsharri','Chouf','Hasbaya','Hermel','Jbeil','Jezzine','Keserwan','Koura','Marjeyoun','Matn','Minieh-Danniyeh','Nabatieh','Rashaya','Sidon','Tripoli','Tyre','Western Beqaa','Zahle','Zgharta'];
-$('district').innerHTML = '<option value="">Select your district</option>' + LB_DISTRICTS.map(d => '<option>' + d + '</option>').join('');
+// [English (this is what gets saved), Arabic, French]
+const LB_DISTRICTS = [['Akkar','عكار','Akkar'],['Aley','عاليه','Aley'],['Baabda','بعبدا','Baabda'],['Baalbek','بعلبك','Baalbek'],['Batroun','البترون','Batroun'],['Beirut','بيروت','Beyrouth'],['Bint Jbeil','بنت جبيل','Bint Jbeil'],['Bsharri','بشري','Bcharré'],['Chouf','الشوف','Chouf'],['Hasbaya','حاصبيا','Hasbaya'],['Hermel','الهرمل','Hermel'],['Jbeil','جبيل','Jbeil'],['Jezzine','جزين','Jezzine'],['Keserwan','كسروان','Kesrouan'],['Koura','الكورة','Koura'],['Marjeyoun','مرجعيون','Marjayoun'],['Matn','المتن','Metn'],['Minieh-Danniyeh','المنية - الضنية','Minieh-Dennieh'],['Nabatieh','النبطية','Nabatieh'],['Rashaya','راشيا','Rachaya'],['Sidon','صيدا','Saïda'],['Tripoli','طرابلس','Tripoli'],['Tyre','صور','Tyr'],['Western Beqaa','البقاع الغربي','Békaa-Ouest'],['Zahle','زحلة','Zahlé'],['Zgharta','زغرتا','Zghorta']];
+function fillDistricts() {
+  const keep = $('district').value, i = I18N.lang === 'ar' ? 1 : I18N.lang === 'fr' ? 2 : 0;
+  $('district').innerHTML = '<option value="">' + t('p.district.sel') + '</option>' + LB_DISTRICTS.map(d => '<option value="' + d[0] + '">' + d[i] + '</option>').join('');
+  $('district').value = keep;
+}
+fillDistricts();
 function syncCountry() {
   const other = $('country').value === '__other';
   $('countryOtherRow').hidden = !other; $('districtTxtRow').hidden = !other; $('districtSelRow').hidden = other;
@@ -132,7 +143,7 @@ function drawPic(url) {
   if (url) { const im = new Image(); im.alt = ''; im.src = url; $('pic').appendChild(im); }
   else $('pic').textContent = initial;
   $('rmBtn').hidden = !url;
-  $('pickBtn').textContent = url ? 'Change photo' : 'Add photo';
+  $('pickBtn').textContent = t(url ? 'p.change' : 'p.add');
 }
 async function toAvatar(file) {
   const bmp = await createImageBitmap(file);
@@ -150,7 +161,7 @@ $('rmBtn').onclick = () => { photo = null; $('file').value = ''; drawPic(null); 
 $('file').onchange = async () => {
   const f = $('file').files[0]; if (!f) return;
   try { photo = await toAvatar(f); drawPic(photo); say(''); }
-  catch (e) { say('We couldn’t use that picture. Try a JPG or PNG.', 'err'); }
+  catch (e) { say(t('p.err.photo'), 'err'); }
 };
 
 /* ---------- fill in what we already know ---------- */
@@ -181,13 +192,13 @@ $('form').addEventListener('submit', async ev => {
   const city = $('city').value.trim();
   const digits = C.normPhone($('phone').value);
 
-  if (!Number.isInteger(age) || age < 13 || age > 100) return bad('age', 'Enter your age (13 to 100).');
-  if (other && country.length < 2) return bad('countryOther', 'Enter your country.');
-  if (!district) return bad(other ? 'districtTxt' : 'district', other ? 'Enter your district or region.' : 'Choose your district.');
-  if (city.length < 2) return bad('city', 'Enter your city or town.');
-  if (!digits) return bad('phone', 'Enter a valid phone number, for example 03 123 456.');
+  if (!Number.isInteger(age) || age < 13 || age > 100) return bad('age', t('p.err.age'));
+  if (other && country.length < 2) return bad('countryOther', t('p.err.country'));
+  if (!district) return bad(other ? 'districtTxt' : 'district', t(other ? 'p.err.districttxt' : 'p.err.district'));
+  if (city.length < 2) return bad('city', t('p.err.city'));
+  if (!digits) return bad('phone', t('p.err.phone'));
 
-  $('save').disabled = true; $('save').textContent = 'Saving…'; say('');
+  $('save').disabled = true; $('save').textContent = t('p.saving'); say('');
   try {
     const old = ((me.profile || {}).phone || '').replace(/\D/g, '');
     const email = fb.auth.currentUser.email;
@@ -198,17 +209,17 @@ $('form').addEventListener('submit', async ev => {
 
     if (old !== digits) {
       const s = await fb.get(fb.ref(fb.db, 'logins/p_' + digits));
-      if (s.exists() && s.val().uid !== me.uid) { $('save').disabled = false; $('save').textContent = 'Save profile'; return bad('phone', 'That phone number is already linked to another account.'); }
+      if (s.exists() && s.val().uid !== me.uid) { $('save').disabled = false; $('save').textContent = t('p.save'); return bad('phone', t('p.err.phonetaken')); }
       u['logins/p_' + digits] = { uid: me.uid, email };
       if (old) u['logins/p_' + old] = null;
     }
     await C.update(fb.ref(fb.db), u);
-    say('Saved.', 'ok');
+    say(t('p.saved'), 'ok');
     setTimeout(() => location.replace('index.html'), 600);
   } catch (e) {
     console.error(e);
-    say(/permission/i.test((e && (e.code || e.message)) || '') ? 'We couldn’t save. The database rules may not be published yet, or that phone number belongs to someone else.' : 'Something went wrong. Please try again.', 'err');
-    $('save').disabled = false; $('save').textContent = 'Save profile';
+    say(t(/permission/i.test((e && (e.code || e.message)) || '') ? 'p.err.perm' : 'e.generic'), 'err');
+    $('save').disabled = false; $('save').textContent = t('p.save');
   }
 });
 </script>

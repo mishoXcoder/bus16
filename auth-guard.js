@@ -3,8 +3,9 @@
 //  Nobody sees a page until they are signed in, have a verified email
 //  and have picked a username.
 //
-//  Put these two lines inside <head> of every page (index.html already has them):
+//  Put these three lines inside <head> of every page (index.html already has them):
 //    <style>html{visibility:hidden}</style>
+//    <script src="i18n.js"></script>
 //    <script type="module" src="auth-guard.js"></script>
 // ============================================================
 const root = document.documentElement;
@@ -13,13 +14,15 @@ const toLogin = () => location.replace('login.html?next=' + encodeURIComponent(p
 
 function fail() {
   root.style.visibility = 'visible';
-  document.body.innerHTML =
-    '<p style="font:16px/1.6 system-ui,sans-serif;color:#eef1f7;background:#070b16;margin:0;padding:48px 24px;min-height:100vh;text-align:center">' +
-    'Can’t reach the sign-in service.<br>Check your connection and reload the page.</p>';
+  const msg = window.I18N ? window.I18N.t('g.fail') : 'Can’t reach the sign-in service.\nCheck your connection and reload the page.';
+  document.body.innerHTML = '<p style="font:16px/1.6 system-ui,sans-serif;color:#eef1f7;background:#070b16;margin:0;padding:48px 24px;min-height:100vh;text-align:center;white-space:pre-line"></p>';
+  document.body.firstChild.textContent = msg;
 }
 
 (async () => {
   try {
+    // The language screen comes first: nobody gets into any page before choosing a language.
+    if (!window.I18N || !window.I18N.chosen) return toLogin();
     const fb = await import('./firebase-config.js');
     if (!fb.isConfigured) return toLogin();
 
