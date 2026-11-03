@@ -126,7 +126,7 @@
     'm.how1': 'Find Kornayel on the map (or type it below).',
     'm.how2': 'Tap <b>Draw route</b>, then click along the bus road <b>from Kornayel to Kola</b>. Zoom in and click often on curves.',
     'm.how3': 'Tap <b>Add stop</b>, click on the route where a stop is, type its name.',
-    'm.how4': 'Tap <b>Copy route code</b> and paste it into the file <b>route-data.js</b>, replacing everything in it.',
+    'm.how4': 'Tap <b>Copy route code</b> and paste it in <b>map.html</b>, replacing the line that starts with <b>const SAVED_ROUTE</b>.',
     'm.search.ph': 'Search a place, e.g. Bhamdoun', 'm.go': 'Go',
     'm.draw': '✏️ Draw route', 'm.addstop': '📌 Add stop', 'm.undo': '↩️ Undo last', 'm.clear': '🗑 Clear all', 'm.copy': 'Copy route code',
     'm.info': '{p} route points, {s} stops, {k} km',
@@ -140,7 +140,7 @@
     'm.a.drawfirst': 'Draw the route and add stops first.', 'm.a.noloc': 'Location is not available on this device.',
     'm.a.locfail': 'Could not get your location.', 'm.a.routefirst': 'Draw the route first.',
     'm.prompt.stop': 'Stop name?', 'm.confirm.clear': 'Delete the whole route and all stops?',
-    'm.copied': 'Copied! Now paste it into route-data.js, replacing everything in that file.',
+    'm.copied': 'Copied! Now paste it in map.html, replacing the line that starts with const SAVED_ROUTE.',
     'm.copy.manual': 'Select the text in the box below and copy it manually.',
     'm.nf': 'Not found. Try another spelling.', 'm.sfail': 'Search failed. Check your internet.'
   };
@@ -254,7 +254,7 @@
     'm.how1': 'دوّر على قرنايل بالخريطة (أو اكتبها تحت).',
     'm.how2': 'اضغط <b>رسم المسار</b> وبعدين اضغط على طول طريق الباص <b>من قرنايل إلى كولا</b>. قرّب الخريطة واضغط كتير عالمنعطفات.',
     'm.how3': 'اضغط <b>إضافة محطة</b>، اضغط على المسار مطرح المحطة، واكتب اسمها.',
-    'm.how4': 'اضغط <b>نسخ كود المسار</b> والصقه بالملف <b>route-data.js</b> مكان كل اللي فيه.',
+    'm.how4': 'اضغط <b>نسخ كود المسار</b> والصقه بالملف <b>map.html</b> مكان السطر اللي بيبلش بـ <b>const SAVED_ROUTE</b>.',
     'm.search.ph': 'ابحث عن مكان، مثلاً بحمدون', 'm.go': 'اذهب',
     'm.draw': '✏️ رسم المسار', 'm.addstop': '📌 إضافة محطة', 'm.undo': '↩️ تراجع', 'm.clear': '🗑 مسح الكل', 'm.copy': 'نسخ كود المسار',
     'm.info': '{p} نقطة مسار، {s} محطات، {k} كم',
@@ -268,7 +268,7 @@
     'm.a.drawfirst': 'ارسم المسار وأضف المحطات أولاً.', 'm.a.noloc': 'خدمة الموقع مش متوفرة عهالجهاز.',
     'm.a.locfail': 'ما قدرنا نحدد موقعك.', 'm.a.routefirst': 'ارسم المسار أولاً.',
     'm.prompt.stop': 'اسم المحطة؟', 'm.confirm.clear': 'بدك تمسح المسار كله وكل المحطات؟',
-    'm.copied': 'تم النسخ! هلّق الصقه بالملف route-data.js مكان كل اللي فيه.',
+    'm.copied': 'تم النسخ! هلّق الصقه بالملف map.html مكان السطر اللي بيبلش بـ const SAVED_ROUTE.',
     'm.copy.manual': 'حدّد النص بالمربع تحت وانسخه يدوياً.',
     'm.nf': 'ما انلقى. جرّب إملاء تاني.', 'm.sfail': 'فشل البحث. تأكّد من الإنترنت.'
   };
@@ -382,7 +382,7 @@
     'm.how1': 'Trouvez Kornayel sur la carte (ou tapez-le ci-dessous).',
     'm.how2': 'Touchez <b>Tracer le trajet</b>, puis cliquez le long de la route du bus <b>de Kornayel à Kola</b>. Zoomez et cliquez souvent dans les virages.',
     'm.how3': 'Touchez <b>Ajouter un arrêt</b>, cliquez sur le trajet à l’endroit de l’arrêt et tapez son nom.',
-    'm.how4': 'Touchez <b>Copier le code du trajet</b> et collez-le dans le fichier <b>route-data.js</b>, à la place de tout son contenu.',
+    'm.how4': 'Touchez <b>Copier le code du trajet</b> et collez-le dans <b>map.html</b>, à la place de la ligne qui commence par <b>const SAVED_ROUTE</b>.',
     'm.search.ph': 'Chercher un lieu, ex. Bhamdoun', 'm.go': 'OK',
     'm.draw': '✏️ Tracer le trajet', 'm.addstop': '📌 Ajouter un arrêt', 'm.undo': '↩️ Annuler', 'm.clear': '🗑 Tout effacer', 'm.copy': 'Copier le code du trajet',
     'm.info': '{p} points de trajet, {s} arrêts, {k} km',
@@ -396,7 +396,7 @@
     'm.a.drawfirst': 'Tracez d’abord le trajet et ajoutez des arrêts.', 'm.a.noloc': 'La localisation n’est pas disponible sur cet appareil.',
     'm.a.locfail': 'Impossible d’obtenir votre position.', 'm.a.routefirst': 'Tracez d’abord le trajet.',
     'm.prompt.stop': 'Nom de l’arrêt ?', 'm.confirm.clear': 'Supprimer tout le trajet et tous les arrêts ?',
-    'm.copied': 'Copié ! Collez-le maintenant dans route-data.js, à la place de tout son contenu.',
+    'm.copied': 'Copié ! Collez-le maintenant dans map.html, à la place de la ligne qui commence par const SAVED_ROUTE.',
     'm.copy.manual': 'Sélectionnez le texte dans la case ci-dessous et copiez-le manuellement.',
     'm.nf': 'Introuvable. Essayez une autre orthographe.', 'm.sfail': 'La recherche a échoué. Vérifiez votre internet.'
   };

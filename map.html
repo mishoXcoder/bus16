@@ -147,7 +147,7 @@
       <li data-i18n-html="m.how1">Find Kornayel on the map (or type it below).</li>
       <li data-i18n-html="m.how2">Tap <b>Draw route</b>, then click along the bus road <b>from Kornayel to Kola</b>.</li>
       <li data-i18n-html="m.how3">Tap <b>Add stop</b>, click on the route where a stop is, type its name.</li>
-      <li data-i18n-html="m.how4">Tap <b>Copy route code</b> and paste it into <b>route-data.js</b>.</li>
+      <li data-i18n-html="m.how4">Tap <b>Copy route code</b> and paste it in <b>map.html</b>.</li>
     </ol>
     <div class="row">
       <div><input type="text" id="searchBox" data-i18n-ph="m.search.ph" placeholder="Search a place, e.g. Bhamdoun"></div>
@@ -165,8 +165,11 @@
   </div>
 </div>
 
-<!-- Your drawn route lives in this small file (it defines SAVED_ROUTE). -->
-<script src="route-data.js"></script>
+<script>
+// YOUR DRAWN ROUTE (Qornayel Stop to Hammana Stop). To change it: Setup tab > draw > "Copy route code",
+// then replace the whole "const SAVED_ROUTE = ...;" line below with what you copied.
+const SAVED_ROUTE = {"points":[[33.853334,35.725845],[33.852862,35.725298],[33.85162,35.72474],[33.851451,35.724761],[33.851068,35.724971],[33.849381,35.728051],[33.849141,35.728013],[33.848357,35.727391],[33.847961,35.727353],[33.847538,35.727858],[33.846674,35.729553],[33.846213,35.730065],[33.845322,35.730173],[33.844672,35.729872],[33.844055,35.730696],[33.843655,35.7313],[33.843709,35.732008],[33.842765,35.733833],[33.842249,35.734326],[33.841554,35.7357],[33.841251,35.735765],[33.840628,35.734734],[33.835249,35.731665],[33.832168,35.731686],[33.830209,35.731236],[33.825203,35.733253],[33.824455,35.731772],[33.822692,35.733081],[33.822389,35.733124],[33.822353,35.732287],[33.822817,35.730141],[33.821552,35.727007],[33.821463,35.72602],[33.820911,35.725827],[33.818755,35.723122],[33.816279,35.723079],[33.815263,35.722521],[33.815085,35.722178],[33.815032,35.721255],[33.815246,35.720396],[33.815709,35.718636],[33.81537,35.716168],[33.815493,35.713467],[33.814406,35.712566],[33.814335,35.712029],[33.816401,35.705246],[33.815974,35.70486],[33.815421,35.704023],[33.814976,35.701877],[33.813907,35.700889],[33.813586,35.699623],[33.812517,35.698013],[33.811627,35.69739],[33.8107,35.696296],[33.81029,35.694514],[33.810112,35.693505],[33.809881,35.692797],[33.809756,35.692368],[33.80972,35.692067],[33.810273,35.691681],[33.810344,35.691273],[33.810665,35.689921],[33.811181,35.688976],[33.809578,35.685456],[33.808865,35.682108],[33.808295,35.681357],[33.807725,35.680197],[33.80744,35.679103],[33.807315,35.678223],[33.807066,35.677386],[33.806773,35.675767],[33.806488,35.675101],[33.80647,35.670079],[33.806203,35.668641],[33.80647,35.666043],[33.806559,35.663596],[33.806666,35.663446],[33.807351,35.662781],[33.807662,35.661589]],"stops":[{"name":"Qornayel Stop","along":0},{"name":"Hammana Stop","along":3945}]};
+</script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const t = (k, v) => I18N.t(k, v);
@@ -189,7 +192,7 @@ const TIMETABLE = {
                "15:15","16:15","17:00","17:45","18:45","19:45"]
 };
 
-// The drawn route is NOT edited here any more: it lives in route-data.js.
+// The drawn route is the "const SAVED_ROUTE" line in the script just above the map code.
 
 /* ==========================================================
    2) MAP SETUP
@@ -199,12 +202,12 @@ const $ = id => document.getElementById(id);
 const map = L.map('map', { zoomControl: false }).setView([33.87, 35.6], 11);
 // The zoom buttons sit on the opposite side from the Back button.
 L.control.zoom({ position: I18N.rtl ? 'topleft' : 'topright' }).addTo(map);
-// Map tiles from CARTO (OpenStreetMap data). Works when the file is opened
-// directly from the Desktop AND when hosted online.
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-  subdomains: 'abcd',
+// Map tiles from OpenStreetMap (free, no key). CARTO's old free tile address now asks for an
+// API key ("API KEY REQUIRED" on the map), so we use OpenStreetMap's own tiles instead.
+// They work on the hosted site (GitHub Pages), not when the file is opened straight from the Desktop.
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
-  attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
 const routeLine = L.polyline([], { color: '#1d4ed8', weight: 5, opacity: .8, interactive: false }).addTo(map);
