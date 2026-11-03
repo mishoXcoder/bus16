@@ -347,7 +347,7 @@
     'h.ad': 'Pub', 'h.ad.aria': 'Commerces sur la ligne : offres',
     'h.breaking': 'Alerte', 'h.news.aria': 'Dernières infos sur la ligne',
     'h.game': 'Jeu 16', 'h.game.sub': 'Cumulez et gagnez', 'h.game.aria': 'Jeu 16',
-    'h.where': 'Il est où ?', 'h.where.aria': 'Où est le bus ? Ouvrir la carte',
+    'h.where': 'Il est où\u00a0?', 'h.where.aria': 'Où est le bus ? Ouvrir la carte',
     'h.under.aria': 'Prochain bus',
     'h.cardA.aria': 'Horaires du bus de Kornayel à Bhamdoun', 'h.cardB.aria': 'Horaires du bus de Bhamdoun à Kornayel',
     'h.next': 'Prochain bus dans',
