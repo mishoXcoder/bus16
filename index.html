@@ -23,6 +23,7 @@
     --amber: #f4a62a;
     --amber-soft: #ffd58a;
     --red: #e5484d;
+    --signal: #c23a40;
     --font: 'IBM Plex Sans Arabic', 'Noto Sans Arabic', 'Segoe UI', Tahoma, sans-serif;
   }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -68,19 +69,20 @@
   .hs { position: absolute; left: 0; top: 0; transform-origin: 0 0; display: block; overflow: hidden; }
 
   /* windshield screen */
-  .led { background: linear-gradient(180deg, rgba(5,9,16,.46), rgba(5,9,16,.62)); border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(244,166,42,.45), inset 0 0 16px rgba(244,166,42,.10); }
-  .led .tagad { position: absolute; z-index: 2; inset-inline-start: 9px; bottom: 7px; font-size: 9px; line-height: 1; color: rgba(255,255,255,.7); text-shadow: 0 1px 3px rgba(0,0,0,.9); }
-  .slide { position: absolute; inset: 0; display: flex; align-items: center; gap: 11px; padding: 0 14px; text-shadow: 0 1px 4px rgba(0,0,0,.85); opacity: 0; transform: translateY(6px); transition: opacity .5s ease, transform .5s ease; }
+  .led { background: linear-gradient(180deg, rgba(5,9,16,.46), rgba(5,9,16,.62)); border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(255,213,138,.32), inset 0 0 14px rgba(255,213,138,.07); }
+  .led .tagad { position: absolute; z-index: 2; inset-inline-end: 9px; top: 5px; font-size: 9px; line-height: 1; letter-spacing: .02em; color: rgba(255,255,255,.62); text-shadow: 0 1px 3px rgba(0,0,0,.9); }
+  .slide { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 0 15px; text-shadow: 0 1px 4px rgba(0,0,0,.85); opacity: 0; transform: translateY(6px); transition: opacity .5s ease, transform .5s ease; }
   .slide.on { opacity: 1; transform: none; }
-  .slide .ico { flex: none; width: 46px; height: 46px; border-radius: 12px; background: rgba(5,9,16,.5); box-shadow: inset 0 0 0 1px rgba(244,166,42,.4); color: var(--amber); display: grid; place-items: center; }
-  .slide > span:last-child { min-width: 0; flex: 1; }
-  .slide small { display: block; font-size: 11px; color: var(--amber-soft); white-space: nowrap; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; }
-  .slide b { display: block; font-size: 21px; font-weight: 700; line-height: 1.2; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .slide i { display: block; font-style: normal; font-size: 11px; color: rgba(255,255,255,.8); white-space: nowrap; line-height: 1.3; overflow: hidden; text-overflow: ellipsis; }
+  .slide .r1 { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .slide .ico { flex: none; width: 38px; height: 38px; border-radius: 10px; background: rgba(5,9,16,.45); box-shadow: inset 0 0 0 1px rgba(255,213,138,.38); color: var(--amber-soft); display: grid; place-items: center; }
+  .slide .tx { min-width: 0; flex: 1; padding-inline-end: 22px; }
+  .slide small { display: block; font-size: 12.5px; font-weight: 600; color: var(--amber-soft); white-space: nowrap; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; }
+  .slide i { display: block; font-style: normal; font-size: 13px; color: rgba(255,255,255,.88); white-space: nowrap; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; }
+  .slide b { display: block; font-size: 28px; font-weight: 700; line-height: 1.15; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   /* news strip on the black band */
-  .news { display: flex; background: #04060b; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.10); }
-  .news .alert { flex: none; display: grid; place-items: center; padding: 0 14px; background: var(--red); font-size: 14px; font-weight: 700; color: #fff; border-radius: 4px 0 0 4px; }
+  .news { display: flex; background: #03050a; border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); }
+  .news .alert { flex: none; display: grid; place-items: center; padding: 0 13px; background: linear-gradient(180deg, #cf4046, #b3313a); font-size: 14px; font-weight: 700; color: #fff; border-radius: 4px 0 0 4px; text-shadow: 0 1px 1px rgba(0,0,0,.25); }
   [dir=rtl] .news .alert { border-radius: 0 4px 4px 0; }
   .crawl { position: relative; flex: 1; overflow: hidden; }
   .track { position: absolute; top: 50%; left: 0; transform: translate(-100%, -50%); white-space: nowrap; font-size: 14px; font-weight: 500; animation: crawl var(--dur, 18s) linear infinite; }
@@ -89,26 +91,30 @@
   html[dir=ltr] .track { left: 100%; transform: translate(0, -50%); animation-name: crawlL; }
   @keyframes crawlL { from { left: 100%; transform: translate(0, -50%); } to { left: 0; transform: translate(-100%, -50%); } }
 
-  /* game plaque on the grille */
-  .game { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(180deg, #0a0e18, #04060b); border-radius: 4px;
-    box-shadow: inset 0 0 0 1px rgba(244,166,42,.6), inset 0 0 12px rgba(244,166,42,.14); }
-  .game .l1 { display: flex; align-items: center; gap: 5px; color: var(--amber-soft); font-size: 12.5px; font-weight: 700; line-height: 1.1; }
-  .game .l2 { font-size: 7.5px; color: rgba(255,255,255,.72); line-height: 1.1; white-space: nowrap; }
+  /* game plaque: smoked-black glass on the white front panel. It is cut to the panel's real outline (clip-path: polygon(206.3px 0.2px,203.8px 1.2px,197.8px 1.1px,197.3px 1.6px,185.3px 1.8px,184.8px 2.3px,174.1px 2.0px,173.6px 2.5px,167.5px 2.4px,167.0px 2.9px,155.0px 2.6px,154.5px 3.1px,143.5px 2.8px,143.0px 3.4px,135.5px 3.2px,135.0px 3.7px,120.0px 3.3px,119.4px 3.9px,95.9px 3.8px,95.3px 4.4px,79.6px 4.0px,79.1px 4.5px,64.8px 4.2px,64.3px 4.8px,32.2px 4.0px,31.6px 4.6px,18.5px 4.2px,17.9px 3.6px,5.2px 3.3px,1.5px 2.1px,1.5px 34.9px,4.0px 34.9px,7.6px 36.1px,12.5px 36.1px,13.1px 36.7px,36.9px 36.9px,37.5px 36.3px,53.3px 36.4px,53.9px 35.9px,63.7px 35.9px,64.3px 35.4px,76.8px 35.5px,77.4px 34.9px,80.2px 34.9px,85.3px 32.2px,86.4px 32.2px,89.7px 28.3px,97.5px 28.4px,100.3px 31.8px,114.0px 31.4px,114.6px 30.8px,122.7px 30.9px,123.2px 30.4px,136.6px 30.0px,137.1px 29.4px,142.4px 29.5px,143.0px 28.9px,151.4px 29.0px,151.9px 28.5px,156.6px 28.6px,157.1px 28.0px,171.6px 27.7px,174.6px 24.0px,176.7px 22.9px,182.3px 23.5px,186.8px 28.4px,187.8px 27.9px,196.3px 27.5px,196.8px 26.9px,201.3px 27.0px,201.8px 26.5px,206.3px 26.0px);), so the
+     curved lower edge follows the headlights and the bumper bars pass in front of it; the grille emblem stays visible in the gap. */
+  .game { display: grid; direction: ltr; grid-template-columns: 54% 12% 34%; align-items: center; padding: 0 3px 0 14px; border-radius: 0; clip-path: polygon(206.3px 0.2px,203.8px 1.2px,197.8px 1.1px,197.3px 1.6px,185.3px 1.8px,184.8px 2.3px,174.1px 2.0px,173.6px 2.5px,167.5px 2.4px,167.0px 2.9px,155.0px 2.6px,154.5px 3.1px,143.5px 2.8px,143.0px 3.4px,135.5px 3.2px,135.0px 3.7px,120.0px 3.3px,119.4px 3.9px,95.9px 3.8px,95.3px 4.4px,79.6px 4.0px,79.1px 4.5px,64.8px 4.2px,64.3px 4.8px,32.2px 4.0px,31.6px 4.6px,18.5px 4.2px,17.9px 3.6px,5.2px 3.3px,1.5px 2.1px,1.5px 34.9px,4.0px 34.9px,7.6px 36.1px,12.5px 36.1px,13.1px 36.7px,36.9px 36.9px,37.5px 36.3px,53.3px 36.4px,53.9px 35.9px,63.7px 35.9px,64.3px 35.4px,76.8px 35.5px,77.4px 34.9px,80.2px 34.9px,85.3px 32.2px,86.4px 32.2px,89.7px 28.3px,97.5px 28.4px,100.3px 31.8px,114.0px 31.4px,114.6px 30.8px,122.7px 30.9px,123.2px 30.4px,136.6px 30.0px,137.1px 29.4px,142.4px 29.5px,143.0px 28.9px,151.4px 29.0px,151.9px 28.5px,156.6px 28.6px,157.1px 28.0px,171.6px 27.7px,174.6px 24.0px,176.7px 22.9px,182.3px 23.5px,186.8px 28.4px,187.8px 27.9px,196.3px 27.5px,196.8px 26.9px,201.3px 27.0px,201.8px 26.5px,206.3px 26.0px);
+    background: linear-gradient(180deg, rgba(3,5,10,.86), rgba(3,5,10,.8)); box-shadow: none; animation: none; }
+  .game .l1 { grid-row: 1; grid-column: 1; justify-self: start; display: flex; align-items: center; gap: 5px; color: var(--amber-soft); font-size: 16px; font-weight: 700; line-height: 1.1; white-space: nowrap; }
+  .game .l2 { grid-row: 1; grid-column: 3; justify-self: center; align-self: start; margin-top: 4px; text-align: center; font-size: 9.5px; color: rgba(255,255,255,.82); line-height: 1.2; }
+  [dir=rtl] .game .l1 { grid-column: 3; direction: rtl; justify-self: center; align-self: start; margin-top: 5px; }
+  [dir=rtl] .game .l2 { grid-column: 1; direction: rtl; align-self: center; margin-top: 0; }
 
-  /* primary map button: a yellow, raised, clickable panel on the white side of the bus (it follows the bus's perspective) */
-  .hs.where { overflow: visible; z-index: 6; background: none; border: 0; padding: 0; }
+  /* primary map button: printed on the white side panel like the bus's own livery. Square edges (they are the panel's own edges),
+     multiplied into the paint so the panel's shading and reflections show through; the white lettering is cut out of the print. */
+  .hs.where { overflow: visible; z-index: 6; mix-blend-mode: multiply; border: 0; padding: 0; background: none; animation: none; clip-path: polygon(-0.0px 0.0px,77.0px 0.0px,77.0px 46.0px,33.6px 46.1px,32.6px 42.0px,30.6px 39.7px,27.9px 39.8px,25.7px 42.1px,24.3px 45.5px,-0.0px 46.0px); }
   .where .face {
-    position: absolute; inset: 0 0 4px 0; display: flex; align-items: center; justify-content: center; gap: 4px; padding: 0 5px;
-    border-radius: 6px; color: #1a1205; font-weight: 800; line-height: 1.05; text-align: center;
-    background: linear-gradient(180deg, #ffd467 0%, #f7b233 48%, #ee9b12 100%);
-    box-shadow: inset 0 1.5px 0 rgba(255,255,255,.65), inset 0 -2px 3px rgba(150,80,0,.35), 0 4px 0 #a96300, 0 6px 5px rgba(0,0,0,.4);
-    transition: transform .08s, box-shadow .08s;
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 8px;
+    color: var(--amber-soft); font-weight: 800; line-height: 1.05; text-align: center;
+    background: linear-gradient(180deg, #0c111b 0%, #070a11 100%);
+    box-shadow: inset 0 0 0 1px rgba(255,213,138,.34);
+    transition: filter .08s;
   }
   .where .face svg { flex: none; }
-  .where .wt { font-size: 11.5px; min-width: 0; text-wrap: balance; text-shadow: 0 1px 0 rgba(255,255,255,.35); }
-  .where:active .face { transform: translateY(3px); box-shadow: inset 0 1.5px 0 rgba(255,255,255,.5), inset 0 -2px 3px rgba(150,80,0,.35), 0 1px 0 #a96300, 0 2px 3px rgba(0,0,0,.4); }
+  .where .wt { font-size: 14px; min-width: 0; text-wrap: balance; }
+  .where:active .face { filter: brightness(1.5); }
   .where:focus-visible { outline: none; }
-  .where:focus-visible .face { outline: 3px solid #fff; outline-offset: 1px; }
+  .where:focus-visible .face { box-shadow: inset 0 0 0 3px var(--amber-soft); }
 
   .hot { animation: flash 1.2s ease-out backwards; animation-delay: var(--d, 0s); }
   @keyframes flash {
@@ -262,17 +268,17 @@
         <span id="slides"></span>
       </button>
 
-      <button class="hs news hot" id="newsBtn" style="--d:.9s;width:194px;height:38px;transform:matrix3d(1.341090,0.132890,0.000000,0.000966,0.000000,1.097046,0.000000,0.000000,0.000000,0.000000,1.000000,0.000000,161.265823,130.548523,0.000000,1.000000)" data-i18n-aria="h.news.aria" aria-label="Latest news on the route">
+      <button class="hs news hot" id="newsBtn" style="--d:.9s;width:194px;height:32px;transform:matrix3d(1.385065,0.152790,0.000000,0.001090,0.000000,1.079905,0.000000,0.000000,0.000000,0.000000,1.000000,0.000000,161.265823,133.839662,0.000000,1.000000)" data-i18n-aria="h.news.aria" aria-label="Latest news on the route">
         <span class="alert" data-i18n="h.breaking">Alert</span>
         <span class="crawl"><span class="track" id="track"></span></span>
       </button>
 
-      <button class="hs game hot" id="gameBtn" style="--d:1.3s;width:167px;height:19px;transform:matrix3d(1.126209,0.036230,0.000000,0.000363,0.000000,1.010437,0.000000,0.000000,0.000000,0.000000,1.000000,0.000000,175.527426,176.624473,0.000000,1.000000)" data-i18n-aria="h.game.aria" aria-label="Game 16">
+      <button class="hs game hot" id="gameBtn" style="--d:1.3s;width:207px;height:41px;transform:matrix3d(0.820712,-0.109120,0.000000,-0.000495,0.000000,0.936503,0.000000,0.000000,0.000000,0.000000,1.000000,0.000000,153.037975,172.236287,0.000000,1.000000)" data-i18n-aria="h.game.aria" aria-label="Game 16">
         <span class="l1"><span id="gameIco"></span><span data-i18n="h.game">Game 16</span></span>
         <span class="l2" data-i18n="h.game.sub">Collect points and win</span>
       </button>
 
-      <button class="hs where hot" id="whereBtn" style="--d:1.7s;width:73px;height:37px;transform:matrix3d(0.310800,-0.738190,0.000000,-0.007075,0.000000,0.652298,0.000000,0.000000,0.000000,0.000000,1.000000,0.000000,19.746835,114.092827,0.000000,1.000000)" data-i18n-aria="h.where.aria" aria-label="Where is the bus? Open the map">
+      <button class="hs where hot" id="whereBtn" style="--d:1.7s;width:77px;height:46px;transform:matrix3d(0.498104,-0.471684,0.000000,-0.005044,0.000000,0.751238,0.000000,0.000000,0.000000,0.000000,1.000000,0.000000,17.004219,110.801688,0.000000,1.000000)" data-i18n-aria="h.where.aria" aria-label="Where is the bus? Open the map">
         <span class="face"><span id="pinIco"></span><span class="wt" data-i18n="h.where">Where is it?</span></span>
       </button>
     </div>
@@ -406,7 +412,7 @@ const ICONS = {
 const icon = (n, s) => '<svg viewBox="0 0 24 24" width="' + (s || 22) + '" height="' + (s || 22) + '" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[n] + '</svg>';
 
 $('gameIco').innerHTML = icon('game', 13);
-$('pinIco').innerHTML = icon('pin', 15);
+$('pinIco').innerHTML = icon('pin', 16);
 $('compassIco').innerHTML = icon('compass', 22);
 $('bagIco').innerHTML = icon('bag', 22);
 $('closeIco').innerHTML = icon('close', 18);
@@ -437,13 +443,17 @@ addEventListener('resize', fit); fit();
    ========================================================== */
 let slideIdx = 0;
 $('slides').innerHTML = SHOPS.map((s, i) =>
-  '<span class="slide' + (i === 0 ? ' on' : '') + '"><span class="ico">' + icon(s.icon, 20) + '</span><span><small>' + esc(L(s.tag)) + '</small><b>' + esc(L(s.name)) + '</b><i>' + esc(t('place.' + s.where)) + '</i></span></span>'
+  '<span class="slide' + (i === 0 ? ' on' : '') + '"><span class="r1"><span class="ico">' + icon(s.icon, 22) + '</span><span class="tx"><small>' + esc(L(s.tag)) + '</small><i>' + esc(t('place.' + s.where)) + '</i></span></span><b>' + esc(L(s.name)) + '</b></span>'
 ).join('');
 // long shop names shrink a little so they fit on the windshield screen
 function fitSlides() {
-  $('slides').querySelectorAll('.slide b, .slide small').forEach(b => {
-    const big = b.tagName === 'B'; b.style.fontSize = ''; let fs = big ? 16 : 11;
-    while (b.scrollWidth > b.clientWidth + 1 && fs > 8.5) { fs -= .5; b.style.fontSize = fs + 'px'; }
+  $('slides').querySelectorAll('.slide b, .slide small, .slide i').forEach(b => {
+    const big = b.tagName === 'B', min = big ? 13 : 9;
+    b.style.fontSize = ''; b.style.width = ''; const avail = b.getBoundingClientRect().width;
+    let fs = parseFloat(getComputedStyle(b).fontSize);
+    b.style.width = 'max-content';
+    while (b.getBoundingClientRect().width > avail - 3 && fs > min) { fs -= .5; b.style.fontSize = fs + 'px'; }
+    b.style.width = '';
   });
 }
 setInterval(() => {
