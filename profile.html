@@ -47,6 +47,7 @@
   .f { display: block; margin-bottom: 14px; }
   .f > span { display: block; margin-bottom: 6px; font-size: 13.5px; font-weight: 500; color: rgba(238,241,247,.8); }
   .f input, .f select { width: 100%; height: 50px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.05); font-size: 16px; }
+  .f input[type=date] { color-scheme: dark; text-align: start; min-width: 0; }
   .f input::placeholder { color: rgba(147,160,184,.6); }
   .f input:focus, .f select:focus { border-color: rgba(244,166,42,.7); background: rgba(255,255,255,.07); outline: none; box-shadow: 0 0 0 3px rgba(244,166,42,.18); }
   .f input.bad, .f select.bad { border-color: rgba(255,122,127,.8); }
@@ -87,7 +88,7 @@
       </div>
     </div>
 
-    <label class="f"><span data-i18n="p.age">Age</span><input id="age" type="number" inputmode="numeric" min="13" max="100" data-i18n-ph="p.age.ph" placeholder="Your age"></label>
+    <label class="f"><span data-i18n="p.dob">Date of birth</span><input id="dob" type="date" min="1900-01-01"></label>
 
     <label class="f"><span data-i18n="p.country">Country</span>
       <select id="country" autocomplete="country-name"><option value="Lebanon" selected data-i18n="p.lebanon">Lebanon</option><option value="__other" data-i18n="p.other">Other country</option></select>
@@ -169,7 +170,7 @@ $('file').onchange = async () => {
   me = await whenUser();
   const p = me.profile || {};
   drawPic(p.photo || null);
-  if (p.age) $('age').value = p.age;
+  if (p.birthdate) $('dob').value = p.birthdate;
   if (p.country && p.country !== 'Lebanon') { $('country').value = '__other'; $('countryOther').value = p.country; $('districtTxt').value = p.district || ''; }
   else if (p.district) $('district').value = p.district;
   syncCountry();
@@ -183,16 +184,20 @@ document.addEventListener('input', e => { if (e.target.classList) e.target.class
 $('form').addEventListener('submit', async ev => {
   ev.preventDefault();
   if (!me) return;
-  ['age', 'country', 'countryOther', 'district', 'districtTxt', 'city', 'phone'].forEach(i => $(i).classList.remove('bad'));
+  ['dob', 'country', 'countryOther', 'district', 'districtTxt', 'city', 'phone'].forEach(i => $(i).classList.remove('bad'));
   const bad = (id, t) => { $(id).classList.add('bad'); $(id).focus(); say(t, 'err'); };
-  const age = Number($('age').value);
+  const dob = $('dob').value;                       // YYYY-MM-DD from the date picker
+  const ageOf = v => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || ''); if (!m) return NaN; const d = new Date(+m[1], +m[2] - 1, +m[3]);
+    if (d.getFullYear() !== +m[1] || d.getMonth() !== +m[2] - 1 || d.getDate() !== +m[3]) return NaN;
+    const n = new Date(); let a = n.getFullYear() - d.getFullYear(); if (n.getMonth() < d.getMonth() || (n.getMonth() === d.getMonth() && n.getDate() < d.getDate())) a--; return a; };
+  const age = ageOf(dob);
   const other = $('country').value === '__other';
   const country = other ? $('countryOther').value.trim() : 'Lebanon';
   const district = other ? $('districtTxt').value.trim() : $('district').value;
   const city = $('city').value.trim();
   const digits = C.normPhone($('phone').value);
 
-  if (!Number.isInteger(age) || age < 13 || age > 100) return bad('age', t('p.err.age'));
+  if (!Number.isInteger(age) || age < 13 || age > 100) return bad('dob', t('p.err.dob'));
   if (other && country.length < 2) return bad('countryOther', t('p.err.country'));
   if (!district) return bad(other ? 'districtTxt' : 'district', t(other ? 'p.err.districttxt' : 'p.err.district'));
   if (city.length < 2) return bad('city', t('p.err.city'));
@@ -203,7 +208,7 @@ $('form').addEventListener('submit', async ev => {
     const old = ((me.profile || {}).phone || '').replace(/\D/g, '');
     const email = fb.auth.currentUser.email;
     const u = {}, base = 'users/' + me.uid + '/';
-    u[base + 'age'] = age; u[base + 'country'] = country; u[base + 'district'] = district; u[base + 'city'] = city;
+    u[base + 'birthdate'] = dob; u[base + 'age'] = null; u[base + 'country'] = country; u[base + 'district'] = district; u[base + 'city'] = city;
     u[base + 'phone'] = '+' + digits; u[base + 'profileDone'] = true;
     if (photo !== undefined) u[base + 'photo'] = photo;          // string = new, null = delete
 

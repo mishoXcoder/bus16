@@ -49,6 +49,16 @@
   .mark { width: 38px; height: 38px; border-radius: 11px; background: var(--amber); color: #1a1205; display: grid; place-items: center; font-weight: 700; font-size: 18px; letter-spacing: -.5px; }
   .brand b { display: block; font-size: 19px; font-weight: 700; line-height: 1.15; }
   .brand small { display: block; margin-top: 2px; font-size: 12.5px; color: var(--muted); }
+  /* Bus Points (BP) balance: coin + number, top-left of the home screen */
+  .bp { display: flex; align-items: center; gap: 9px; height: 44px; padding-inline: 8px 17px; border-radius: 99px; text-align: start;
+    background: rgba(12,18,34,.72); border: 1px solid rgba(255,213,138,.34); box-shadow: 0 6px 18px rgba(0,0,0,.35);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+  .bp:active { transform: scale(.97); }
+  .bp .coinwrap { flex: none; width: 50px; height: 36px; transform: translateY(-4.5px); }
+  .bpv b { display: block; font-size: 20px; font-weight: 700; line-height: 1.05; color: #fff; font-variant-numeric: tabular-nums; }
+  .bpbig { display: flex; align-items: center; gap: 14px; margin: 4px 0 14px; }
+  .bpbig b { display: block; font-size: 34px; font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums; }
+  .bpbig small { display: block; margin-top: 3px; font-size: 13px; color: var(--amber-soft); }
   .hright { display: flex; align-items: center; gap: 10px; }
   .acct { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; background: rgba(255,255,255,.09); border: 1px solid var(--line); display: grid; place-items: center; font-size: 15px; font-weight: 700; color: var(--amber-soft); text-transform: uppercase; }
   .acct svg { display: block; }
@@ -248,10 +258,10 @@
   <div class="amb" aria-hidden="true"></div>
 
   <header class="top">
-    <div class="brand">
-      <div class="mark" aria-hidden="true">16</div>
-      <div><b data-i18n="h.brand">Bus 16</b><small id="hdrRoute"></small></div>
-    </div>
+    <button class="bp" id="bpBtn" aria-label="Bus Points">
+      <span class="coinwrap" id="bpCoin" aria-hidden="true"></span>
+      <span class="bpv"><b id="bpNum" dir="ltr">0</b></span>
+    </button>
     <div class="hright">
       <div class="tag" data-i18n="h.beta">Demo version</div>
       <button class="acct" id="acctBtn" data-i18n-aria="h.account" aria-label="My account"><span id="acctIni"></span><img id="acctImg" alt="" hidden></button>
@@ -388,7 +398,7 @@ const L = o => I18N.pick(o);
 const ago = m => m < 60 ? t('h.ago.min', { n: m }) : t('h.ago.hr', { n: Math.round(m / 60) });
 I18N.apply(document);   // fill in the fixed texts in the chosen language before the first layout
 const DIR_A = I18N.route('kornayel', 'bhamdoun'), DIR_B = I18N.route('bhamdoun', 'kornayel');
-$('hdrRoute').textContent = DIR_A; $('dirA').textContent = DIR_A; $('dirB').textContent = DIR_B;
+$('dirA').textContent = DIR_A; $('dirB').textContent = DIR_B;
 const busImg = document.querySelector('.busart img'); if (busImg) busImg.alt = t('h.brand');
 
 const ICONS = {
@@ -618,6 +628,49 @@ function priceSheet() {
    7) ACCOUNT (the sign-in itself lives in auth-guard.js)
    ========================================================== */
 $('cpIco').innerHTML = icon('user', 16);
+/* Bus Points: a gold coin with the front of a Bus 16 bus on it. Each profile has a "points" balance (missing = 0). */
+let coinN = 0;
+function coinSvg(size) {
+  // Two gold coins on a floor, seen from a slight angle: one lies flat (right), the other (left) rests with half of it on top of the first.
+  const n = ++coinN, g = 'bpg' + n, sd = 'bps' + n, bl = 'bpb' + n, bl2 = 'bpq' + n, clip = 'bpk' + n;
+  const coin = (cx, cy, rot) => {
+    const t = 3.4, rx = 14, ry = 8;
+    return '<g transform="translate(' + cx + ' ' + cy + ') rotate(' + rot + ')">' +
+      '<path d="M' + (-rx) + ' 0v' + t + 'a' + rx + ' ' + ry + ' 0 0 0 ' + (2 * rx) + ' 0v' + (-t) + 'z" fill="url(#' + sd + ')"/>' +
+      '<path d="M' + (-rx) + ' ' + (t - .2) + 'a' + rx + ' ' + ry + ' 0 0 0 ' + (2 * rx) + ' 0" fill="none" stroke="#6e3f05" stroke-width=".7"/>' +
+      '<ellipse rx="' + rx + '" ry="' + ry + '" fill="url(#' + g + ')" stroke="#b06a0a" stroke-width=".8"/>' +
+      '<ellipse rx="' + (rx - 2.8) + '" ry="' + (ry - 1.7) + '" fill="none" stroke="rgba(120,68,4,.5)" stroke-width=".9"/>' +
+      '<path d="M-10.5 -2.4A12.4 6.9 0 0 1 -2 -7.2" fill="none" stroke="rgba(255,250,225,.85)" stroke-width="1" stroke-linecap="round"/>' +
+      '<g transform="scale(1 .62)" font-family="Arial Black, Helvetica Neue, Arial, sans-serif" font-weight="900" font-size="10.4" text-anchor="middle" letter-spacing="-.2">' +
+      '<text x=".5" y="4.4" fill="rgba(255,246,214,.7)">BP</text><text x="0" y="3.8" fill="#6b3d04">BP</text></g></g>';
+  };
+  return '<svg viewBox="0 0 56 40" width="' + Math.round(size * 1.4) + '" height="' + size + '" aria-hidden="true">' +
+    '<defs>' +
+    '<radialGradient id="' + g + '" cx=".32" cy=".25" r=".95"><stop offset="0" stop-color="#ffeaa9"/><stop offset=".5" stop-color="#f6b33a"/><stop offset="1" stop-color="#c47a10"/></radialGradient>' +
+    '<linearGradient id="' + sd + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d79020"/><stop offset="1" stop-color="#8a5208"/></linearGradient>' +
+    '<filter id="' + bl + '" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="1.6"/></filter>' +
+    '<filter id="' + bl2 + '" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="1"/></filter>' +
+    '<clipPath id="' + clip + '"><ellipse cx="39" cy="26" rx="14" ry="8"/></clipPath></defs>' +
+    '<ellipse cx="30" cy="36.3" rx="26" ry="3.6" fill="#000" opacity=".4" filter="url(#' + bl + ')"/>' +                      // shadow on the floor
+    coin(39, 26, 0) +                                                                                                     // flat coin
+    '<g clip-path="url(#' + clip + ')"><ellipse cx="30.5" cy="27.5" rx="8.5" ry="7" fill="#000" opacity=".5" filter="url(#' + bl2 + ')"/></g>' + // shadow of the raised coin on the flat one
+    coin(17.5, 22, -18) +                                                                                                   // raised coin, left, half resting on the flat one
+    '</svg>';
+}
+$('bpCoin').innerHTML = coinSvg(36);
+function bpBalance() { const p = ((window.BUS16_USER || {}).profile) || {}; return Math.max(0, Math.floor(Number(p.points) || 0)); }
+function showBP() {
+  const n = I18N.num(bpBalance());
+  $('bpNum').textContent = n;
+  $('bpBtn').setAttribute('aria-label', t('h.bp.aria', { n: n }));
+}
+$('bpBtn').onclick = () => {
+  openSheet(t('h.bp.title'),
+    '<div class="bpbig">' + coinSvg(60) + '<div><b dir="ltr" id="bpBig">' + I18N.num(bpBalance()) + '</b><small>' + t('h.bp.bal') + '</small></div></div>' +
+    '<span class="chip">' + t('h.soon') + '</span><p class="muted">' + t('h.bp.lead') + '</p>');
+  if (window.bus16Refresh) window.bus16Refresh().then(() => { const b = $('bpBig'); if (b) b.textContent = I18N.num(bpBalance()); });
+};
+document.addEventListener('visibilitychange', () => { if (!document.hidden && window.bus16Refresh) window.bus16Refresh(); });
 function showUser() {
   const u = window.BUS16_USER; if (!u) return;
   const p = u.profile || {};
@@ -628,6 +681,7 @@ function showUser() {
   $('acctIni').innerHTML = ch ? '' : icon('user', 18);
   if (ch) $('acctIni').textContent = ch;
   $('cp').hidden = !!p.profileDone;
+  showBP();
 }
 addEventListener('bus16:user', showUser); showUser();
 $('acctBtn').onclick = () => {

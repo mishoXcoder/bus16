@@ -39,6 +39,13 @@ function fail() {
 
       window.BUS16_USER = { uid: user.uid, name: profile.name || user.displayName || '', username: profile.username, email: user.email || '', profile };
       window.bus16SignOut = () => fb.signOut(fb.auth);
+      // Re-read the profile (e.g. after Bus Points changed) and tell the page.
+      window.bus16Refresh = async () => {
+        try {
+          const s2 = await fb.get(fb.ref(fb.db, 'users/' + user.uid));
+          if (s2.exists()) { window.BUS16_USER.profile = s2.val(); window.dispatchEvent(new CustomEvent('bus16:user', { detail: window.BUS16_USER })); }
+        } catch (e) { /* offline: keep what we have */ }
+      };
       window.dispatchEvent(new CustomEvent('bus16:user', { detail: window.BUS16_USER }));
       root.style.visibility = 'visible';
     }, toLogin);
