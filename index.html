@@ -113,19 +113,18 @@
 
   /* primary map button: printed on the white side panel like the bus's own livery. Square edges (they are the panel's own edges),
      multiplied into the paint so the panel's shading and reflections show through; the white lettering is cut out of the print. */
-  .hs.where { overflow: visible; z-index: 6; mix-blend-mode: multiply; border: 0; padding: 0; background: none; animation: none; clip-path: polygon(-0.0px 0.0px,77.0px 0.0px,77.0px 46.0px,33.6px 46.1px,32.6px 42.0px,30.6px 39.7px,27.9px 39.8px,25.7px 42.1px,24.3px 45.5px,-0.0px 46.0px); }
+  .hs.where { overflow: visible; z-index: 6; border: 0; padding: 0; background: none; animation: none; clip-path: polygon(7.9px 4.1px,7.9px 8.4px,7.2px 9.0px,7.9px 21.6px,6.5px 25.0px,7.2px 30.2px,6.5px 30.8px,6.5px 43.6px,7.2px 44.0px,6.5px 45.2px,6.5px 57.9px,7.2px 58.3px,7.2px 61.5px,6.5px 62.1px,6.5px 100.9px,7.2px 101.2px,7.9px 119.1px,8.6px 119.4px,8.6px 124.7px,9.9px 128.5px,9.9px 133.2px,13.3px 135.3px,23.8px 135.9px,29.6px 135.5px,40.7px 136.7px,50.4px 136.3px,60.8px 137.5px,68.7px 137.0px,80.1px 138.0px,82.8px 137.0px,86.0px 132.1px,89.1px 128.7px,90.6px 127.6px,93.7px 127.0px,97.2px 128.4px,99.2px 130.4px,103.7px 138.2px,110.0px 139.3px,121.2px 139.1px,129.4px 140.1px,132.0px 139.4px,142.4px 140.6px,149.9px 140.2px,157.9px 141.2px,160.7px 140.8px,171.0px 141.7px,174.4px 141.4px,180.3px 142.2px,182.1px 141.7px,190.8px 142.5px,198.3px 142.3px,204.2px 143.1px,205.9px 142.7px,208.7px 143.0px,209.4px 142.7px,215.0px 143.5px,217.8px 143.2px,222.6px 143.9px,227.9px 143.6px,233.1px 144.3px,237.9px 144.1px,238.7px 143.3px,239.0px 142.5px,239.0px 5.1px,238.4px 4.2px,234.2px 3.7px,218.7px 4.1px,214.1px 3.6px,197.0px 4.0px,191.9px 3.4px,177.7px 3.9px,169.9px 3.2px,149.0px 3.7px,142.8px 3.0px,125.3px 3.5px,115.7px 2.8px,89.6px 3.3px,84.4px 2.7px,78.5px 3.0px,74.8px 2.6px,59.7px 3.1px,47.4px 2.3px,22.5px 2.9px,11.3px 2.1px); }
   .where .face {
-    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 0 8px;
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: calc(6px * var(--k, 1)); padding: 0 calc(8px * var(--k, 1));
     color: var(--amber-soft); font-weight: 800; line-height: 1.05; text-align: center;
-    background: linear-gradient(180deg, #0c111b 0%, #070a11 100%);
-    box-shadow: inset 0 0 0 1px rgba(255,213,138,.34);
+    background: linear-gradient(180deg, rgba(3,5,10,.84), rgba(3,5,10,.78));
     transition: filter .08s;
   }
-  .where .face svg { flex: none; }
-  .where .wt { font-size: 14px; min-width: 0; text-wrap: balance; }
-  .where:active .face { filter: brightness(1.5); }
+  .where .face svg { flex: none; width: calc(16px * var(--k, 1)); height: calc(16px * var(--k, 1)); }
+  .where .wt { font-size: calc(14px * var(--k, 1)); min-width: 0; text-wrap: balance; }
+  .where:active .face { filter: brightness(1.6); }
   .where:focus-visible { outline: none; }
-  .where:focus-visible .face { box-shadow: inset 0 0 0 3px var(--amber-soft); }
+  .where:focus-visible .face { box-shadow: inset 0 0 0 calc(2px * var(--k, 1)) var(--amber-soft); }
 
   .hot { animation: flash 1.2s ease-out backwards; animation-delay: var(--d, 0s); }
   @keyframes flash {
@@ -242,6 +241,90 @@
   .lang button { height: 42px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.06); font-size: 15px; font-weight: 600; text-align: center; color: var(--muted); }
   .lang button[aria-pressed=true] { background: rgba(244,166,42,.14); border-color: rgba(244,166,42,.6); color: var(--amber-soft); }
 
+  /* ---------- daily spin: blue callout on the front wheel ---------- */
+  .daily { position: absolute; inset: 0; pointer-events: none; z-index: 7; }
+  .daily > svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .daily .ln { fill: none; stroke: #3d8bff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 3px rgba(61,139,255,.8)); }
+  .daily .dot { fill: #8fc0ff; stroke: #fff; stroke-width: 1.6; vector-effect: non-scaling-stroke; }
+  .daily .ring { fill: none; stroke: #5aa2ff; stroke-width: 1.6; vector-effect: non-scaling-stroke; transform-box: fill-box; transform-origin: center; animation: dring 1.8s ease-out infinite; }
+  @keyframes dring { from { transform: scale(1); opacity: .9; } to { transform: scale(3.4); opacity: 0; } }
+  .dlabel { position: absolute; transform: translate(-100%, -50%); pointer-events: auto; display: flex; align-items: center; gap: 6px; padding: 5px 11px 5px 8px; border-radius: 99px;
+    background: linear-gradient(180deg, #4a93ff, #1f56c9); color: #fff; font-weight: 700; font-size: 12.5px; line-height: 1.1; white-space: nowrap;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 4px 12px rgba(10,40,120,.55), 0 0 0 1px rgba(10,30,90,.5); }
+  .dlabel:active { transform: translate(-100%, -50%) scale(.96); }
+  .dlabel .wi { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: rgba(4,10,30,.35); }
+  .dlabel .sub { display: block; font-size: 10px; font-weight: 600; opacity: .9; font-variant-numeric: tabular-nums; }
+  .dlabel .gl { position: absolute; top: -3px; inset-inline-end: -2px; width: 11px; height: 11px; border-radius: 50%; background: #ffc43d; box-shadow: 0 0 0 2px #1f56c9, 0 0 8px #ffc43d; animation: dpulse 1.4s ease-in-out infinite; }
+  .dlabel.used .gl { display: none; }
+  .dlabel:not(.used) .sub { display: none; }
+  @keyframes dpulse { 50% { transform: scale(1.25); } }
+
+  /* zoom into the front wheel */
+  html.spinning, html.spinning body { overflow: hidden; }
+  .hero.zlift { z-index: 60; pointer-events: none; }
+  .under, .dock { transition: opacity .35s ease; }
+  html.spinning .under, html.spinning .dock { opacity: 0; }
+  /* a spiral: the bus turns a full circle around the front wheel while the camera dives in (and back out) */
+  .hero .stage { transform-origin: 35.7% 88.5%; transition: transform 1.4s cubic-bezier(.5,.05,.2,1);
+    transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--fs, 1)) perspective(900px) rotate(var(--r, 0deg)) scale(var(--z, 1)); }
+  .hero.zoom .stage { --r: -371deg; --z: 10; }
+
+  /* ---------- the wheel screen ---------- */
+  .spin { position: fixed; inset: 0; z-index: 70; display: flex; flex-direction: column; align-items: center; padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+    background: radial-gradient(120% 80% at 50% 28%, rgba(14,20,38,.96), rgba(3,5,10,.98)); opacity: 0; transition: opacity .45s ease; overflow: hidden; }
+  .spin[hidden] { display: none; }
+  .spin.on { opacity: 1; }
+  .sp-top { width: 100%; max-width: 460px; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 0; }
+  .sp-top b { font-size: 17px; font-weight: 700; color: var(--amber-soft); letter-spacing: .02em; }
+  .sp-ic { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); color: var(--text); }
+  .sp-ic.ghost { visibility: hidden; }
+  .sp-stagebox { flex: 1 1 auto; min-height: 0; width: 100%; display: grid; place-items: center; padding-top: 22px; }
+  .sp-wheelbox { position: relative; width: min(80vw, 40vh, 340px); aspect-ratio: 1; transform: scale(.55); transition: transform 1s cubic-bezier(.2,.8,.2,1) .25s; filter: drop-shadow(0 22px 28px rgba(0,0,0,.6)); }
+  .spin.on .sp-wheelbox { transform: none; }
+  .sp-wheel { position: absolute; inset: 0; border-radius: 50%; will-change: transform; }
+  .sp-wheelbox::after { content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+    background: radial-gradient(circle at 30% 24%, rgba(255,255,255,.26), rgba(255,255,255,0) 42%), radial-gradient(circle at 70% 82%, rgba(0,0,0,.35), rgba(0,0,0,0) 45%); }
+  .sp-ptr { position: absolute; z-index: 3; left: 50%; top: -6%; width: 13%; transform: translateX(-50%); transform-origin: 50% 18%; filter: drop-shadow(0 4px 6px rgba(0,0,0,.6)); transition: transform .06s; }
+  .sp-ptr.flick { transform: translateX(-50%) rotate(-14deg); }
+  .sp-msg { margin: 8px 20px 0; min-height: 22px; text-align: center; font-size: 15px; font-weight: 600; color: var(--text); }
+  .sp-brake { position: relative; width: min(92vw, 380px); margin-top: 4px; padding-bottom: 6px; touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab;
+    transform: translateY(120%); opacity: 0; transition: transform .6s cubic-bezier(.2,.8,.2,1), opacity .4s; outline: none; perspective: 700px; }
+  .sp-brake.up { transform: none; opacity: 1; }
+  .sp-brake.up.done { transform: translateY(46px); opacity: 0; pointer-events: none; transition: transform .5s ease, opacity .4s ease; }
+  .sp-brake:focus-visible .hb { outline: 3px solid var(--amber-soft); outline-offset: 4px; border-radius: 12px; }
+  .sp-brake .hb { display: block; width: 100%; height: auto; transform: rotateX(18deg) rotateY(-14deg); transform-origin: 50% 90%; filter: drop-shadow(0 18px 18px rgba(0,0,0,.7)); }
+  .sp-hint { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 2px; color: var(--amber-soft); font-size: 17px; font-weight: 700; text-shadow: 0 2px 8px rgba(0,0,0,.7); }
+  .sp-hint .arr { display: inline-grid; animation: bob 1s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: translateY(-6px); } }
+  .sp-brake.pulled .sp-hint { visibility: hidden; }
+  #lever { transition: none; }
+  .sp-result { position: absolute; left: 0; right: 0; bottom: 0; z-index: 8; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 22px 20px calc(26px + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, rgba(3,5,10,0), rgba(3,5,10,.9) 38%); }
+  .sp-result[hidden] { display: none; }
+  .sp-won { display: flex; align-items: baseline; justify-content: center; gap: 10px; animation: pop .55s cubic-bezier(.2,1.4,.3,1) both; }
+  .sp-won .lab { font-size: 17px; color: var(--muted); font-weight: 600; }
+  .sp-won b { font-size: 54px; line-height: 1; font-weight: 800; color: var(--amber-soft); text-shadow: 0 0 22px rgba(255,190,70,.55); font-variant-numeric: tabular-nums; }
+  .sp-won .bpl { font-size: 20px; font-weight: 800; color: var(--amber); letter-spacing: .08em; }
+  .sp-won.again b { font-size: 34px; color: #9cc4ff; text-shadow: 0 0 18px rgba(80,140,255,.5); }
+  .sp-won.again .lab, .sp-won.again .bpl { display: none; }
+  @keyframes pop { from { transform: scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
+  .sp-btn { min-width: 200px; padding: 14px 34px; border: 0; border-radius: 99px; font: inherit; font-size: 18px; font-weight: 800; color: #2a1800; cursor: pointer;
+    background: linear-gradient(180deg, #ffe08a, #f4a62a 55%, #d98410); box-shadow: inset 0 2px 0 rgba(255,255,255,.6), 0 6px 0 #9a5b05, 0 12px 22px rgba(0,0,0,.5); transition: transform .08s, box-shadow .08s; }
+  .sp-btn:active { transform: translateY(4px); box-shadow: inset 0 2px 0 rgba(255,255,255,.5), 0 2px 0 #9a5b05, 0 6px 12px rgba(0,0,0,.5); }
+  .sp-btn.blue { color: #fff; background: linear-gradient(180deg, #6aa8ff, #2a67e0 55%, #1b49ab); box-shadow: inset 0 2px 0 rgba(255,255,255,.5), 0 6px 0 #11307a, 0 12px 22px rgba(0,0,0,.5); }
+  .sp-rain { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 9; }
+  .coinfall { position: absolute; top: -60px; width: var(--s, 30px); height: var(--s, 30px); animation: fall var(--dur, 2.2s) cubic-bezier(.3,.1,.6,1) var(--dl, 0s) forwards; will-change: transform; }
+  .coinfall > i { display: block; width: 100%; height: 100%; animation: flip var(--fl, .9s) linear infinite; transform-style: preserve-3d; }
+  @keyframes fall { to { transform: translate3d(var(--dx, 0), 118vh, 0); } }
+  @keyframes flip { to { transform: rotateY(360deg); } }
+  .sp-ic svg { display: block; }
+  .bp.bump { animation: bump .5s cubic-bezier(.2,1.5,.3,1); }
+  @keyframes bump { 40% { transform: scale(1.14); } }
+  @media (prefers-reduced-motion: reduce) {
+    .hero.zoom .stage, .hero .stage, .spin, .sp-wheelbox, .sp-brake { transition: none; }
+    .daily .ring, .dlabel .gl, .sp-hint .arr, .sp-won, .bp.bump { animation: none; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     /* no motion: show the first headline, wrapped on up to two small lines so nothing is cut off */
     .track, html[dir=ltr] .track { animation: none; position: static; left: auto; transform: none; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; white-space: normal; padding: 0 8px; font-size: 10.5px; line-height: 12px; overflow: hidden; }
@@ -289,7 +372,18 @@
         <span class="gico" id="gameIco"></span>
       </button>
 
-      <button class="hs where hot" id="whereBtn" style="--d:1.7s;width:77px;height:46px;transform:matrix3d(0.498104,-0.471684,0.000000,-0.005044,0.000000,0.751238,0.000000,0.000000,0.000000,0.000000,1.000000,0.000000,17.004219,110.801688,0.000000,1.000000)" data-i18n-aria="h.where.aria" aria-label="Where is the bus? Open the map">
+      <div class="daily" id="daily">
+        <svg viewBox="0 0 711 529" preserveAspectRatio="none" aria-hidden="true">
+          <path class="ln" d="M262 478 L236 497 L230 497"/>
+          <circle class="ring" cx="262" cy="478" r="6"/>
+          <circle class="dot" cx="262" cy="478" r="6"/>
+        </svg>
+        <button class="dlabel" id="dailyBtn" type="button" style="left:32.4%;top:94%" data-i18n-aria="h.spin.aria" aria-label="Daily spin: spin the wheel">
+          <span class="wi" id="dailyIco"></span><span><span data-i18n="h.spin.label">Daily spin</span><span class="sub"></span></span><i class="gl"></i>
+        </button>
+      </div>
+
+      <button class="hs where hot" id="whereBtn" style="--d:1.7s;--k:3;width:244px;height:148px;transform:matrix3d(0.174072,-0.139075,0.000000,-0.001551,0.000000,0.255730,0.000000,0.000000,0.000000,0.000000,1.000000,0.000000,14.810127,108.607595,0.000000,1.000000)" data-i18n-aria="h.where.aria" aria-label="Where is the bus? Open the map">
         <span class="face"><span id="pinIco"></span><span class="wt" data-i18n="h.where">Where is it?</span></span>
       </button>
     </div>
@@ -319,6 +413,95 @@
   </nav>
 
   <div class="veil" id="veil"></div>
+    <!-- ===== Daily spin: full-screen wheel with a handbrake ===== -->
+  <div class="spin" id="spin" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="spTitle">
+    <div class="sp-top">
+      <button class="sp-ic" id="spSound" type="button" data-i18n-aria="sp.sound" aria-label="Sound" aria-pressed="true"><span id="spSoundIco"></span></button>
+      <b id="spTitle" data-i18n="h.spin.label">Daily spin</b>
+      <button class="sp-ic" id="spClose" type="button" data-i18n-aria="sp.close" aria-label="Close"><span id="spCloseIco"></span></button>
+    </div>
+    <div class="sp-stagebox">
+      <div class="sp-wheelbox" id="spBox" role="img" data-i18n-aria="sp.wheel.aria" aria-label="Prize wheel">
+        <div class="sp-wheel" id="spWheel"></div>
+        <svg class="sp-ptr" id="spPtr" viewBox="0 0 40 52" aria-hidden="true">
+          <defs><linearGradient id="ptrG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7db3ff"/><stop offset="1" stop-color="#1f56c9"/></linearGradient></defs>
+          <path d="M20 50 L4 12 Q4 3 13 3 L27 3 Q36 3 36 12 Z" fill="url(#ptrG)" stroke="#e8f1ff" stroke-width="2.2" stroke-linejoin="round"/>
+          <circle cx="20" cy="14" r="5" fill="#e8f1ff"/>
+        </svg>
+      </div>
+    </div>
+    <p class="sp-msg" id="spMsg" aria-live="polite"></p>
+
+    <div class="sp-brake" id="spBrake" role="button" tabindex="0" data-i18n-aria="sp.brake.aria" aria-label="Handbrake lever">
+      <div class="sp-hint"><span class="arr" id="spArr"></span><b data-i18n="sp.brake">Pull the handbrake</b></div>
+      <svg viewBox="0 0 340 214" class="hb" aria-hidden="true">
+        <defs>
+          <linearGradient id="hbTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4151"/><stop offset="1" stop-color="#1b2029"/></linearGradient>
+          <linearGradient id="hbFront" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1e27"/><stop offset="1" stop-color="#0a0c11"/></linearGradient>
+          <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2f5fa"/><stop offset=".22" stop-color="#b9c1cf"/><stop offset=".55" stop-color="#6d7688"/><stop offset=".85" stop-color="#3c4352"/><stop offset="1" stop-color="#8c95a6"/></linearGradient>
+          <linearGradient id="plate" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#aeb6c4"/><stop offset=".5" stop-color="#6a7283"/><stop offset="1" stop-color="#3b4150"/></linearGradient>
+          <linearGradient id="rubber" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4b505c"/><stop offset=".18" stop-color="#262a33"/><stop offset=".7" stop-color="#101319"/><stop offset="1" stop-color="#05060a"/></linearGradient>
+          <linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".3" stop-color="#c8d0dd"/><stop offset=".6" stop-color="#7d8697"/><stop offset="1" stop-color="#d6dce6"/></linearGradient>
+          <linearGradient id="btn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6a6f"/><stop offset="1" stop-color="#a11c25"/></linearGradient>
+          <radialGradient id="bolt" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#aab3c2"/><stop offset="1" stop-color="#4d5565"/></radialGradient>
+          <filter id="hbBlur" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="4"/></filter>
+        </defs>
+        <!-- console block (top face + front face) -->
+        <path d="M14 168 L44 142 L300 142 L328 168 Z" fill="url(#hbTop)"/>
+        <path d="M14 168 L328 168 L328 206 Q328 212 322 212 L20 212 Q14 212 14 206 Z" fill="url(#hbFront)"/>
+        <path d="M14 168 L328 168" stroke="rgba(255,255,255,.22)" stroke-width="1.5"/>
+        <path d="M44 142 L300 142" stroke="rgba(255,255,255,.10)" stroke-width="1"/>
+        <!-- ratchet quadrant: steel plate with teeth -->
+        <g>
+          <path d="M250 138 L146 138 A104 104 0 0 1 250 34 Z" fill="url(#plate)" stroke="#2b303d" stroke-width="1.5"/>
+          <path d="M250 138 L146 138 A104 104 0 0 1 250 34 Z" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1" transform="translate(1.2 1.2)"/>
+          <path d="M250 138 L170 138 A80 80 0 0 1 250 58 Z" fill="rgba(0,0,0,.12)"/>
+          <g id="teeth" stroke="#1f232d" stroke-width="2.4" stroke-linecap="round"></g>
+          <circle cx="201" cy="104" r="5" fill="url(#bolt)" stroke="#2b303d"/><circle cx="230" cy="82" r="5" fill="url(#bolt)" stroke="#2b303d"/>
+        </g>
+        <!-- shadow of the lever on the console -->
+        <ellipse id="hbShadow" cx="170" cy="164" rx="86" ry="7" fill="#000" opacity=".55" filter="url(#hbBlur)"/>
+        <!-- rubber boot -->
+        <g>
+          <path d="M226 148 Q226 132 238 128 L262 128 Q274 132 274 148 L286 170 L214 170 Z" fill="url(#rubber)" stroke="#000" stroke-opacity=".5"/>
+          <path d="M224 152 Q250 158 276 152" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1.6"/>
+          <path d="M221 160 Q250 167 279 160" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1.6"/>
+          <path d="M229 144 Q250 149 271 144" fill="none" stroke="rgba(255,255,255,.26)" stroke-width="1.6"/>
+        </g>
+        <!-- lever: rotates about the pivot -->
+        <g id="lever" style="transform-box:view-box;transform-origin:250px 138px">
+          <!-- tube -->
+          <rect x="150" y="131" width="104" height="14" rx="7" fill="url(#steel)" stroke="#2a2f3a" stroke-width=".8"/>
+          <rect x="154" y="133" width="96" height="2.6" rx="1.3" fill="#fff" opacity=".75"/>
+          <!-- chrome collar -->
+          <rect x="138" y="125" width="18" height="26" rx="5" fill="url(#chrome)" stroke="#2a2f3a" stroke-width=".8"/>
+          <rect x="141" y="127" width="3" height="22" rx="1.5" fill="#fff" opacity=".7"/>
+          <!-- rubber pistol grip -->
+          <path d="M46 123 Q46 114 58 114 L132 118 Q142 119 142 128 L142 148 Q142 157 132 158 L58 160 Q46 160 46 151 Z" fill="url(#rubber)" stroke="#000" stroke-opacity=".6" stroke-width="1"/>
+          <path d="M52 119 L134 122" stroke="rgba(255,255,255,.34)" stroke-width="2" stroke-linecap="round"/>
+          <g stroke="rgba(0,0,0,.65)" stroke-width="2.4" stroke-linecap="round">
+            <path d="M66 122 L66 156"/><path d="M78 122 L78 156"/><path d="M90 122 L90 156"/><path d="M102 123 L102 156"/><path d="M114 123 L114 157"/><path d="M126 124 L126 157"/>
+          </g>
+          <g stroke="rgba(255,255,255,.10)" stroke-width="1.2"><path d="M68 122 L68 156"/><path d="M80 122 L80 156"/><path d="M92 122 L92 156"/><path d="M104 123 L104 156"/><path d="M116 123 L116 157"/><path d="M128 124 L128 157"/></g>
+          <!-- end cap + release button -->
+          <path d="M46 123 Q38 123 38 137 Q38 151 46 151 Z" fill="url(#chrome)" stroke="#2a2f3a" stroke-width=".8"/>
+          <rect x="78" y="105" width="36" height="12" rx="5" fill="url(#btn)" stroke="#3c0a0e" stroke-width="1"/>
+          <rect x="82" y="107" width="28" height="2.6" rx="1.3" fill="#fff" opacity=".55"/>
+        </g>
+        <!-- pivot bolt -->
+        <circle cx="250" cy="138" r="13" fill="url(#bolt)" stroke="#2a2f3a" stroke-width="1.2"/>
+        <circle cx="250" cy="138" r="6" fill="#4b5262" stroke="#1d2129"/><path d="M245 138 L255 138 M250 133 L250 143" stroke="#1d2129" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <div class="sp-result" id="spResult" hidden>
+      <div class="sp-won" id="spWon"><span class="lab" data-i18n="sp.won">You won</span><b id="spAmt" dir="ltr">+0</b><span class="bpl">BP</span></div>
+      <button class="sp-btn" id="spGo" type="button"></button>
+    </div>
+    <div class="sp-rain" id="spRain" aria-hidden="true"></div>
+  </div>
+
+
   <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle" aria-hidden="true">
     <div class="grab"></div>
     <header><h2 id="shTitle"></h2><button class="x" id="shClose" data-i18n-aria="h.close" aria-label="Close"><span id="closeIco"></span></button></header>
@@ -418,7 +601,11 @@ const ICONS = {
   search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/>',
   user: '<circle cx="12" cy="8.5" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/>',
   close: '<path d="M6 6l12 12M18 6L6 18"/>',
-  chev: '<path d="M14.5 6l-6 6 6 6"/>'
+  chev: '<path d="M14.5 6l-6 6 6 6"/>',
+  spin: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="2.2"/><path d="M12 3.5v6.3M12 14.2v6.3M3.5 12h6.3M14.2 12h6.3"/>',
+  sound: '<path d="M4 9.5v5h3.6l4.4 3.8V5.7L7.6 9.5z"/><path d="M15.6 9a4.2 4.2 0 0 1 0 6M18 6.6a7.6 7.6 0 0 1 0 10.8"/>',
+  mute: '<path d="M4 9.5v5h3.6l4.4 3.8V5.7L7.6 9.5z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/>',
+  up: '<path d="M12 19V5M6 11l6-6 6 6"/>'
 };
 const icon = (n, s) => '<svg viewBox="0 0 24 24" width="' + (s || 22) + '" height="' + (s || 22) + '" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[n] + '</svg>';
 
@@ -437,15 +624,19 @@ const GROUND = 272, STAGE_H = 290;
 function fit() {
   const W = app.clientWidth, H = app.clientHeight;
   const s = Math.min(W / 390, 1.08);
-  stage.style.transform = 'scale(' + s + ')';
+  // the stage is scaled to the screen width; the origin sits on the front wheel so the spin-zoom can pivot there (see spin.css)
+  const ox = 0.357 * 390, oy = 0.885 * STAGE_H;
+  stage.style.setProperty('--fs', s);
+  stage.style.setProperty('--tx', ((195 - ox) * (1 - s)).toFixed(2) + 'px');
+  stage.style.setProperty('--ty', (-oy * (1 - s)).toFixed(2) + 'px');
   // stack: header, bus, cards, price button, then the dock. Spread any spare room above the bus.
   const under = $('under'), busH = STAGE_H * s, underH = under.offsetHeight;
   const dockTop = H - 18 - 54;
-  const spare = dockTop - 14 - (62 + busH - 14 + underH);
+  const spare = dockTop - 14 - (62 + busH + 8 + underH);
   const top = 62 + Math.max(0, spare * 0.4);
   hero.style.top = top + 'px';
   hero.style.height = busH + 'px';
-  under.style.top = (top + busH - 14) + 'px';
+  under.style.top = (top + busH + 8) + 'px';
 }
 addEventListener('resize', fit); fit();
 
@@ -661,7 +852,7 @@ function coinSvg(size) {
 $('bpCoin').innerHTML = coinSvg(36);
 function bpBalance() { const p = ((window.BUS16_USER || {}).profile) || {}; return Math.max(0, Math.floor(Number(p.points) || 0)); }
 function showBP() {
-  const n = I18N.num(bpBalance());
+  const n = I18N.num(window.__bpHold != null ? window.__bpHold : bpBalance());
   $('bpNum').textContent = n;
   $('bpBtn').setAttribute('aria-label', t('h.bp.aria', { n: n }));
 }
@@ -709,6 +900,284 @@ $('gameBtn').onclick = gameInfo;
 $('villageBtn').onclick = villageInfo;
 $('shopsBtn').onclick = shopsList;
 $('whereBtn').onclick = () => { location.href = MAP_PAGE; };
+/* =====================================================================
+   DAILY SPIN. The blue "Daily spin" line on the front wheel opens a prize wheel.
+   Odds: 10 BP 40%, 25 BP 30%, try again 13%, 50 BP 12%, 100 BP 5%.
+   The reward is drawn when the wheel starts and saved at once (so closing the page cannot undo a spin);
+   the handbrake only decides WHEN the wheel stops, it always lands on the drawn prize.
+   To move the draw to a server later, replace draw() + window.bus16Spin() with one call to a Cloud Function.
+   ===================================================================== */
+(function () {
+  const WHEEL = [25, 50, 10, 0, 100, 25, 50, 10];            // slices clockwise from the top; 0 = try again
+  const ODDS = [[10, 40], [25, 30], [0, 13], [50, 12], [100, 5]];
+  const SEG = 360 / WHEEL.length;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+  /* ---------- Beirut calendar day (the wheel resets at midnight, Beirut time) ---------- */
+  function bParts(d) {
+    const o = {};
+    new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Beirut', hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' })
+      .formatToParts(d).forEach(p => { o[p.type] = p.value; });
+    return o;
+  }
+  const beirutDay = d => { const o = bParts(d || new Date()); return Date.UTC(+o.year, +o.month - 1, +o.day) / 86400000; };
+  const untilReset = () => { const o = bParts(new Date()); return 86400 - ((+o.hour % 24) * 3600 + (+o.minute) * 60 + (+o.second)); };
+  const hms = s => [Math.floor(s / 3600), Math.floor(s % 3600 / 60), s % 60].map(n => String(n).padStart(2, '0')).join(':');
+  const spun = () => Number((((window.BUS16_USER || {}).profile) || {}).spinDay || 0) >= beirutDay();
+
+  /* ---------- sound (all synthesised, no files) ---------- */
+  const sfx = (() => {
+    let ctx = null, master = null, hum = null, on = true;
+    try { on = localStorage.getItem('bus16_sfx') !== '0'; } catch (e) {}
+    const ac = () => {
+      if (!ctx) { const A = window.AudioContext || window.webkitAudioContext; if (!A) return null; ctx = new A(); master = ctx.createGain(); master.gain.value = .55; master.connect(ctx.destination); }
+      if (ctx.state === 'suspended') ctx.resume();
+      return ctx;
+    };
+    const tone = (f, dur, type, vol, to, delay) => {
+      const c = on && ac(); if (!c) return; const t0 = c.currentTime + (delay || 0), o = c.createOscillator(), g = c.createGain();
+      o.type = type || 'sine'; o.frequency.setValueAtTime(f, t0); if (to) o.frequency.exponentialRampToValueAtTime(to, t0 + dur);
+      g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(vol || .2, t0 + .008); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      o.connect(g); g.connect(master); o.start(t0); o.stop(t0 + dur + .02);
+    };
+    const noise = (dur, vol, f0, f1, q, delay) => {
+      const c = on && ac(); if (!c) return; const t0 = c.currentTime + (delay || 0), n = Math.max(1, Math.floor(c.sampleRate * dur)), buf = c.createBuffer(1, n, c.sampleRate), d = buf.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+      const s = c.createBufferSource(); s.buffer = buf; const f = c.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = q || 4;
+      f.frequency.setValueAtTime(f0, t0); f.frequency.exponentialRampToValueAtTime(Math.max(40, f1 || f0), t0 + dur);
+      const g = c.createGain(); g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      s.connect(f); f.connect(g); g.connect(master); s.start(t0);
+    };
+    return {
+      get on() { return on; },
+      toggle() { on = !on; try { localStorage.setItem('bus16_sfx', on ? '1' : '0'); } catch (e) {} if (!on) this.humStop(); else ac(); return on; },
+      unlock() { ac(); },
+      tick(v) { tone(1500 + Math.random() * 120, .035, 'square', .05 * (v == null ? 1 : v)); },
+      ratchet() { noise(.05, .5, 2600, 1800, 6); tone(900, .03, 'square', .05); },
+      screech(dur) { noise(dur || .9, .22, 2200, 700, 9); },
+      humStart() { const c = on && ac(); if (!c || hum) return; const o = c.createOscillator(), o2 = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain();
+        o.type = 'sawtooth'; o2.type = 'triangle'; f.type = 'lowpass'; f.frequency.value = 500; g.gain.value = 0.0001; o.frequency.value = 70; o2.frequency.value = 35;
+        o.connect(f); o2.connect(f); f.connect(g); g.connect(master); o.start(); o2.start(); hum = { o, o2, g, f }; },
+      humSet(v) { if (!hum || !ctx) return; const t0 = ctx.currentTime; hum.o.frequency.setTargetAtTime(60 + 150 * v, t0, .08); hum.o2.frequency.setTargetAtTime(30 + 75 * v, t0, .08); hum.f.frequency.setTargetAtTime(350 + 900 * v, t0, .08); hum.g.gain.setTargetAtTime(.012 + .05 * v, t0, .08); },
+      humStop() { if (!hum || !ctx) { hum = null; return; } const h = hum; hum = null; h.g.gain.setTargetAtTime(0.0001, ctx.currentTime, .07); setTimeout(() => { try { h.o.stop(); h.o2.stop(); } catch (e) {} }, 400); },
+      chime() { [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => { tone(f, .5, 'triangle', .16, null, i * .09); tone(f * 2, .4, 'sine', .05, null, i * .09); }); },
+      coin() { const f = 1700 + Math.random() * 900; tone(f, .16, 'sine', .08); tone(f * 1.5, .22, 'sine', .05, null, .045); },
+      womp() { tone(330, .3, 'sawtooth', .1, 180); tone(220, .4, 'sawtooth', .1, 110, .22); },
+      whoosh() { noise(.9, .25, 300, 2400, 1.2); }
+    };
+  })();
+
+  /* ---------- the wheel ---------- */
+  const SLICE = { 10: ['#16233d', '#7f98c8'], 25: ['#17335f', '#86b6ff'], 50: ['#5b3c08', '#ffc65a'], 100: ['#f6b535', '#fff0b8'], 0: ['#3a161b', '#ff9aa0'] };
+  const pt = (a, r) => [(r * Math.sin(a * Math.PI / 180)).toFixed(2), (-r * Math.cos(a * Math.PI / 180)).toFixed(2)];
+  const wedge = (i, r0, r1) => {
+    const a0 = i * SEG - SEG / 2 + .4, a1 = i * SEG + SEG / 2 - .4, p = [pt(a0, r1), pt(a1, r1), pt(a1, r0), pt(a0, r0)];
+    return 'M' + p[0] + 'A' + r1 + ' ' + r1 + ' 0 0 1 ' + p[1] + 'L' + p[2] + 'A' + r0 + ' ' + r0 + ' 0 0 0 ' + p[3] + 'Z';
+  };
+  function buildWheel() {
+    let s = '<svg viewBox="-160 -160 320 320" width="100%" height="100%" aria-hidden="true"><defs>' +
+      '<radialGradient id="wRim" cx=".5" cy=".5" r=".5"><stop offset=".86" stop-color="#cfd6e2"/><stop offset=".93" stop-color="#7b8497"/><stop offset="1" stop-color="#2b303d"/></radialGradient>' +
+      '<linearGradient id="wGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe9a0"/><stop offset=".55" stop-color="#f4b02f"/><stop offset="1" stop-color="#c9780c"/></linearGradient>' +
+      '<radialGradient id="wHub" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="#b3bccb"/><stop offset="1" stop-color="#3f4655"/></radialGradient>' +
+      '<radialGradient id="wDeep" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#0a0d14"/><stop offset="1" stop-color="#1a2030"/></radialGradient></defs>';
+    s += '<circle r="159" fill="#06080c"/>';                                                           // tyre
+    for (let i = 0; i < 44; i++) s += '<rect x="-3.4" y="-159" width="6.8" height="10" rx="1.5" fill="#141824" transform="rotate(' + (i * 360 / 44) + ')"/>';
+    s += '<circle r="148" fill="none" stroke="#222836" stroke-width="2.4"/><circle r="146" fill="#0d1018"/>';
+    s += '<circle r="141" fill="url(#wRim)"/><circle r="136" fill="url(#wDeep)"/>';                         // steel rim lip + dish
+    WHEEL.forEach((v, i) => {
+      const c = SLICE[v];
+      s += '<path d="' + wedge(i, 46, 134) + '" fill="' + (v === 100 ? 'url(#wGold)' : c[0]) + '" stroke="rgba(255,255,255,.14)" stroke-width="1"/>';
+      s += '<path class="hl" data-i="' + i + '" d="' + wedge(i, 46, 134) + '" fill="#fff" opacity="0"/>';
+      const dark = v === 100;
+      s += '<g transform="rotate(' + (i * SEG) + ')">';
+      if (v) {
+        s += '<text y="-92" direction="ltr" style="unicode-bidi:isolate" text-anchor="middle" font-size="29" font-weight="800" fill="' + (dark ? '#3a2102' : '#fff') + '" font-family="IBM Plex Sans Arabic, Segoe UI, sans-serif">+' + v + '</text>' +
+             '<text y="-74" direction="ltr" text-anchor="middle" font-size="12.5" font-weight="800" letter-spacing="1.5" fill="' + (dark ? '#5e3604' : c[1]) + '">BP</text>';
+      } else {
+        s += '<text y="-90" text-anchor="middle" font-size="30" font-weight="800" fill="' + c[1] + '">↻</text>' +
+             '<text y="-72" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="IBM Plex Sans Arabic, Segoe UI, sans-serif">' + esc(t('sp.try')) + '</text>';
+      }
+      s += '<circle cy="-126" r="2.6" fill="' + (dark ? '#fff4c8' : c[1]) + '" opacity=".85"/></g>';
+    });
+    for (let i = 0; i < 8; i++) { const a = i * SEG + SEG / 2; s += '<line x1="' + pt(a, 46)[0] + '" y1="' + pt(a, 46)[1] + '" x2="' + pt(a, 134)[0] + '" y2="' + pt(a, 134)[1] + '" stroke="rgba(255,255,255,.22)" stroke-width="1.4"/>'; }
+    s += '<circle r="46" fill="url(#wHub)" stroke="#2b303d" stroke-width="2"/><circle r="34" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="1.5"/>';   // hub
+    for (let i = 0; i < 8; i++) { const p = pt(i * 45 + 22.5, 26); s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="5.6" fill="url(#wHub)" stroke="#2b303d" stroke-width="1.2"/><circle cx="' + p[0] + '" cy="' + p[1] + '" r="2" fill="#2b303d"/>'; }
+    s += '<circle r="12" fill="url(#wGold)" stroke="#8a5208" stroke-width="1.4"/><text y="4.2" text-anchor="middle" font-size="11" font-weight="900" fill="#5a3504">16</text></svg>';
+    $('spWheel').innerHTML = s;
+  }
+  (function teeth() {      // ratchet teeth along the arc of the handbrake quadrant
+    let g = '';
+    for (let a = 186; a <= 270; a += 6) { const r = a * Math.PI / 180, x0 = 250 + 90 * Math.cos(r), y0 = 138 + 90 * Math.sin(r), x1 = 250 + 101 * Math.cos(r), y1 = 138 + 101 * Math.sin(r); g += '<line x1="' + x0.toFixed(1) + '" y1="' + y0.toFixed(1) + '" x2="' + x1.toFixed(1) + '" y2="' + y1.toFixed(1) + '"/>'; }
+    $('teeth').innerHTML = g;
+  })();
+
+  /* ---------- state ---------- */
+  let theta = 0, omega = 0, phase = 'idle', prize = 0, newBal = null, busy = false, raf = 0, lastT = 0, lastSlice = -1, lastTick = 0, braking = null, autoBrake = 0, leverP = 0, drag = null;
+  const OMEGA = 560;                                            // degrees per second at full speed
+  const draw = () => { let r = Math.random() * 100, acc = 0; for (const o of ODDS) { acc += o[1]; if (r < acc) return o[0]; } return 10; };
+  const paintWheel = () => { $('spWheel').style.transform = 'rotate(' + theta.toFixed(2) + 'deg)'; };
+  const sliceUnder = () => ((Math.round((((-theta) % 360) + 360) % 360 / SEG)) % 8 + 8) % 8;
+  const setLever = p => {
+    const prev = Math.floor(leverP * 8); leverP = clamp(p, 0, 1); const now = Math.floor(leverP * 8);
+    $('lever').style.transform = 'rotate(' + (leverP * 56).toFixed(1) + 'deg)';
+    $('hbShadow').setAttribute('opacity', (.55 - leverP * .3).toFixed(2));
+    $('hbShadow').setAttribute('transform', 'translate(' + (leverP * 30).toFixed(1) + ' 0)');
+    if (now !== prev) sfx.ratchet();
+  };
+
+  function frame(now) {
+    raf = requestAnimationFrame(frame);
+    const dt = Math.min(.05, (now - lastT) / 1000 || 0); lastT = now;
+    if (phase === 'spin') { omega += (OMEGA - omega) * Math.min(1, dt * 2.4); theta += omega * dt; }
+    else if (phase === 'brake') {
+      const u = Math.min(1, (now - braking.t0) / 1000 / braking.T);
+      theta = braking.th0 + braking.d * (1 - Math.pow(1 - u, 3)); omega = braking.d * 3 * Math.pow(1 - u, 2) / braking.T;
+      if (u >= 1) { theta = braking.th0 + braking.d; paintWheel(); finish(); return; }
+    }
+    paintWheel();
+    const s = sliceUnder();
+    if (s !== lastSlice) { lastSlice = s; if (now - lastTick > 38) { lastTick = now; sfx.tick(clamp(omega / OMEGA, .25, 1)); $('spPtr').classList.add('flick'); setTimeout(() => $('spPtr').classList.remove('flick'), 55); } }
+    sfx.humSet(clamp(omega / OMEGA, 0, 1));
+  }
+
+  /* ---------- flow ---------- */
+  const hero = $('hero'), spin = $('spin'); let zT = 0;
+  async function begin() {
+    if (busy) return;
+    if (spun()) return locked();
+    busy = true; sfx.unlock();
+    window.__bpHold = bpBalance(); prize = draw(); newBal = null;
+    if (prize > 0) {
+      let r = null;
+      try { r = await window.bus16Spin(prize); } catch (e) { console.error('Bus 16 spin could not be saved:', e); }
+      if (!r || !r.ok) { busy = false; window.__bpHold = null; return (r && r.reason === 'done') ? (paintDaily(), locked()) : failed(); }
+      newBal = r.points;
+    }
+    open();
+  }
+  function open() {
+    buildWheel(); resetUi();
+    document.documentElement.classList.add('spinning');
+    spin.hidden = false; spin.setAttribute('aria-hidden', 'false');
+    theta = Math.random() * 360; omega = 0; phase = 'spin'; lastSlice = sliceUnder(); lastT = performance.now();
+    cancelAnimationFrame(raf); raf = requestAnimationFrame(frame);
+    sfx.humStart(); sfx.whoosh();
+    clearTimeout(zT); if (reduce) { spin.classList.add('on'); } else { hero.classList.add('zlift'); void hero.offsetWidth; hero.classList.add('zoom'); setTimeout(() => spin.classList.add('on'), 850); }
+    setTimeout(() => { if (phase === 'spin') { $('spBrake').classList.add('up'); $('spMsg').textContent = t('sp.pull'); $('spBrake').focus({ preventScroll: true }); } }, reduce ? 200 : 1700);
+    clearTimeout(autoBrake); autoBrake = setTimeout(() => { if (phase === 'spin') engage(); }, 30000);
+  }
+  function resetUi() {
+    $('spBrake').classList.remove('up', 'pulled', 'done'); setLever(0); $('spMsg').textContent = ''; $('spResult').hidden = true; $('spRain').innerHTML = '';
+    $('spWheel').querySelectorAll('.hl').forEach(h => h.setAttribute('opacity', '0'));
+  }
+  function engage() {
+    if (phase !== 'spin') return; phase = 'brake'; drag = null; clearTimeout(autoBrake);
+    const idx = WHEEL.map((v, i) => v === prize ? i : -1).filter(i => i >= 0), j = idx[Math.floor(Math.random() * idx.length)];
+    const target = -(j * SEG) + (Math.random() - .5) * SEG * .55;
+    const need = ((((target - theta) % 360) + 360) % 360), min = Math.max(omega, 200) * 1.7 / 3;
+    const d = need + 360 * Math.max(0, Math.ceil((min - need) / 360));
+    braking = { t0: performance.now(), th0: theta, d, T: 3 * d / Math.max(omega, 200) };
+    $('spBrake').classList.add('pulled'); $('spMsg').textContent = '';
+    sfx.screech(Math.min(1.4, braking.T * .8));
+    const from = leverP, t0 = performance.now(), run = () => { const u = Math.min(1, (performance.now() - t0) / 420); setLever(from + (1 - from) * (1 - Math.pow(1 - u, 2))); if (u < 1) requestAnimationFrame(run); }; run();
+  }
+  function finish() {
+    cancelAnimationFrame(raf); phase = 'done'; sfx.humStop(); $('spBrake').classList.add('done');
+    const w = sliceUnder(); const h = $('spWheel').querySelector('.hl[data-i="' + w + '"]'); if (h) { h.setAttribute('opacity', '.34'); h.animate([{ opacity: .1 }, { opacity: .5 }, { opacity: .1 }], { duration: 900, iterations: 3 }); }
+    const res = $('spResult'), won = $('spWon'), amt = $('spAmt'), go = $('spGo'); res.hidden = false;
+    if (prize > 0) {
+      won.className = 'sp-won'; $('spWon').querySelector('.lab').hidden = false; go.className = 'sp-btn'; go.textContent = t('sp.collect');
+      go.onclick = collect; sfx.chime(); rain(prize);
+      if (reduce) amt.textContent = '+' + prize; else {
+        const t0 = performance.now(); (function step() { const u = Math.min(1, (performance.now() - t0) / 1000); amt.textContent = '+' + Math.round(prize * (1 - Math.pow(1 - u, 3))); if (u < 1) requestAnimationFrame(step); })();
+      }
+    } else {
+      won.className = 'sp-won again'; amt.textContent = t('sp.try') + '!'; go.className = 'sp-btn blue'; go.textContent = t('sp.again'); go.onclick = again; sfx.womp();
+      $('spMsg').textContent = t('sp.try.msg');
+    }
+    go.focus({ preventScroll: true });
+  }
+  async function again() {                      // free retry: nothing was saved, so just draw again
+    prize = draw(); newBal = null;
+    if (prize > 0) {
+      let r = null; try { r = await window.bus16Spin(prize); } catch (e) { console.error(e); }
+      if (!r || !r.ok) { collectClose(); return (r && r.reason === 'done') ? (paintDaily(), locked()) : failed(); }
+      newBal = r.points;
+    }
+    resetUi(); theta = Math.random() * 360; omega = 0; phase = 'spin'; lastT = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(frame); sfx.humStart();
+    setTimeout(() => { if (phase === 'spin') { $('spBrake').classList.add('up'); $('spMsg').textContent = t('sp.pull'); } }, 500);
+    clearTimeout(autoBrake); autoBrake = setTimeout(() => { if (phase === 'spin') engage(); }, 30000);
+  }
+  function collect() { const from = window.__bpHold; collectClose(); window.__bpHold = null; countUp(from, newBal != null ? newBal : bpBalance()); }
+  function collectClose() {
+    phase = 'idle'; busy = false; cancelAnimationFrame(raf); sfx.humStop(); clearTimeout(autoBrake);
+    spin.classList.remove('on'); hero.classList.remove('zoom');   // the bus spirals back out while the wheel screen fades away
+    const fin = () => { spin.hidden = true; spin.setAttribute('aria-hidden', 'true'); document.documentElement.classList.remove('spinning'); hero.classList.remove('zlift'); resetUi(); };
+    if (reduce) fin(); else { setTimeout(() => { spin.hidden = true; spin.setAttribute('aria-hidden', 'true'); resetUi(); }, 520); setTimeout(() => document.documentElement.classList.remove('spinning'), 1000); clearTimeout(zT); zT = setTimeout(fin, 1450); }
+    paintDaily(); $('dailyBtn').focus({ preventScroll: true });
+  }
+  function countUp(a, b) {
+    const el = $('bpNum'); if (reduce || a == null || a === b) { window.__bpHold = null; showBP(); return; }
+    $('bpBtn').classList.remove('bump'); void $('bpBtn').offsetWidth; $('bpBtn').classList.add('bump');
+    const t0 = performance.now(); (function step() { const u = Math.min(1, (performance.now() - t0) / 900); el.textContent = I18N.num(Math.round(a + (b - a) * u)); if (u < 1) requestAnimationFrame(step); else showBP(); })();
+  }
+  function rain(n) {
+    if (reduce) return; const box = $('spRain'), count = Math.min(70, 22 + Math.round(n / 2)), W = innerWidth; box.innerHTML = '';
+    for (let i = 0; i < count; i++) {
+      const c = document.createElement('div'), s = 22 + Math.random() * 20;
+      c.className = 'coinfall'; c.style.cssText = 'left:' + (Math.random() * (W - s)).toFixed(0) + 'px;--s:' + s.toFixed(0) + 'px;--dx:' + ((Math.random() - .5) * 80).toFixed(0) + 'px;--dur:' + (1.8 + Math.random() * 1.6).toFixed(2) + 's;--dl:' + (Math.random() * 1.1).toFixed(2) + 's;--fl:' + (.5 + Math.random() * .8).toFixed(2) + 's';
+      c.innerHTML = '<i>' + miniCoin() + '</i>'; box.appendChild(c); setTimeout(() => sfx.coin(), 120 + Math.random() * 1700);
+    }
+    setTimeout(() => { box.innerHTML = ''; }, 4200);
+  }
+  let mc = 0;
+  function miniCoin() {
+    const g = 'mcg' + (++mc % 6);
+    return '<svg viewBox="0 0 40 40" width="100%" height="100%"><defs><radialGradient id="' + g + '" cx=".33" cy=".27" r=".95"><stop offset="0" stop-color="#ffeaa9"/><stop offset=".5" stop-color="#f6b33a"/><stop offset="1" stop-color="#c47a10"/></radialGradient></defs>' +
+      '<circle cx="20" cy="21.5" r="18" fill="#8a5208"/><circle cx="20" cy="20" r="18" fill="url(#' + g + ')" stroke="#b06a0a" stroke-width="1"/><circle cx="20" cy="20" r="14.4" fill="none" stroke="rgba(120,68,4,.5)" stroke-width="1.2"/>' +
+      '<text x="20" y="25" text-anchor="middle" font-size="13.5" font-weight="900" fill="#6b3d04" font-family="Arial Black, Arial, sans-serif">BP</text></svg>';
+  }
+
+  /* ---------- already spun today ---------- */
+  function locked() {
+    const body = () => '<div class="bpbig">' + coinSvg(60) + '<div><b dir="ltr">' + I18N.num(bpBalance()) + '</b><small>' + t('h.bp.title') + '</small></div></div>' +
+      '<span class="chip" id="spCd" dir="ltr">' + t('sp.next', { t: hms(untilReset()) }) + '</span><p class="muted">' + t('sp.back.lead') + '</p>';
+    openSheet(t('sp.back'), body());
+    const iv = setInterval(() => { const c = $('spCd'); if (!c || !$('sheet').classList.contains('open')) return clearInterval(iv); c.textContent = t('sp.next', { t: hms(untilReset()) }); }, 1000);
+  }
+  function failed() { openSheet(t('h.spin.label'), '<p>' + esc(t('sp.err')) + '</p>'); }
+
+  /* ---------- the blue callout ---------- */
+  function paintDaily() {
+    const b = $('dailyBtn'), used = spun(); b.classList.toggle('used', used);
+    b.querySelector('.sub').textContent = used ? hms(untilReset()) : '';
+  }
+  $('dailyBtn').onclick = begin;
+  $('gameBtn').onclick = begin;               // Game 16 on the bus front opens the same daily wheel
+  $('dailyIco').innerHTML = icon('spin', 14);
+  setInterval(() => { if (spun()) paintDaily(); else if ($('dailyBtn').classList.contains('used')) paintDaily(); }, 1000);
+  addEventListener('bus16:user', paintDaily); paintDaily();
+
+  /* ---------- sound button, close, handbrake controls ---------- */
+  const sndIco = () => { $('spSoundIco').innerHTML = sfx.on ? icon('sound', 20) : icon('mute', 20); $('spSound').setAttribute('aria-pressed', String(sfx.on)); };
+  $('spSound').onclick = () => { sfx.toggle(); sndIco(); }; sndIco();
+  $('spArr').innerHTML = icon('up', 24);
+  $('spCloseIco').innerHTML = icon('close', 20);
+  // closing early is safe: the prize was already saved when the spin started, so it is simply credited
+  const closeSpin = () => { if (phase === 'idle' || spin.hidden) return; collect(); };
+  $('spClose').onclick = closeSpin;
+  addEventListener('keydown', e => { if (e.key === 'Escape' && !spin.hidden) closeSpin(); });
+  const hb = $('spBrake');
+  hb.addEventListener('pointerdown', e => { if (phase !== 'spin') return; try { hb.setPointerCapture(e.pointerId); } catch (x) {} drag = { y: e.clientY, p: leverP }; sfx.unlock(); });
+  hb.addEventListener('pointermove', e => { if (!drag || phase !== 'spin') return; const p = clamp(drag.p + (drag.y - e.clientY) / 120, 0, 1); setLever(p); if (p >= .4) { engage(); } });
+  hb.addEventListener('pointerup', e => { if (!drag) return; const moved = Math.abs(e.clientY - drag.y); drag = null; if (phase !== 'spin') return; if (moved < 10) engage(); else setLever(0); });
+  hb.addEventListener('pointercancel', () => { drag = null; if (phase === 'spin') setLever(0); });
+  hb.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && phase === 'spin') { e.preventDefault(); engage(); } });
+
+  window.__spinTest = { WHEEL, ODDS, beirutDay, untilReset, hms, draw };
+})();
+
 </script>
 </body>
 </html>
