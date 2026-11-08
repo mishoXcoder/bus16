@@ -243,44 +243,62 @@
 
   /* ---------- daily spin: blue callout on the front wheel ---------- */
   .daily { position: absolute; inset: 0; pointer-events: none; z-index: 7; }
+  .daily { transition: opacity .3s ease; }
+  html.spinning .daily { opacity: 0; pointer-events: none; }
   .daily > svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
   .daily .ln { fill: none; stroke: #3d8bff; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; filter: drop-shadow(0 0 3px rgba(61,139,255,.8)); }
   .daily .dot { fill: #8fc0ff; stroke: #fff; stroke-width: 1.6; vector-effect: non-scaling-stroke; }
   .daily .ring { fill: none; stroke: #5aa2ff; stroke-width: 1.6; vector-effect: non-scaling-stroke; transform-box: fill-box; transform-origin: center; animation: dring 1.8s ease-out infinite; }
   @keyframes dring { from { transform: scale(1); opacity: .9; } to { transform: scale(3.4); opacity: 0; } }
-  .dlabel { position: absolute; transform: translate(-100%, -50%); pointer-events: auto; display: flex; align-items: center; gap: 6px; padding: 5px 11px 5px 8px; border-radius: 99px;
-    background: linear-gradient(180deg, #4a93ff, #1f56c9); color: #fff; font-weight: 700; font-size: 12.5px; line-height: 1.1; white-space: nowrap;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 4px 12px rgba(10,40,120,.55), 0 0 0 1px rgba(10,30,90,.5); }
-  .dlabel:active { transform: translate(-100%, -50%) scale(.96); }
-  .dlabel .wi { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: rgba(4,10,30,.35); }
-  .dlabel .sub { display: block; font-size: 10px; font-weight: 600; opacity: .9; font-variant-numeric: tabular-nums; }
-  .dlabel .gl { position: absolute; top: -3px; inset-inline-end: -2px; width: 11px; height: 11px; border-radius: 50%; background: #ffc43d; box-shadow: 0 0 0 2px #1f56c9, 0 0 8px #ffc43d; animation: dpulse 1.4s ease-in-out infinite; }
+  .dlabel { position: absolute; transform: translate(0, -50%); pointer-events: auto; display: flex; align-items: center; gap: 10px; padding: 7px 20px 7px 8px; border-radius: 99px; border: 0; font: inherit; cursor: pointer;
+    background: linear-gradient(180deg, #62a8ff, #2563e8 55%, #1a46b3); color: #fff; line-height: 1.05; white-space: nowrap; text-align: start; isolation: isolate;
+    box-shadow: inset 0 1.5px 0 rgba(255,255,255,.6), inset 0 -3px 7px rgba(0,20,90,.4), 0 7px 18px rgba(10,40,140,.65), 0 0 0 1.5px rgba(8,28,90,.75), 0 0 26px rgba(70,140,255,.6);
+    animation: dbob 2.2s ease-in-out infinite; }
+  .dlabel::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1;
+    background: linear-gradient(100deg, transparent 38%, rgba(255,255,255,.5) 50%, transparent 62%) -160% 0 / 250% 100% no-repeat; animation: dshine 3s ease-in-out infinite; }
+  @keyframes dshine { 0% { background-position: -160% 0; } 55%, 100% { background-position: 160% 0; } }
+  @keyframes dbob { 50% { transform: translate(0, -50%) scale(1.045); } }
+  .dlabel:active { animation: none; transform: translate(0, -50%) scale(.96); }
+  .dlabel .wi { display: grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: 50%; color: #1a3d9c;
+    background: radial-gradient(circle at 35% 30%, #fff1b8, #f7b835 58%, #c9780c); box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 2px 5px rgba(0,0,40,.5); }
+  .dlabel .wi svg, .gmi svg { animation: spinico 4s linear infinite; }
+  @keyframes spinico { to { transform: rotate(360deg); } }
+  .dlabel .dt { display: block; font-size: 17px; font-weight: 800; letter-spacing: .01em; text-shadow: 0 1px 2px rgba(0,20,90,.55); }
+  .dlabel .sub { display: block; margin-top: 3px; font-size: 11px; font-weight: 700; opacity: .93; font-variant-numeric: tabular-nums; }
+  .dlabel .gl { position: absolute; top: -4px; inset-inline-end: -1px; width: 13px; height: 13px; border-radius: 50%; background: #ffc43d; box-shadow: 0 0 0 2.5px #1f56c9, 0 0 10px #ffc43d; animation: dpulse 1.4s ease-in-out infinite; }
+  .dlabel.used { animation: none; filter: saturate(.5) brightness(.92); box-shadow: inset 0 1.5px 0 rgba(255,255,255,.4), 0 5px 12px rgba(10,30,90,.5), 0 0 0 1.5px rgba(8,28,90,.7); }
+  .dlabel.used::after, .dlabel.used .wi svg { animation: none; }
   .dlabel.used .gl { display: none; }
-  .dlabel:not(.used) .sub { display: none; }
   @keyframes dpulse { 50% { transform: scale(1.25); } }
 
   /* zoom into the front wheel */
   html.spinning, html.spinning body { overflow: hidden; }
+  section.hero { z-index: 4; }
   .hero.zlift { z-index: 60; pointer-events: none; }
+  /* the Bus Points pill stays in its usual place (above the wheel screen); the rest of the header steps aside */
+  html.spinning .top { z-index: 80; pointer-events: none; }
+  .top .hright { transition: opacity .3s ease; }
+  html.spinning .top .hright { opacity: 0; }
   .under, .dock { transition: opacity .35s ease; }
   html.spinning .under, html.spinning .dock { opacity: 0; }
-  /* a spiral: the bus turns a full circle around the front wheel while the camera dives in (and back out) */
-  .hero .stage { transform-origin: 35.7% 88.5%; transition: transform 1.4s cubic-bezier(.5,.05,.2,1);
-    transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--fs, 1)) perspective(900px) rotate(var(--r, 0deg)) scale(var(--z, 1)); }
-  .hero.zoom .stage { --r: -371deg; --z: 10; }
+  /* camera dive: the bus is tilted slightly while the view pushes in on the front wheel and moves it to the centre of the screen */
+  .hero .stage { transition: transform 1.4s cubic-bezier(.5,.05,.2,1);
+    transform: translate(var(--mx, 0px), var(--my, 0px)) translate(var(--tx, 0px), var(--ty, 0px)) scale(var(--fs, 1)) perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) rotate(var(--r, 0deg)) scale(var(--z, 1)); }
+  .hero.zoom .stage { --mx: var(--zx, 0px); --my: var(--zy, 0px); --rx: 7deg; --ry: -15deg; --r: -5deg; --z: var(--zz, 5); }
 
   /* ---------- the wheel screen ---------- */
   .spin { position: fixed; inset: 0; z-index: 70; display: flex; flex-direction: column; align-items: center; padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
-    background: radial-gradient(120% 80% at 50% 28%, rgba(14,20,38,.96), rgba(3,5,10,.98)); opacity: 0; transition: opacity .45s ease; overflow: hidden; }
+    background: radial-gradient(120% 80% at 50% 30%, rgba(10,14,26,.8), rgba(2,3,7,.94)); opacity: 0; transition: opacity .45s ease; overflow: hidden; }
   .spin[hidden] { display: none; }
   .spin.on { opacity: 1; }
-  .sp-top { width: 100%; max-width: 460px; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px 0; }
-  .sp-top b { font-size: 17px; font-weight: 700; color: var(--amber-soft); letter-spacing: .02em; }
-  .sp-ic { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); color: var(--text); }
-  .sp-ic.ghost { visibility: hidden; }
+  .sp-top { position: relative; width: 100%; max-width: 460px; height: 60px; padding-top: 16px; display: flex; align-items: center; justify-content: center; }
+  .sp-top b { font-size: 17px; font-weight: 800; color: var(--amber-soft); letter-spacing: .02em; text-shadow: 0 2px 8px rgba(0,0,0,.7); }
+  .sp-tr { position: absolute; top: 16px; inset-inline-end: 16px; display: flex; gap: 8px; }
+  .sp-ic { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); color: var(--text); cursor: pointer; }
+  .sp-ic:disabled { opacity: .35; cursor: default; }
   .sp-stagebox { flex: 1 1 auto; min-height: 0; width: 100%; display: grid; place-items: center; padding-top: 22px; }
-  .sp-wheelbox { position: relative; width: min(80vw, 40vh, 340px); aspect-ratio: 1; transform: scale(.55); transition: transform 1s cubic-bezier(.2,.8,.2,1) .25s; filter: drop-shadow(0 22px 28px rgba(0,0,0,.6)); }
-  .spin.on .sp-wheelbox { transform: none; }
+  .sp-wheelbox { position: relative; width: min(80vw, 40vh, 340px); aspect-ratio: 1; opacity: 0; transition: opacity .55s ease .1s; filter: drop-shadow(0 22px 28px rgba(0,0,0,.6)); }
+  .spin.on .sp-wheelbox { opacity: 1; }
   .sp-wheel { position: absolute; inset: 0; border-radius: 50%; will-change: transform; }
   .sp-wheelbox::after { content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
     background: radial-gradient(circle at 30% 24%, rgba(255,255,255,.26), rgba(255,255,255,0) 42%), radial-gradient(circle at 70% 82%, rgba(0,0,0,.35), rgba(0,0,0,0) 45%); }
@@ -322,8 +340,25 @@
   @keyframes bump { 40% { transform: scale(1.14); } }
   @media (prefers-reduced-motion: reduce) {
     .hero.zoom .stage, .hero .stage, .spin, .sp-wheelbox, .sp-brake { transition: none; }
-    .daily .ring, .dlabel .gl, .sp-hint .arr, .sp-won, .bp.bump { animation: none; }
+    .daily .ring, .dlabel, .dlabel::after, .dlabel .wi svg, .gm::after, .gmi svg, .dlabel .gl, .sp-hint .arr, .sp-won, .bp.bump { animation: none; }
   }
+
+  /* ---------- Game 16 menu ---------- */
+  .gmlist { display: flex; flex-direction: column; gap: 12px; margin: 14px 0 6px; }
+  .gm { position: relative; overflow: hidden; display: flex; align-items: center; gap: 14px; width: 100%; padding: 14px; border: 0; border-radius: 18px; text-align: start; color: #fff; font: inherit; cursor: pointer; isolation: isolate;
+    background: linear-gradient(180deg, #5aa2ff, #2260e6 60%, #1840a8); box-shadow: inset 0 1.5px 0 rgba(255,255,255,.55), 0 8px 20px rgba(20,70,200,.45), 0 0 0 1px rgba(10,30,90,.7); }
+  .gm::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: -1; background: linear-gradient(100deg, transparent 38%, rgba(255,255,255,.4) 50%, transparent 62%) -160% 0 / 250% 100% no-repeat; animation: dshine 3.4s ease-in-out infinite; }
+  .gmi { flex: none; width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; color: #1a3d9c; background: radial-gradient(circle at 35% 30%, #fff1b8, #f7b835 58%, #c9780c); box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 3px 8px rgba(0,0,40,.5); }
+  .gmt { flex: 1; min-width: 0; }
+  .gmt b { display: block; font-size: 19px; font-weight: 800; text-shadow: 0 1px 2px rgba(0,20,90,.5); }
+  .gmt small { display: block; margin-top: 4px; font-size: 12.5px; font-weight: 600; opacity: .94; font-variant-numeric: tabular-nums; }
+  .gmpill { flex: none; padding: 9px 16px; border-radius: 99px; background: #ffc43d; color: #3a2400; font-weight: 800; font-size: 14px; box-shadow: 0 3px 0 #a86d05; }
+  .gm:active { transform: scale(.98); }
+  .gm.used { background: linear-gradient(180deg, #3b455d, #252c3d); box-shadow: 0 0 0 1px rgba(255,255,255,.08); cursor: default; }
+  .gm.used::after, .gm.used .gmi svg { animation: none; }
+  .gm.used .gmi { filter: saturate(.5) brightness(.85); }
+  .gm.used .gmpill { background: rgba(255,255,255,.12); color: #cfd6e6; box-shadow: none; }
+  .gmmore { margin-top: 12px; text-align: center; }
 
   @media (prefers-reduced-motion: reduce) {
     /* no motion: show the first headline, wrapped on up to two small lines so nothing is cut off */
@@ -374,12 +409,12 @@
 
       <div class="daily" id="daily">
         <svg viewBox="0 0 711 529" preserveAspectRatio="none" aria-hidden="true">
-          <path class="ln" d="M262 478 L236 497 L230 497"/>
+          <path class="ln" d="M262 478 L282 514 L312 545"/>
           <circle class="ring" cx="262" cy="478" r="6"/>
           <circle class="dot" cx="262" cy="478" r="6"/>
         </svg>
-        <button class="dlabel" id="dailyBtn" type="button" style="left:32.4%;top:94%" data-i18n-aria="h.spin.aria" aria-label="Daily spin: spin the wheel">
-          <span class="wi" id="dailyIco"></span><span><span data-i18n="h.spin.label">Daily spin</span><span class="sub"></span></span><i class="gl"></i>
+        <button class="dlabel" id="dailyBtn" type="button" style="left:43.6%;top:calc(100% + var(--lab,0px) * .42 - 1px)" data-i18n-aria="h.spin.aria" aria-label="Daily spin: spin the wheel">
+          <span class="wi" id="dailyIco"></span><span class="dtx"><span class="dt" data-i18n="h.spin.label">Daily spin</span><span class="sub"></span></span><i class="gl"></i>
         </button>
       </div>
 
@@ -416,9 +451,11 @@
     <!-- ===== Daily spin: full-screen wheel with a handbrake ===== -->
   <div class="spin" id="spin" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="spTitle">
     <div class="sp-top">
-      <button class="sp-ic" id="spSound" type="button" data-i18n-aria="sp.sound" aria-label="Sound" aria-pressed="true"><span id="spSoundIco"></span></button>
       <b id="spTitle" data-i18n="h.spin.label">Daily spin</b>
-      <button class="sp-ic" id="spClose" type="button" data-i18n-aria="sp.close" aria-label="Close"><span id="spCloseIco"></span></button>
+      <div class="sp-tr">
+        <button class="sp-ic" id="spSound" type="button" data-i18n-aria="sp.sound" aria-label="Sound" aria-pressed="true"><span id="spSoundIco"></span></button>
+        <button class="sp-ic" id="spClose" type="button" data-i18n-aria="sp.close" aria-label="Close"><span id="spCloseIco"></span></button>
+      </div>
     </div>
     <div class="sp-stagebox">
       <div class="sp-wheelbox" id="spBox" role="img" data-i18n-aria="sp.wheel.aria" aria-label="Prize wheel">
@@ -436,13 +473,13 @@
       <div class="sp-hint"><span class="arr" id="spArr"></span><b data-i18n="sp.brake">Pull the handbrake</b></div>
       <svg viewBox="0 0 340 214" class="hb" aria-hidden="true">
         <defs>
-          <linearGradient id="hbTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4151"/><stop offset="1" stop-color="#1b2029"/></linearGradient>
-          <linearGradient id="hbFront" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1a1e27"/><stop offset="1" stop-color="#0a0c11"/></linearGradient>
-          <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2f5fa"/><stop offset=".22" stop-color="#b9c1cf"/><stop offset=".55" stop-color="#6d7688"/><stop offset=".85" stop-color="#3c4352"/><stop offset="1" stop-color="#8c95a6"/></linearGradient>
-          <linearGradient id="plate" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#aeb6c4"/><stop offset=".5" stop-color="#6a7283"/><stop offset="1" stop-color="#3b4150"/></linearGradient>
-          <linearGradient id="rubber" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4b505c"/><stop offset=".18" stop-color="#262a33"/><stop offset=".7" stop-color="#101319"/><stop offset="1" stop-color="#05060a"/></linearGradient>
-          <linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".3" stop-color="#c8d0dd"/><stop offset=".6" stop-color="#7d8697"/><stop offset="1" stop-color="#d6dce6"/></linearGradient>
-          <linearGradient id="btn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff6a6f"/><stop offset="1" stop-color="#a11c25"/></linearGradient>
+          <linearGradient id="hbTop" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4b4c50"/><stop offset="1" stop-color="#232427"/></linearGradient>
+          <linearGradient id="hbFront" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d1d20"/><stop offset="1" stop-color="#09090a"/></linearGradient>
+          <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a8f99"/><stop offset=".2" stop-color="#4b4f58"/><stop offset=".6" stop-color="#23262c"/><stop offset="1" stop-color="#0d0e11"/></linearGradient>
+          <linearGradient id="plate" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5a5e68"/><stop offset=".5" stop-color="#363941"/><stop offset="1" stop-color="#1c1e23"/></linearGradient>
+          <linearGradient id="rubber" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a4c52"/><stop offset=".16" stop-color="#26282c"/><stop offset=".7" stop-color="#0f1012"/><stop offset="1" stop-color="#040405"/></linearGradient>
+          <linearGradient id="chrome" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9dde4"/><stop offset=".3" stop-color="#9aa0ab"/><stop offset=".62" stop-color="#4f535c"/><stop offset="1" stop-color="#8c919b"/></linearGradient>
+          <linearGradient id="btn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b5e65"/><stop offset=".4" stop-color="#26282c"/><stop offset="1" stop-color="#0b0b0d"/></linearGradient>
           <radialGradient id="bolt" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".45" stop-color="#aab3c2"/><stop offset="1" stop-color="#4d5565"/></radialGradient>
           <filter id="hbBlur" x="-20%" y="-60%" width="140%" height="220%"><feGaussianBlur stdDeviation="4"/></filter>
         </defs>
@@ -451,6 +488,8 @@
         <path d="M14 168 L328 168 L328 206 Q328 212 322 212 L20 212 Q14 212 14 206 Z" fill="url(#hbFront)"/>
         <path d="M14 168 L328 168" stroke="rgba(255,255,255,.22)" stroke-width="1.5"/>
         <path d="M44 142 L300 142" stroke="rgba(255,255,255,.10)" stroke-width="1"/>
+        <g stroke="rgba(255,255,255,.07)" stroke-width="1.2"><path d="M30 154 L314 154"/><path d="M22 161 L322 161"/><path d="M38 148 L306 148"/></g>
+        <g fill="url(#bolt)" stroke="#111" stroke-width=".8"><circle cx="40" cy="158" r="3.6"/><circle cx="304" cy="158" r="3.6"/></g>
         <!-- ratchet quadrant: steel plate with teeth -->
         <g>
           <path d="M250 138 L146 138 A104 104 0 0 1 250 34 Z" fill="url(#plate)" stroke="#2b303d" stroke-width="1.5"/>
@@ -485,8 +524,8 @@
           <g stroke="rgba(255,255,255,.10)" stroke-width="1.2"><path d="M68 122 L68 156"/><path d="M80 122 L80 156"/><path d="M92 122 L92 156"/><path d="M104 123 L104 156"/><path d="M116 123 L116 157"/><path d="M128 124 L128 157"/></g>
           <!-- end cap + release button -->
           <path d="M46 123 Q38 123 38 137 Q38 151 46 151 Z" fill="url(#chrome)" stroke="#2a2f3a" stroke-width=".8"/>
-          <rect x="78" y="105" width="36" height="12" rx="5" fill="url(#btn)" stroke="#3c0a0e" stroke-width="1"/>
-          <rect x="82" y="107" width="28" height="2.6" rx="1.3" fill="#fff" opacity=".55"/>
+          <rect x="76" y="104" width="40" height="14" rx="6" fill="url(#btn)" stroke="#8e939d" stroke-width="1.1"/>
+          <rect x="82" y="106.5" width="28" height="2.4" rx="1.2" fill="#fff" opacity=".35"/>
         </g>
         <!-- pivot bolt -->
         <circle cx="250" cy="138" r="13" fill="url(#bolt)" stroke="#2a2f3a" stroke-width="1.2"/>
@@ -624,19 +663,23 @@ const GROUND = 272, STAGE_H = 290;
 function fit() {
   const W = app.clientWidth, H = app.clientHeight;
   const s = Math.min(W / 390, 1.08);
-  // the stage is scaled to the screen width; the origin sits on the front wheel so the spin-zoom can pivot there (see spin.css)
-  const ox = 0.357 * 390, oy = 0.885 * STAGE_H;
+  // the stage is scaled to the screen width, pivoting on the front wheel so the spin camera-dive can start from there (see spin.css)
+  const WO = [0.3516, 0.8318], ox = WO[0] * 390, oy = WO[1] * STAGE_H;
+  stage.style.transformOrigin = (WO[0] * 100) + '% ' + (WO[1] * 100) + '%';
   stage.style.setProperty('--fs', s);
   stage.style.setProperty('--tx', ((195 - ox) * (1 - s)).toFixed(2) + 'px');
   stage.style.setProperty('--ty', (-oy * (1 - s)).toFixed(2) + 'px');
-  // stack: header, bus, cards, price button, then the dock. Spread any spare room above the bus.
+  // stack: header, bus, (room for the Daily spin label), cards, price button, then the dock. Spread any spare room above the bus.
   const under = $('under'), busH = STAGE_H * s, underH = under.offsetHeight;
   const dockTop = H - 18 - 54;
-  const spare = dockTop - 14 - (62 + busH + 8 + underH);
+  const spare0 = dockTop - 14 - (62 + busH + 8 + underH);
+  const lab = Math.min(24, Math.max(0, spare0 * 0.6));
+  stage.style.setProperty('--lab', (lab / s).toFixed(1) + 'px');
+  const spare = spare0 - lab;
   const top = 62 + Math.max(0, spare * 0.4);
   hero.style.top = top + 'px';
   hero.style.height = busH + 'px';
-  under.style.top = (top + busH + 8) + 'px';
+  under.style.top = (top + busH + 8 + lab) + 'px';
 }
 addEventListener('resize', fit); fit();
 
@@ -969,41 +1012,43 @@ $('whereBtn').onclick = () => { location.href = MAP_PAGE; };
   })();
 
   /* ---------- the wheel ---------- */
-  const SLICE = { 10: ['#16233d', '#7f98c8'], 25: ['#17335f', '#86b6ff'], 50: ['#5b3c08', '#ffc65a'], 100: ['#f6b535', '#fff0b8'], 0: ['#3a161b', '#ff9aa0'] };
+  const TXT = { 10: '#e4e8ef', 25: '#a9ccff', 50: '#ffd27a', 100: '#ffe066', 0: '#ff9aa0' };
   const pt = (a, r) => [(r * Math.sin(a * Math.PI / 180)).toFixed(2), (-r * Math.cos(a * Math.PI / 180)).toFixed(2)];
   const wedge = (i, r0, r1) => {
-    const a0 = i * SEG - SEG / 2 + .4, a1 = i * SEG + SEG / 2 - .4, p = [pt(a0, r1), pt(a1, r1), pt(a1, r0), pt(a0, r0)];
+    const a0 = i * SEG - SEG / 2 + .5, a1 = i * SEG + SEG / 2 - .5, p = [pt(a0, r1), pt(a1, r1), pt(a1, r0), pt(a0, r0)];
     return 'M' + p[0] + 'A' + r1 + ' ' + r1 + ' 0 0 1 ' + p[1] + 'L' + p[2] + 'A' + r0 + ' ' + r0 + ' 0 0 0 ' + p[3] + 'Z';
   };
   function buildWheel() {
     let s = '<svg viewBox="-160 -160 320 320" width="100%" height="100%" aria-hidden="true"><defs>' +
-      '<radialGradient id="wRim" cx=".5" cy=".5" r=".5"><stop offset=".86" stop-color="#cfd6e2"/><stop offset=".93" stop-color="#7b8497"/><stop offset="1" stop-color="#2b303d"/></radialGradient>' +
-      '<linearGradient id="wGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe9a0"/><stop offset=".55" stop-color="#f4b02f"/><stop offset="1" stop-color="#c9780c"/></linearGradient>' +
-      '<radialGradient id="wHub" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="#b3bccb"/><stop offset="1" stop-color="#3f4655"/></radialGradient>' +
-      '<radialGradient id="wDeep" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#0a0d14"/><stop offset="1" stop-color="#1a2030"/></radialGradient></defs>';
-    s += '<circle r="159" fill="#06080c"/>';                                                           // tyre
-    for (let i = 0; i < 44; i++) s += '<rect x="-3.4" y="-159" width="6.8" height="10" rx="1.5" fill="#141824" transform="rotate(' + (i * 360 / 44) + ')"/>';
-    s += '<circle r="148" fill="none" stroke="#222836" stroke-width="2.4"/><circle r="146" fill="#0d1018"/>';
-    s += '<circle r="141" fill="url(#wRim)"/><circle r="136" fill="url(#wDeep)"/>';                         // steel rim lip + dish
+      '<radialGradient id="wTyre" cx=".5" cy=".5" r=".5"><stop offset=".55" stop-color="#0b0b0d"/><stop offset=".63" stop-color="#18191d"/><stop offset=".79" stop-color="#25262b"/><stop offset=".92" stop-color="#151518"/><stop offset="1" stop-color="#080809"/></radialGradient>' +
+      '<radialGradient id="wLip" cx=".5" cy=".5" r=".5"><stop offset=".88" stop-color="#8a8f99"/><stop offset=".95" stop-color="#454850"/><stop offset="1" stop-color="#18191c"/></radialGradient>' +
+      '<radialGradient id="wDisc" cx=".42" cy=".38" r=".75"><stop offset="0" stop-color="#34373e"/><stop offset=".55" stop-color="#202227"/><stop offset="1" stop-color="#121316"/></radialGradient>' +
+      '<radialGradient id="wHole" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#2b211b"/><stop offset=".6" stop-color="#0c0a09"/><stop offset="1" stop-color="#000"/></radialGradient>' +
+      '<radialGradient id="wNut" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#c5c9d1"/><stop offset=".45" stop-color="#7b8089"/><stop offset="1" stop-color="#2a2c31"/></radialGradient>' +
+      '<radialGradient id="wHub" cx=".4" cy=".35" r=".8"><stop offset="0" stop-color="#4a4d55"/><stop offset=".6" stop-color="#1f2024"/><stop offset="1" stop-color="#0d0d0f"/></radialGradient></defs>';
+    s += '<circle r="159" fill="url(#wTyre)"/>';
+    for (let i = 0; i < 64; i++) s += '<rect x="-2.6" y="-159" width="5.2" height="11" rx="1.2" fill="#0a0a0c" opacity=".85" transform="rotate(' + (i * 360 / 64) + ')"/>';   // tread blocks seen from the side
+    s += '<circle r="148" fill="none" stroke="#2c2e34" stroke-width="1.6"/><circle r="141" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="1"/><circle r="99" fill="none" stroke="#2a2b30" stroke-width="3.2"/><circle r="95.5" fill="none" stroke="rgba(0,0,0,.6)" stroke-width="1.6"/>';
     WHEEL.forEach((v, i) => {
-      const c = SLICE[v];
-      s += '<path d="' + wedge(i, 46, 134) + '" fill="' + (v === 100 ? 'url(#wGold)' : c[0]) + '" stroke="rgba(255,255,255,.14)" stroke-width="1"/>';
-      s += '<path class="hl" data-i="' + i + '" d="' + wedge(i, 46, 134) + '" fill="#fff" opacity="0"/>';
-      const dark = v === 100;
+      s += '<path class="hl" data-i="' + i + '" d="' + wedge(i, 93, 147) + '" fill="#fff" opacity="0"/>';
+      const col = TXT[v], big = v === 100;
       s += '<g transform="rotate(' + (i * SEG) + ')">';
       if (v) {
-        s += '<text y="-92" direction="ltr" style="unicode-bidi:isolate" text-anchor="middle" font-size="29" font-weight="800" fill="' + (dark ? '#3a2102' : '#fff') + '" font-family="IBM Plex Sans Arabic, Segoe UI, sans-serif">+' + v + '</text>' +
-             '<text y="-74" direction="ltr" text-anchor="middle" font-size="12.5" font-weight="800" letter-spacing="1.5" fill="' + (dark ? '#5e3604' : c[1]) + '">BP</text>';
+        s += '<text y="-122" direction="ltr" style="unicode-bidi:isolate;paint-order:stroke" text-anchor="middle" font-size="' + (big ? 33 : 30) + '" font-weight="800" fill="' + col + '" stroke="rgba(0,0,0,.45)" stroke-width="2.4" font-family="IBM Plex Sans Arabic, Segoe UI, Arial, sans-serif">+' + v + '</text>' +
+             '<text y="-104" direction="ltr" text-anchor="middle" font-size="12" font-weight="800" letter-spacing="2.2" fill="' + col + '" opacity=".92">BP</text>';
       } else {
-        s += '<text y="-90" text-anchor="middle" font-size="30" font-weight="800" fill="' + c[1] + '">↻</text>' +
-             '<text y="-72" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="IBM Plex Sans Arabic, Segoe UI, sans-serif">' + esc(t('sp.try')) + '</text>';
+        s += '<text y="-120" text-anchor="middle" font-size="31" font-weight="800" fill="' + col + '">↻</text>' +
+             '<text y="-103" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff" opacity=".92" font-family="IBM Plex Sans Arabic, Segoe UI, Arial, sans-serif">' + esc(t('sp.try')) + '</text>';
       }
-      s += '<circle cy="-126" r="2.6" fill="' + (dark ? '#fff4c8' : c[1]) + '" opacity=".85"/></g>';
+      s += '</g>';
     });
-    for (let i = 0; i < 8; i++) { const a = i * SEG + SEG / 2; s += '<line x1="' + pt(a, 46)[0] + '" y1="' + pt(a, 46)[1] + '" x2="' + pt(a, 134)[0] + '" y2="' + pt(a, 134)[1] + '" stroke="rgba(255,255,255,.22)" stroke-width="1.4"/>'; }
-    s += '<circle r="46" fill="url(#wHub)" stroke="#2b303d" stroke-width="2"/><circle r="34" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="1.5"/>';   // hub
-    for (let i = 0; i < 8; i++) { const p = pt(i * 45 + 22.5, 26); s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="5.6" fill="url(#wHub)" stroke="#2b303d" stroke-width="1.2"/><circle cx="' + p[0] + '" cy="' + p[1] + '" r="2" fill="#2b303d"/>'; }
-    s += '<circle r="12" fill="url(#wGold)" stroke="#8a5208" stroke-width="1.4"/><text y="4.2" text-anchor="middle" font-size="11" font-weight="900" fill="#5a3504">16</text></svg>';
+    for (let i = 0; i < 8; i++) { const a = i * SEG + SEG / 2; s += '<line x1="' + pt(a, 100)[0] + '" y1="' + pt(a, 100)[1] + '" x2="' + pt(a, 146)[0] + '" y2="' + pt(a, 146)[1] + '" stroke="rgba(255,255,255,.55)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="16 4"/>'; }
+    s += '<circle r="91" fill="url(#wLip)"/><circle r="86.5" fill="#101114"/><circle r="84" fill="url(#wDisc)"/>';                  // rim lip, then the black steel disc
+    s += '<circle r="70" fill="none" stroke="rgba(0,0,0,.55)" stroke-width="2.4"/><circle r="71.6" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="1"/>';
+    for (let k = 0; k < 6; k++) { const a = 30 + k * 60, p = pt(a, 53); s += '<g transform="translate(' + p[0] + ' ' + p[1] + ') rotate(' + a + ')"><ellipse rx="12.5" ry="17" fill="url(#wHole)" stroke="rgba(255,255,255,.2)" stroke-width="1.4"/><path d="M-9 -9 A12.5 17 0 0 1 9 -9" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1.4"/></g>'; }   // hand holes
+    s += '<circle r="37" fill="none" stroke="#3b3e45" stroke-width="3"/><circle r="34.4" fill="none" stroke="rgba(0,0,0,.55)" stroke-width="1.4"/>';
+    for (let k = 0; k < 8; k++) { const p = pt(k * 45 + 22.5, 27); s += '<g transform="translate(' + p[0] + ' ' + p[1] + ')"><polygon points="6.6,0 3.3,5.7 -3.3,5.7 -6.6,0 -3.3,-5.7 3.3,-5.7" fill="url(#wNut)" stroke="#0b0b0d" stroke-width="1"/><circle r="2.5" fill="#1b1c20" stroke="rgba(255,255,255,.25)" stroke-width=".7"/></g>'; }   // lug nuts
+    s += '<circle r="15.5" fill="url(#wHub)" stroke="#55585f" stroke-width="1.2"/><circle r="9" fill="#0f1012" stroke="rgba(255,255,255,.18)" stroke-width="1"/></svg>';
     $('spWheel').innerHTML = s;
   }
   (function teeth() {      // ratchet teeth along the arc of the handbrake quadrant
@@ -1042,37 +1087,44 @@ $('whereBtn').onclick = () => { location.href = MAP_PAGE; };
   }
 
   /* ---------- flow ---------- */
-  const hero = $('hero'), spin = $('spin'); let zT = 0;
-  async function begin() {
-    if (busy) return;
+  const hero = $('hero'), spin = $('spin'); let zT = 0, closing = false, savePromise = null, resultShown = false;
+  const WO = [0.3516, 0.8318], WHEEL_R = 57 * (390 / 711);      // front wheel centre in the bus photo (fractions), tyre radius in stage px
+  // Opening the wheel costs nothing. The prize is drawn, saved and the day is used only when the handbrake is pulled.
+  function begin() {
+    if (busy || closing) return;
     if (spun()) return locked();
     busy = true; sfx.unlock();
-    window.__bpHold = bpBalance(); prize = draw(); newBal = null;
-    if (prize > 0) {
-      let r = null;
-      try { r = await window.bus16Spin(prize); } catch (e) { console.error('Bus 16 spin could not be saved:', e); }
-      if (!r || !r.ok) { busy = false; window.__bpHold = null; return (r && r.reason === 'done') ? (paintDaily(), locked()) : failed(); }
-      newBal = r.points;
-    }
+    window.__bpHold = bpBalance(); prize = null; newBal = null; savePromise = null; resultShown = false;
     open();
+  }
+  function aim() {      // move the front wheel to the centre of the wheel screen and size the zoom so the real tyre matches the drawn one
+    const st = $('stage'), r = st.getBoundingClientRect(), b = $('spBox').getBoundingClientRect();
+    const fs = parseFloat(st.style.getPropertyValue('--fs')) || 1, cx = r.left + WO[0] * r.width, cy = r.top + WO[1] * r.height;
+    hero.style.setProperty('--zz', Math.max(2, b.width / 2 / (WHEEL_R * fs)).toFixed(3));
+    hero.style.setProperty('--zx', (b.left + b.width / 2 - cx).toFixed(1) + 'px');
+    hero.style.setProperty('--zy', (b.top + b.height / 2 - cy).toFixed(1) + 'px');
   }
   function open() {
     buildWheel(); resetUi();
-    document.documentElement.classList.add('spinning');
     spin.hidden = false; spin.setAttribute('aria-hidden', 'false');
+    document.documentElement.classList.add('spinning');
+    $('spClose').disabled = false;
     theta = Math.random() * 360; omega = 0; phase = 'spin'; lastSlice = sliceUnder(); lastT = performance.now();
     cancelAnimationFrame(raf); raf = requestAnimationFrame(frame);
     sfx.humStart(); sfx.whoosh();
-    clearTimeout(zT); if (reduce) { spin.classList.add('on'); } else { hero.classList.add('zlift'); void hero.offsetWidth; hero.classList.add('zoom'); setTimeout(() => spin.classList.add('on'), 850); }
+    clearTimeout(zT);
+    if (reduce) spin.classList.add('on'); else { aim(); hero.classList.add('zlift'); void hero.offsetWidth; hero.classList.add('zoom'); setTimeout(() => spin.classList.add('on'), 800); }
     setTimeout(() => { if (phase === 'spin') { $('spBrake').classList.add('up'); $('spMsg').textContent = t('sp.pull'); $('spBrake').focus({ preventScroll: true }); } }, reduce ? 200 : 1700);
-    clearTimeout(autoBrake); autoBrake = setTimeout(() => { if (phase === 'spin') engage(); }, 30000);
   }
   function resetUi() {
     $('spBrake').classList.remove('up', 'pulled', 'done'); setLever(0); $('spMsg').textContent = ''; $('spResult').hidden = true; $('spRain').innerHTML = '';
     $('spWheel').querySelectorAll('.hl').forEach(h => h.setAttribute('opacity', '0'));
   }
   function engage() {
-    if (phase !== 'spin') return; phase = 'brake'; drag = null; clearTimeout(autoBrake);
+    if (phase !== 'spin') return; phase = 'brake'; drag = null; $('spClose').disabled = true;
+    // the handbrake is what decides the draw: pick the prize now and save it (BP + today's spin) in one write
+    prize = draw();
+    savePromise = prize > 0 ? Promise.resolve().then(() => window.bus16Spin(prize)).catch(e => { console.error('Bus 16 spin could not be saved:', e); return null; }) : Promise.resolve({ ok: true });
     const idx = WHEEL.map((v, i) => v === prize ? i : -1).filter(i => i >= 0), j = idx[Math.floor(Math.random() * idx.length)];
     const target = -(j * SEG) + (Math.random() - .5) * SEG * .55;
     const need = ((((target - theta) % 360) + 360) % 360), min = Math.max(omega, 200) * 1.7 / 3;
@@ -1082,13 +1134,20 @@ $('whereBtn').onclick = () => { location.href = MAP_PAGE; };
     sfx.screech(Math.min(1.4, braking.T * .8));
     const from = leverP, t0 = performance.now(), run = () => { const u = Math.min(1, (performance.now() - t0) / 420); setLever(from + (1 - from) * (1 - Math.pow(1 - u, 2))); if (u < 1) requestAnimationFrame(run); }; run();
   }
-  function finish() {
-    cancelAnimationFrame(raf); phase = 'done'; sfx.humStop(); $('spBrake').classList.add('done');
+  async function finish() {
+    cancelAnimationFrame(raf); phase = 'done'; sfx.humStop();
+    const r = await savePromise;
+    if (!r || !r.ok) {                                  // not saved: nothing is credited and the day is not used
+      window.__bpHold = null; showBP(); collectClose();
+      return (r && r.reason === 'done') ? (paintDaily(), locked()) : failed();
+    }
+    newBal = prize > 0 ? r.points : null; resultShown = true; $('spClose').disabled = false;
+    $('spBrake').classList.add('done');
     const w = sliceUnder(); const h = $('spWheel').querySelector('.hl[data-i="' + w + '"]'); if (h) { h.setAttribute('opacity', '.34'); h.animate([{ opacity: .1 }, { opacity: .5 }, { opacity: .1 }], { duration: 900, iterations: 3 }); }
     const res = $('spResult'), won = $('spWon'), amt = $('spAmt'), go = $('spGo'); res.hidden = false;
     if (prize > 0) {
       won.className = 'sp-won'; $('spWon').querySelector('.lab').hidden = false; go.className = 'sp-btn'; go.textContent = t('sp.collect');
-      go.onclick = collect; sfx.chime(); rain(prize);
+      go.onclick = collect; sfx.chime(); rain(prize); paintDaily();
       if (reduce) amt.textContent = '+' + prize; else {
         const t0 = performance.now(); (function step() { const u = Math.min(1, (performance.now() - t0) / 1000); amt.textContent = '+' + Math.round(prize * (1 - Math.pow(1 - u, 3))); if (u < 1) requestAnimationFrame(step); })();
       }
@@ -1098,22 +1157,16 @@ $('whereBtn').onclick = () => { location.href = MAP_PAGE; };
     }
     go.focus({ preventScroll: true });
   }
-  async function again() {                      // free retry: nothing was saved, so just draw again
-    prize = draw(); newBal = null;
-    if (prize > 0) {
-      let r = null; try { r = await window.bus16Spin(prize); } catch (e) { console.error(e); }
-      if (!r || !r.ok) { collectClose(); return (r && r.reason === 'done') ? (paintDaily(), locked()) : failed(); }
-      newBal = r.points;
-    }
-    resetUi(); theta = Math.random() * 360; omega = 0; phase = 'spin'; lastT = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(frame); sfx.humStart();
+  function again() {                            // free retry: nothing was saved, the wheel just spins again
+    prize = null; newBal = null; savePromise = null; resultShown = false; resetUi(); $('spClose').disabled = false;
+    theta = Math.random() * 360; omega = 0; phase = 'spin'; lastT = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(frame); sfx.humStart();
     setTimeout(() => { if (phase === 'spin') { $('spBrake').classList.add('up'); $('spMsg').textContent = t('sp.pull'); } }, 500);
-    clearTimeout(autoBrake); autoBrake = setTimeout(() => { if (phase === 'spin') engage(); }, 30000);
   }
   function collect() { const from = window.__bpHold; collectClose(); window.__bpHold = null; countUp(from, newBal != null ? newBal : bpBalance()); }
   function collectClose() {
-    phase = 'idle'; busy = false; cancelAnimationFrame(raf); sfx.humStop(); clearTimeout(autoBrake);
-    spin.classList.remove('on'); hero.classList.remove('zoom');   // the bus spirals back out while the wheel screen fades away
-    const fin = () => { spin.hidden = true; spin.setAttribute('aria-hidden', 'true'); document.documentElement.classList.remove('spinning'); hero.classList.remove('zlift'); resetUi(); };
+    phase = 'idle'; busy = false; closing = true; resultShown = false; cancelAnimationFrame(raf); sfx.humStop();
+    spin.classList.remove('on'); hero.classList.remove('zoom');   // the camera pulls back out while the wheel screen fades away
+    const fin = () => { spin.hidden = true; spin.setAttribute('aria-hidden', 'true'); document.documentElement.classList.remove('spinning'); hero.classList.remove('zlift'); closing = false; resetUi(); };
     if (reduce) fin(); else { setTimeout(() => { spin.hidden = true; spin.setAttribute('aria-hidden', 'true'); resetUi(); }, 520); setTimeout(() => document.documentElement.classList.remove('spinning'), 1000); clearTimeout(zT); zT = setTimeout(fin, 1450); }
     paintDaily(); $('dailyBtn').focus({ preventScroll: true });
   }
@@ -1151,11 +1204,20 @@ $('whereBtn').onclick = () => { location.href = MAP_PAGE; };
   /* ---------- the blue callout ---------- */
   function paintDaily() {
     const b = $('dailyBtn'), used = spun(); b.classList.toggle('used', used);
-    b.querySelector('.sub').textContent = used ? hms(untilReset()) : '';
+    b.querySelector('.sub').textContent = used ? t('sp.next', { t: hms(untilReset()) }) : t('h.spin.sub');
   }
   $('dailyBtn').onclick = begin;
-  $('gameBtn').onclick = begin;               // Game 16 on the bus front opens the same daily wheel
-  $('dailyIco').innerHTML = icon('spin', 14);
+  /* ---------- Game 16: every game lives in this list (for now only the daily spin) ---------- */
+  function gamesMenu() {
+    openSheet(t('h.game'), '<p class="muted">' + esc(t('gm.lead')) + '</p><div class="gmlist"><button class="gm" id="gmSpin" type="button"><span class="gmi">' + icon('spin', 30) + '</span>' +
+      '<span class="gmt"><b>' + esc(t('h.spin.label')) + '</b><small id="gmSub"></small></span><span class="gmpill" id="gmPill"></span></button></div><p class="muted gmmore">' + esc(t('gm.more')) + '</p>');
+    const paint = () => { const g = $('gmSpin'); if (!g) return false; const u = spun(); g.classList.toggle('used', u); g.setAttribute('aria-disabled', String(u));
+      $('gmSub').textContent = u ? t('sp.next', { t: hms(untilReset()) }) : t('gm.sub'); $('gmPill').textContent = u ? t('gm.wait') : t('gm.go'); return true; };
+    paint(); const iv = setInterval(() => { if (!$('sheet').classList.contains('open') || !paint()) clearInterval(iv); }, 1000);
+    $('gmSpin').onclick = () => { if (spun()) return; closeSheet(); setTimeout(begin, 320); };      // menu closes, then the camera dives into the front wheel
+  }
+  $('gameBtn').onclick = gamesMenu;
+  $('dailyIco').innerHTML = icon('spin', 21);
   setInterval(() => { if (spun()) paintDaily(); else if ($('dailyBtn').classList.contains('used')) paintDaily(); }, 1000);
   addEventListener('bus16:user', paintDaily); paintDaily();
 
@@ -1164,8 +1226,12 @@ $('whereBtn').onclick = () => { location.href = MAP_PAGE; };
   $('spSound').onclick = () => { sfx.toggle(); sndIco(); }; sndIco();
   $('spArr').innerHTML = icon('up', 24);
   $('spCloseIco').innerHTML = icon('close', 20);
-  // closing early is safe: the prize was already saved when the spin started, so it is simply credited
-  const closeSpin = () => { if (phase === 'idle' || spin.hidden) return; collect(); };
+  // closing before the handbrake is pulled costs nothing and rewards nothing; once the result is on screen, closing = Collect
+  const closeSpin = () => {
+    if (spin.hidden || closing) return;
+    if (phase === 'spin') { window.__bpHold = null; showBP(); collectClose(); }
+    else if (phase === 'done' && resultShown) collect();
+  };
   $('spClose').onclick = closeSpin;
   addEventListener('keydown', e => { if (e.key === 'Escape' && !spin.hidden) closeSpin(); });
   const hb = $('spBrake');
