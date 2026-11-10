@@ -60,15 +60,21 @@
   .bpbig b { display: block; font-size: 34px; font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums; }
   .bpbig small { display: block; margin-top: 3px; font-size: 13px; color: var(--amber-soft); }
   .hright { display: flex; align-items: center; gap: 10px; }
-  .acct { width: 36px; height: 36px; border-radius: 50%; overflow: hidden; background: rgba(255,255,255,.09); border: 1px solid var(--line); display: grid; place-items: center; font-size: 15px; font-weight: 700; color: var(--amber-soft); text-transform: uppercase; }
+  .acct { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: rgba(255,255,255,.09); border: 1px solid var(--line); display: grid; place-items: center; font-size: 15px; font-weight: 700; color: var(--amber-soft); text-transform: uppercase; }
   .acct svg { display: block; }
   .acct img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .acct img[hidden] { display: none; }
   /* "Complete your profile": top-left, under the header, never over the bus */
-  .cp { position: absolute; z-index: 5; left: 16px; top: calc(66px + env(safe-area-inset-top)); display: inline-flex; align-items: center; gap: 7px; height: 32px; padding: 0 13px; border-radius: 99px;
+  .cp { position: absolute; z-index: 5; left: 16px; top: calc(66px + env(safe-area-inset-top)); display: inline-flex; align-items: center; gap: 9px; height: 44px; padding: 0 16px 0 13px; border-radius: 99px; max-width: calc(100% - 32px);
     background: rgba(244,166,42,.14); border: 1px solid rgba(244,166,42,.55); color: var(--amber-soft); font-size: 13px; font-weight: 600; text-decoration: none; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
   .cp[hidden] { display: none; }
   .cp svg { flex: none; }
+  .cp .cpt { display: grid; line-height: 1.25; text-align: start; min-width: 0; }
+  .cp .cpt b { font-weight: 700; font-size: 13.5px; }
+  .cp .cpt small { font-weight: 500; font-size: 11.5px; color: rgba(255,213,138,.78); }
+  html.short .cp { height: 32px; } html.short .cp .cpt small { display: none; }
+  .meav { width: 64px; height: 64px; border-radius: 50%; overflow: hidden; display: grid; place-items: center; margin-bottom: 10px; background: rgba(255,255,255,.09); border: 1px solid var(--line); color: var(--amber-soft); font-size: 26px; font-weight: 700; }
+  .meav img { width: 100%; height: 100%; object-fit: cover; }
   .tag { font-size: 11.5px; color: var(--muted); padding: 4px 10px; border-radius: 99px; border: 1px solid var(--line); }
 
   /* ---------- the bus ---------- */
@@ -136,21 +142,22 @@
   .under { position: absolute; z-index: 3; left: 16px; right: 16px; display: flex; flex-direction: column; gap: 10px; }
   .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .card {
-    display: block; width: 100%; padding: 12px 14px 12px; border-radius: 16px; text-align: start;
+    display: block; width: 100%; padding: 14px 14px 13px; border-radius: 16px; text-align: start;
     background: rgba(12,18,34,.82); border: 1px solid var(--line); box-shadow: 0 10px 26px rgba(0,0,0,.35);
     -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
   }
-  .card .dir { display: flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 600; color: #fff; white-space: nowrap; min-width: 0; }
-  .card .dir > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .card .dir { display: flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 600; color: #fff; min-width: 0; line-height: 1.25; }
+  .card .dir > span { min-width: 0; }
   html[dir=ltr] .card { padding-inline: 12px; }
   html[dir=ltr] .card .dir { font-size: 12px; gap: 6px; }
   .card .dir i { flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 0 3px rgba(244,166,42,.18); }
-  .card .lbl { display: block; margin-top: 9px; font-size: 11.5px; color: var(--muted); line-height: 1.2; }
-  .card .cd { display: block; margin-top: 1px; font-size: 29px; font-weight: 700; line-height: 1.15; color: var(--amber-soft); font-variant-numeric: tabular-nums; letter-spacing: .5px; direction: ltr; text-align: start; }
+  .card .lbl { display: block; margin-top: 11px; font-size: 12px; color: var(--muted); line-height: 1.2; }
+  .card .cd .u { font-style: normal; font-size: 12px; font-weight: 600; letter-spacing: 0; color: var(--muted); margin-inline: 3px 7px; }
+  .card .cd { display: block; white-space: nowrap; margin-top: 1px; font-size: clamp(25px, 7.4vw, 30px); font-weight: 700; line-height: 1.15; color: var(--amber-soft); font-variant-numeric: tabular-nums; letter-spacing: .5px; direction: ltr; text-align: start; }
   [dir=rtl] .card .cd { text-align: right; }
-  .card .sub { display: block; margin-top: 6px; padding-top: 7px; border-top: 1px solid var(--line); font-size: 12px; color: rgba(238,241,247,.78); line-height: 1.5; }
+  .card .sub { display: block; margin-top: 8px; padding-top: 9px; border-top: 1px solid var(--line); font-size: 12.5px; color: rgba(238,241,247,.78); line-height: 1.5; }
   .card .sub b { font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
-  .pricebtn { display: flex; align-items: center; gap: 11px; height: 50px; padding: 0 14px; border-radius: 14px; background: rgba(12,18,34,.82); border: 1px solid var(--line); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); font-size: 15px; font-weight: 600; }
+  .pricebtn { display: flex; align-items: center; gap: 11px; height: 56px; padding: 0 16px; border-radius: 16px; background: rgba(12,18,34,.82); border: 1px solid var(--line); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); font-size: 15px; font-weight: 600; }
   .pricebtn svg { flex: none; color: var(--amber); }
   .pricebtn small { margin-inline-start: auto; font-size: 12.5px; font-weight: 500; color: var(--muted); }
 
@@ -169,14 +176,16 @@
   /* ---------- bottom dock ---------- */
   .dock { position: absolute; z-index: 4; left: 16px; right: 16px; bottom: calc(18px + env(safe-area-inset-bottom)); display: flex; gap: 10px; }
   .dbtn {
-    flex: 1 1 0; min-width: 0; display: flex; align-items: center; gap: 9px; height: 54px; padding: 0 13px; border-radius: 15px;
-    background: rgba(15,22,41,.9); border: 1px solid var(--line); box-shadow: 0 8px 22px rgba(0,0,0,.35);
-    font-size: 15px; font-weight: 600; line-height: 1.2;
+    position: relative; flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; height: var(--dockh, 76px); padding: 0 10px; border-radius: 18px; text-align: center;
+    background: rgba(15,22,41,.92); border: 1px solid var(--line); box-shadow: 0 8px 22px rgba(0,0,0,.35);
+    font-size: 14.5px; font-weight: 600; line-height: 1.15;
   }
   .dbtn > span:not([id$=Ico]):not(.count) { min-width: 0; }
-  .dbtn svg { flex: none; color: var(--amber); }
-  .dbtn.wide { flex-grow: 1.3; }
-  .dbtn .count { flex: none; margin-inline-start: auto; min-width: 24px; height: 24px; padding: 0 7px; border-radius: 99px; background: rgba(244,166,42,.16); color: var(--amber-soft); font-size: 12.5px; font-weight: 700; display: grid; place-items: center; }
+  .dbtn svg { flex: none; width: 26px; height: 26px; color: var(--amber); }
+  .dbtn:active, .card:active, .pricebtn:active { transform: scale(.98); }
+  html.short .card .sub { display: none; }
+  html.short .card { padding-bottom: 11px; }
+  .dbtn .count { position: absolute; top: 9px; inset-inline-end: 10px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 99px; background: var(--amber); color: #1a1205; font-size: 12px; font-weight: 800; display: grid; place-items: center; }
 
   /* ---------- sheets ---------- */
   .veil { position: absolute; inset: 0; z-index: 20; background: rgba(3,5,12,.62); opacity: 0; visibility: hidden; transition: opacity .25s, visibility 0s .25s; }
@@ -210,6 +219,7 @@
   .chip { display: inline-block; font-size: 12.5px; padding: 2px 11px; border-radius: 99px; border: 1px solid var(--line); color: var(--amber-soft); margin-bottom: 12px; }
   .btn { display: block; width: 100%; height: 50px; margin-top: 14px; border-radius: 14px; background: var(--amber); color: #1a1205; font-weight: 700; font-size: 16px; text-align: center; line-height: 50px; }
   .btn.ghost { background: rgba(255,255,255,.07); color: #fff; font-weight: 600; }
+  .btn.gsi { display: flex; align-items: center; justify-content: center; gap: 11px; background: #fff; color: #1f1f1f; }
   ul.plain { margin: 0 0 8px; padding: 0; list-style: none; }
   ul.plain li { padding: 6px 0; }
   ul.plain li::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-inline-end: 10px; border-radius: 50%; background: var(--amber); vertical-align: middle; }
@@ -383,10 +393,10 @@
     </button>
     <div class="hright">
       <div class="tag" data-i18n="h.beta">Demo version</div>
-      <button class="acct" id="acctBtn" data-i18n-aria="h.account" aria-label="My account"><span id="acctIni"></span><img id="acctImg" alt="" hidden></button>
+      <button class="acct" id="acctBtn" aria-label="My account"><span id="acctIni"></span><img id="acctImg" alt="" hidden></button>
     </div>
   </header>
-  <a class="cp" id="cp" href="profile.html" hidden><span id="cpIco"></span><span data-i18n="h.cp">Complete your profile</span></a>
+  <a class="cp" id="cp" href="profile.html" hidden><span id="cpIco"></span><span class="cpt"><b data-i18n="h.cp">Complete your profile</b><small data-i18n="h.cp.sub">To tailor your app experience</small></span></a>
 
   <section class="hero" id="hero" data-i18n-aria="h.brand" aria-label="Bus 16">
     <div class="stage" id="stage">
@@ -562,7 +572,7 @@ const SHOPS = [
   { icon: 'food', where: 'kornayel',
     name:  { ar: 'فلافل أبو كريم', en: 'Karim Falafel', fr: 'Falafel Karim' },
     cat:   { ar: 'مطعم', en: 'Restaurant', fr: 'Restaurant' },
-    tag:   { ar: 'عروض حصرية للأكابر', en: 'Exclusive offers', fr: 'Offres exclusives' },
+    tag:   { ar: 'عروض حصرية', en: 'Exclusive offers', fr: 'Offres exclusives' },
     offer: { ar: 'ساندويش فلافل مع مشروب بسعر خاص لركاب باص 16.', en: 'A falafel sandwich with a drink at a special price for Bus 16 riders.', fr: 'Un sandwich falafel avec une boisson à prix spécial pour les passagers du bus 16.' } },
   { icon: 'pharmacy', where: 'kornayel',
     name:  { ar: 'صيدلية الضيعة', en: 'Village Pharmacy', fr: 'Pharmacie du Village' },
@@ -662,21 +672,28 @@ const app = $('app'), hero = $('hero'), stage = $('stage');
 const GROUND = 272, STAGE_H = 290;
 function fit() {
   const W = app.clientWidth, H = app.clientHeight;
-  const s = Math.min(W / 390, 1.08);
-  // the stage is scaled to the screen width, pivoting on the front wheel so the spin camera-dive can start from there (see spin.css)
+  document.documentElement.classList.toggle('short', H < 660);   // very short screens: cards drop the 'then ...' line (the times sheet has it)
+  const dockH = H < 700 ? 64 : 76;
+  document.documentElement.style.setProperty('--dockh', dockH + 'px');
+  const under = $('under'), underH = under.offsetHeight;
+  // scale the bus to the screen width, but also shrink it on short screens so the cards, price list and dock never collide
+  let s = Math.min(W / 390, 1.08);
+  const hdr = 62 + ($('cp').hidden ? 0 : (H < 660 ? 0 : 36));       // the profile pill sits under the header and needs its own room
+  const roomBus = H - 18 - dockH - 14 - underH - 8 - hdr - 22;      // 22px reserved for the Daily spin label under the bus
+  s = Math.min(s, Math.max(0.7, roomBus / STAGE_H));
+  // the stage pivots on the front wheel so the spin camera-dive can start from there (see spin.css)
   const WO = [0.3516, 0.8318], ox = WO[0] * 390, oy = WO[1] * STAGE_H;
   stage.style.transformOrigin = (WO[0] * 100) + '% ' + (WO[1] * 100) + '%';
   stage.style.setProperty('--fs', s);
   stage.style.setProperty('--tx', ((195 - ox) * (1 - s)).toFixed(2) + 'px');
   stage.style.setProperty('--ty', (-oy * (1 - s)).toFixed(2) + 'px');
   // stack: header, bus, (room for the Daily spin label), cards, price button, then the dock. Spread any spare room above the bus.
-  const under = $('under'), busH = STAGE_H * s, underH = under.offsetHeight;
-  const dockTop = H - 18 - 54;
-  const spare0 = dockTop - 14 - (62 + busH + 8 + underH);
-  const lab = Math.min(24, Math.max(0, spare0 * 0.6));
+  const busH = STAGE_H * s, dockTop = H - 18 - dockH;
+  const spare0 = dockTop - 14 - (hdr + busH + 8 + underH);
+  const lab = Math.min(24, Math.max(0, spare0));
   stage.style.setProperty('--lab', (lab / s).toFixed(1) + 'px');
   const spare = spare0 - lab;
-  const top = 62 + Math.max(0, spare * 0.4);
+  const top = hdr + Math.max(0, spare * 0.4);
   hero.style.top = top + 'px';
   hero.style.height = busH + 'px';
   under.style.top = (top + busH + 8 + lab) + 'px';
@@ -826,7 +843,7 @@ function villageInfo() {
 const toSec = t => { const [h, m] = t.split(':'); return (+h * 60 + +m) * 60; };
 const p2 = n => String(n).padStart(2, '0');
 const nowSec = () => { const d = new Date(); return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds(); };
-const fmtCd = s => { const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return (h ? h + ':' + p2(m) : p2(m)) + ':' + p2(s % 60); };
+const fmtCd = s => { const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), u = k => '<i class="u">' + t('u.' + k) + '</i>'; return h ? h + u('h') + ' ' + p2(m) + u('m') : p2(m) + u('m') + ' ' + p2(s % 60) + u('s'); };
 
 function nextOf(list) {
   const n = nowSec(), secs = list.map(toSec);
@@ -836,7 +853,7 @@ function nextOf(list) {
 }
 function tickCard(k) {
   const r = nextOf(TIMES[k]);
-  $('cd' + k).textContent = fmtCd(r.left);
+  $('cd' + k).innerHTML = fmtCd(r.left);
   $('sub' + k).innerHTML = t('h.starts', { t: '<b>' + r.cur + '</b>' }) + (r.tomorrow ? ' ' + t('h.tomorrow') : '') + '<br>' + t('h.then', { t: '<b>' + r.after + '</b>' });
 }
 function tickAll() { tickCard('A'); tickCard('B'); }
@@ -893,6 +910,18 @@ function coinSvg(size) {
     '</svg>';
 }
 $('bpCoin').innerHTML = coinSvg(36);
+// A guest who touches something that needs points gets this: why, and a Google button. They come back to the same place afterwards.
+function googleG(n) { return '<svg width="' + n + '" height="' + n + '" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>'; }
+function signInSheet(lead, withLang, next) {
+  openSheet(t('l.si.title'),
+    '<p class="muted">' + esc(lead || t('h.guest.lead')) + '</p>' +
+    '<button class="btn gsi" id="gsiBtn" type="button">' + googleG(20) + '<span>' + esc(t('l.google')) + '</span></button>' +
+    (withLang ? '<div class="lang"><span>' + t('lang.label') + '</span><div class="opts" role="group" aria-label="' + esc(t('lang.label')) + '">' +
+      ['en', 'ar', 'fr'].map(l => '<button type="button" data-l="' + l + '" lang="' + l + '" aria-pressed="' + (l === I18N.lang) + '">' + I18N.D[l]['lang.name'] + '</button>').join('') + '</div></div>' : ''));
+  $('gsiBtn').onclick = () => { if (window.bus16SignIn) window.bus16SignIn(next || 'index.html'); };
+  if (withLang) $('shBody').querySelectorAll('.lang button').forEach(b => b.onclick = () => { if (b.dataset.l !== I18N.lang) { I18N.set(b.dataset.l); location.reload(); } });
+}
+window.bus16SignInSheet = signInSheet;      // spin.js uses it when a guest presses Daily spin
 function bpBalance() { const p = ((window.BUS16_USER || {}).profile) || {}; return Math.max(0, Math.floor(Number(p.points) || 0)); }
 function showBP() {
   const n = I18N.num(window.__bpHold != null ? window.__bpHold : bpBalance());
@@ -900,29 +929,39 @@ function showBP() {
   $('bpBtn').setAttribute('aria-label', t('h.bp.aria', { n: n }));
 }
 $('bpBtn').onclick = () => {
+  if (!window.BUS16_USER) return signInSheet(t('h.bp.guest'));
   openSheet(t('h.bp.title'),
     '<div class="bpbig">' + coinSvg(60) + '<div><b dir="ltr" id="bpBig">' + I18N.num(bpBalance()) + '</b><small>' + t('h.bp.bal') + '</small></div></div>' +
-    '<span class="chip">' + t('h.soon') + '</span><p class="muted">' + t('h.bp.lead') + '</p>');
+    '<p class="muted">' + t('h.bp.lead') + '</p><button class="btn" id="bpGo" type="button">' + t('h.bp.go') + '</button>');
+  $('bpGo').onclick = () => { closeSheet(); setTimeout(() => $('gameBtn').click(), 300); };
   if (window.bus16Refresh) window.bus16Refresh().then(() => { const b = $('bpBig'); if (b) b.textContent = I18N.num(bpBalance()); });
 };
 document.addEventListener('visibilitychange', () => { if (!document.hidden && window.bus16Refresh) window.bus16Refresh(); });
 function showUser() {
-  const u = window.BUS16_USER; if (!u) return;
+  const u = window.BUS16_USER;
+  if (!u) {                                  // a guest: nothing to show except the plain account icon
+    $('acctImg').hidden = true; $('acctIni').hidden = false; $('acctIni').innerHTML = icon('user', 20);
+    $('acctBtn').setAttribute('aria-label', t('l.signin'));
+    const was = $('cp').hidden; $('cp').hidden = true; showBP(); if (!was) fit(); return;
+  }
   const p = u.profile || {};
   const ch = (u.name || u.username || u.email || '').trim().charAt(0);
+  $('acctBtn').setAttribute('aria-label', t('h.account'));
   $('acctImg').hidden = !p.photo;
   if (p.photo) $('acctImg').src = p.photo;
   $('acctIni').hidden = !!p.photo;
   $('acctIni').innerHTML = ch ? '' : icon('user', 18);
   if (ch) $('acctIni').textContent = ch;
-  $('cp').hidden = !!p.profileDone;
+  const was = $('cp').hidden; $('cp').hidden = !!p.profileDone;
   showBP();
+  if (was !== $('cp').hidden) fit();
 }
 addEventListener('bus16:user', showUser); showUser();
 $('acctBtn').onclick = () => {
+  if (!window.BUS16_USER) return signInSheet(t('h.guest.lead'), true);
   const u = window.BUS16_USER || {};
   openSheet(t('h.me'),
-    '<div class="tile big">' + icon('user', 28) + '</div>' +
+    '<div class="meav">' + (u.profile && u.profile.photo ? '<img alt="" src="' + esc(u.profile.photo) + '">' : esc(((u.name || u.username || u.email || '?').trim().charAt(0) || '?').toUpperCase())) + '</div>' +
     (u.name ? '<p><b dir="auto">' + esc(u.name) + '</b></p>' : '') +
     '<p class="muted"><bdi dir="ltr">' + (u.username ? '@' + esc(u.username) + ' · ' : '') + esc(u.email || '') + '</bdi></p>' +
     '<a class="btn ghost" href="profile.html" style="text-decoration:none">' + t('h.edit') + '</a>' +
@@ -1092,6 +1131,8 @@ $('whereBtn').onclick = () => { location.href = MAP_PAGE; };
   // Opening the wheel costs nothing. The prize is drawn, saved and the day is used only when the handbrake is pulled.
   function begin() {
     if (busy || closing) return;
+    // Points need an account: a guest gets the Google sign-in sheet, and comes straight back here afterwards (?spin=1).
+    if (!window.BUS16_USER) return window.bus16SignInSheet && window.bus16SignInSheet(t('h.guest.lead'), false, 'index.html?spin=1');
     if (spun()) return locked();
     busy = true; sfx.unlock();
     window.__bpHold = bpBalance(); prize = null; newBal = null; savePromise = null; resultShown = false;
@@ -1220,6 +1261,12 @@ $('whereBtn').onclick = () => { location.href = MAP_PAGE; };
   $('dailyIco').innerHTML = icon('spin', 21);
   setInterval(() => { if (spun()) paintDaily(); else if ($('dailyBtn').classList.contains('used')) paintDaily(); }, 1000);
   addEventListener('bus16:user', paintDaily); paintDaily();
+  // Back from the Google sign-in that a guest started from the spin: open the wheel for them.
+  if (new URLSearchParams(location.search).get('spin') === '1') {
+    try { history.replaceState(null, '', location.pathname); } catch (e) {}
+    const resume = () => setTimeout(begin, 700);
+    if (window.BUS16_USER) resume(); else addEventListener('bus16:user', resume, { once: true });
+  }
 
   /* ---------- sound button, close, handbrake controls ---------- */
   const sndIco = () => { $('spSoundIco').innerHTML = sfx.on ? icon('sound', 20) : icon('mute', 20); $('spSound').setAttribute('aria-pressed', String(sfx.on)); };

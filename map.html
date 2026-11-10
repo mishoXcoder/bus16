@@ -82,6 +82,42 @@
   .bus-icon { width: 34px; height: 34px; border-radius: 50%; background: #fff; border: 3px solid #1d4ed8; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 2px 6px rgba(0,0,0,.3); transition: transform .2s; }
   .bus-icon.korn { border-color: #ea580c; }
   .bus-icon.hl { transform: scale(1.35); box-shadow: 0 0 0 5px rgba(16,185,129,.35), 0 2px 8px rgba(0,0,0,.35); }
+
+  /* ---------- dark theme: same look as the main screen ---------- */
+  html, body { background: #070b16; color: #eef1f7; }
+  .leaflet-container { background: #0f1524; font-family: inherit; }
+  .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.78) contrast(.95) saturate(.55); }
+  .leaflet-control-zoom a { background: rgba(12,18,34,.94); color: #fff; border-color: rgba(255,255,255,.14); width: 40px; height: 40px; line-height: 40px; }
+  .leaflet-control-zoom { border: 1px solid rgba(255,255,255,.14) !important; border-radius: 12px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,.45); }
+  .leaflet-control-attribution { background: rgba(7,11,22,.7) !important; color: #9aa4b8 !important; }
+  .leaflet-control-attribution a { color: #ffd58a !important; }
+  .leaflet-tooltip { background: #10182b; color: #fff; border: 1px solid rgba(255,255,255,.18); box-shadow: 0 4px 14px rgba(0,0,0,.5); font-weight: 600; }
+  .leaflet-tooltip-top:before { border-top-color: #10182b; }
+  .back { height: 46px; background: rgba(12,18,34,.94); color: #ffd58a; border: 1px solid rgba(255,255,255,.14); box-shadow: 0 6px 18px rgba(0,0,0,.45); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+  #panel { background: rgba(9,14,28,.97); color: #eef1f7; border-top: 1px solid rgba(255,255,255,.1); box-shadow: 0 -14px 40px rgba(0,0,0,.55); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+  .brand span { background: #f4a62a; color: #1a1205; }
+  .clock { color: #9aa4b8; } .clock.demo { color: #ffcf6b; }
+  .tab { min-height: 44px; background: rgba(255,255,255,.06); color: #cdd3e0; }
+  .tab.active { background: #f4a62a; color: #1a1205; }
+  .seg button { min-height: 48px; background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.12); color: #eef1f7; }
+  .seg button.active.kola { border-color: #5aa2ff; background: rgba(90,162,255,.14); color: #a9ccff; }
+  .seg button.active.korn { border-color: #f4a62a; background: rgba(244,166,42,.14); color: #ffd58a; }
+  label { color: #9aa4b8; }
+  select, input[type=text], input[type=time] { min-height: 46px; background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.14); color: #fff; color-scheme: dark; }
+  select option { background: #10182b; color: #fff; }
+  .small-btn { min-height: 46px; background: rgba(255,255,255,.08); color: #fff; border: 1px solid rgba(255,255,255,.12); }
+  .card { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.1); }
+  .card.next { background: rgba(244,166,42,.1); border-color: rgba(244,166,42,.55); }
+  .big { color: #ffd58a; } .sub { color: #cdd3e0; } .muted { color: #9aa4b8; }
+  .demo-box { border-color: rgba(255,255,255,.2); }
+  .demo-box label { color: #eef1f7 !important; }
+  .btn { min-height: 48px; background: #f4a62a; color: #1a1205; }
+  .btn.secondary { background: rgba(255,255,255,.08); color: #fff; }
+  .btn.on { background: #5aa2ff; color: #06142e; }
+  .btn.danger { background: rgba(239,68,68,.16); color: #fca5a5; }
+  ol.how { color: #cdd3e0; }
+  textarea { background: #0b1120; color: #cdd3e0; border-color: rgba(255,255,255,.14); }
+  .bus-icon { background: #0b1120; color: #fff; border-width: 3px; }
 </style>
 </head>
 <body>
@@ -210,7 +246,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
-const routeLine = L.polyline([], { color: '#1d4ed8', weight: 5, opacity: .8, interactive: false }).addTo(map);
+const routeLine = L.polyline([], { color: '#5aa2ff', weight: 5, opacity: .9, interactive: false }).addTo(map);
 const stopLayer = L.layerGroup().addTo(map);
 const busMarkers = {};   // key -> marker
 
@@ -350,8 +386,8 @@ function drawStops() {
     const p = pointAt(st.along);
     const sel = i === selectedStop;
     L.circleMarker(p, {
-      radius: sel ? 9 : 6, color: sel ? '#dc2626' : '#111827',
-      fillColor: sel ? '#fecaca' : '#fff', fillOpacity: 1, weight: 3
+      radius: sel ? 9 : 6, color: sel ? '#ff6b6b' : '#ffd58a',
+      fillColor: sel ? '#ffd5d5' : '#10182b', fillOpacity: 1, weight: 3
     }).bindTooltip(esc(st.name), { permanent: sel, direction: 'top', offset: [0, -8] }).addTo(stopLayer);
   });
 }

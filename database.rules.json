@@ -1,0 +1,76 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "users": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.hasChildren(['name', 'username']) && (!data.child('points').exists() || newData.child('points').exists())",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 80"
+        },
+        "username": {
+          ".validate": "newData.isString() && newData.val().matches(/^[a-z][a-z0-9_]{2,19}$/) && (!data.exists() || data.val() === newData.val())"
+        },
+        "birthdate": {
+          ".validate": "newData.isString() && newData.val().matches(/^(19|20)[0-9]{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/)"
+        },
+        "points": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && (newData.val() === (data.exists() ? data.val() : 0) || (newData.parent().child('spinDay').val() > (data.parent().child('spinDay').exists() ? data.parent().child('spinDay').val() : 0) && newData.val() - (data.exists() ? data.val() : 0) <= 100))"
+        },
+        "spinDay": {
+          ".validate": "newData.isNumber() && newData.val() > (data.exists() ? data.val() : 0) && newData.val() >= now / 86400000 - 1 && newData.val() <= now / 86400000 + 1"
+        },
+        "age": {
+          ".validate": "newData.isNumber() && newData.val() >= 13 && newData.val() <= 100"
+        },
+        "country": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60"
+        },
+        "district": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60"
+        },
+        "city": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 60"
+        },
+        "phone": {
+          ".validate": "newData.isString() && newData.val().length >= 9 && newData.val().length <= 17"
+        },
+        "photo": {
+          ".validate": "newData.isString() && newData.val().length < 70000 && newData.val().beginsWith('data:image/jpeg;base64,')"
+        },
+        "profileDone": {
+          ".validate": "newData.isBoolean()"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "usernames": {
+      ".read": false,
+      ".write": false,
+      "$name": {
+        ".read": "auth != null",
+        ".write": "auth != null && ((!data.exists() && newData.val() === auth.uid) || (data.exists() && data.val() === auth.uid))",
+        ".validate": "newData.isString() && newData.val() === auth.uid && $name.matches(/^[a-z][a-z0-9_]{2,19}$/) && $name === newData.parent().parent().child('users').child(auth.uid).child('username').val()"
+      }
+    },
+    "buses": {
+      ".read": true,
+      ".write": false
+    },
+    "news": {
+      ".read": true,
+      ".write": false
+    },
+    "shops": {
+      ".read": true,
+      ".write": false
+    }
+  }
+}
