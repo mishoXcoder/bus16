@@ -7,8 +7,8 @@
 <title data-i18n-doc="m.doc">Map · Bus 16</title>
 <!-- Login gate + language: the page stays hidden until the visitor is signed in. Keep these three lines. -->
 <style>html{visibility:hidden}</style>
-<script src="i18n.js"></script>
-<script type="module" src="auth-guard.js"></script>
+<script src="i18n.js?v=20261110"></script>
+<script type="module" src="auth-guard.js?v=20261110"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -174,6 +174,7 @@
         </div>
       </div>
     </div>
+    <p class="muted" id="partialNote" style="margin:10px 0 0" data-i18n="m.partial" hidden></p>
     <p class="muted" style="margin:10px 0 0" data-i18n="m.sample">Prototype: times shown are sample times, not the real timetable.</p>
   </div>
 
@@ -216,17 +217,25 @@ I18N.apply(document);
    1) THINGS YOU EDIT
    ========================================================== */
 
-// How long one full trip takes from one end to the other (minutes).
+// The real Bus 16 departure times (from the driver's sheet), 24-hour format.
+// They are the same both ways: Kornayel -> Kola and Kola -> Kornayel. Times only, no names.
+const DEPARTURES = [
+  "05:20","05:35","05:45","06:00","06:14","06:23","06:30","06:38","06:48","07:00","07:10",
+  "07:18","07:26","07:36","07:43","08:05","08:20","08:35","09:05","09:30","10:00","10:30",
+  "11:00","11:15","11:50","12:10","12:35","12:45","13:30","13:50","14:05","14:20","14:35",
+  "14:50","15:15","15:35","16:05","16:45","17:05","17:30","18:10",
+];
+const TIMETABLE = { toKola: DEPARTURES, toKornayel: DEPARTURES };
+
+// How long the WHOLE line takes, Kornayel <-> Kola (minutes). A guess until you time it on a ride.
 const TRIP_MINUTES = 60;
 
-// SAMPLE departure times (24-hour format). Replace with the real ones
-// after you talk to the bus manager.
-const TIMETABLE = {
-  toKola:     ["05:30","06:00","06:30","07:00","07:30","08:00","08:30","09:30","10:30","11:30","12:30",
-               "13:30","14:30","15:00","15:30","16:00","16:30","17:30","18:30","19:30"],
-  toKornayel: ["06:00","06:45","07:15","07:45","08:15","09:00","10:00","11:00","12:00","13:00","14:00",
-               "15:15","16:15","17:00","17:45","18:45","19:45"]
-};
+// Right now only Kornayel -> Bhamdoun is drawn on the map (the rest of the way to Kola isn't tracked yet).
+//  - ROUTE_COMPLETE = false : the drawn line covers only the first MAPPED_MINUTES of the trip. Buses are shown
+//                             on it while they are on that part and wait "off the map" for the rest.
+//  - When you have drawn the whole road to Kola: set ROUTE_COMPLETE = true (the drawn line is then the whole trip).
+const ROUTE_COMPLETE = false;
+const MAPPED_MINUTES = 25;      // about how long Kornayel -> Bhamdoun takes (a guess: time it on a ride)
 
 // The drawn route is the "const SAVED_ROUTE" line in the script just above the map code.
 
@@ -234,6 +243,7 @@ const TIMETABLE = {
    2) MAP SETUP
    ========================================================== */
 const $ = id => document.getElementById(id);
+$('partialNote').hidden = ROUTE_COMPLETE;   // tells riders the map isn't finished yet
 
 const map = L.map('map', { zoomControl: false }).setView([33.87, 35.6], 11);
 // The zoom buttons sit on the opposite side from the Back button.
@@ -344,17 +354,26 @@ function nowMin() {
 let direction = 'toKola';
 let selectedStop = 0;   // index in route.stops
 
-// Buses currently on the road
+// The drawn line stands for SCALE minutes of the trip. While Kola isn't drawn yet, the rest of the trip (OFFMAP) is "off the map".
+const SCALE = ROUTE_COMPLETE ? TRIP_MINUTES : MAPPED_MINUTES;
+const OFFMAP = ROUTE_COMPLETE ? 0 : TRIP_MINUTES - MAPPED_MINUTES;
+
+// Where a bus is on the drawn line (0 = Kornayel end, 1 = the far end), or null if it isn't on the drawn part.
+// e = minutes since it left its first stop (Kornayel for "toKola", Kola for "toKornayel").
+function fracOf(dir, e) {
+  if (dir === 'toKola') return e >= 0 && e <= SCALE ? e / SCALE : null;
+  const x = e - OFFMAP;
+  return x >= 0 && x <= SCALE ? 1 - x / SCALE : null;
+}
+
+// Buses currently on the drawn part of the road
 function activeTrips(now) {
   const out = [];
   for (const dir of ['toKola', 'toKornayel']) {
     for (const tm of TIMETABLE[dir]) {
       const s = toMin(tm);
-      const f = (now - s) / TRIP_MINUTES;
-      if (f >= 0 && f <= 1) {
-        out.push({ dir, start: s, key: dir + tm, f,
-                   along: dir === 'toKola' ? f * total : (1 - f) * total });
-      }
+      const f = fracOf(dir, now - s);
+      if (f !== null) out.push({ dir, start: s, key: dir + tm, f, along: f * total });
     }
   }
   return out;
@@ -362,16 +381,16 @@ function activeTrips(now) {
 
 // The next buses to reach a given stop, in a given direction
 function upcoming(now, dir, stopAlong) {
-  const g = dir === 'toKola' ? stopAlong / total : 1 - stopAlong / total;
+  const g = stopAlong / total;
   const res = [];
   for (const tm of TIMETABLE[dir]) {
     const s = toMin(tm);
-    const arr = s + g * TRIP_MINUTES;
+    const arr = dir === 'toKola' ? s + g * SCALE : s + OFFMAP + (1 - g) * SCALE;
     if (arr >= now) {
-      const f = (now - s) / TRIP_MINUTES;
-      const busAlong = dir === 'toKola' ? f * total : (1 - f) * total;
-      const away = dir === 'toKola' ? stopAlong - busAlong : busAlong - stopAlong;
-      res.push({ key: dir + tm, start: s, arr, wait: arr - now, onRoad: f >= 0 && f <= 1, away });
+      const f = fracOf(dir, now - s);
+      const onRoad = f !== null;
+      const away = onRoad ? Math.abs(stopAlong - f * total) : 0;
+      res.push({ key: dir + tm, start: s, arr, wait: arr - now, onRoad, left: now >= s, away });
     }
   }
   return res.slice(0, 3);
@@ -473,6 +492,7 @@ function render() {
     const big = mins === 0 ? t('m.now') : t('m.min', { n: mins });
     let sub;
     if (b.onRoad) sub = t('m.onroad', { km: (b.away / 1000).toFixed(1), stop: esc(stop.name), t: fmt(b.arr) });
+    else if (b.left) sub = t('m.offmap', { t: fmt(b.start), stop: esc(stop.name), t2: fmt(b.arr) });   // already left, but not on the drawn part yet
     else sub = t('m.notleft', { t: fmt(b.start), stop: esc(stop.name), t2: fmt(b.arr) });
 
     if (i === 0) {

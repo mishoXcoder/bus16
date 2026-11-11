@@ -7,8 +7,8 @@
 <title data-i18n-doc="h.doc">Bus 16</title>
 <!-- Login gate: the page stays hidden until the visitor is signed in. Keep these two lines. -->
 <style>html{visibility:hidden}</style>
-<script src="i18n.js"></script>
-<script type="module" src="auth-guard.js"></script>
+<script src="i18n.js?v=20261110"></script>
+<script type="module" src="auth-guard.js?v=20261110"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -154,7 +154,7 @@
   .card .lbl { display: block; margin-top: 11px; font-size: 12px; color: var(--muted); line-height: 1.2; }
   .card .cd .u { font-style: normal; font-size: 12px; font-weight: 600; letter-spacing: 0; color: var(--muted); margin-inline: 3px 7px; }
   .card .cd { display: block; white-space: nowrap; margin-top: 1px; font-size: clamp(25px, 7.4vw, 30px); font-weight: 700; line-height: 1.15; color: var(--amber-soft); font-variant-numeric: tabular-nums; letter-spacing: .5px; direction: ltr; text-align: start; }
-  [dir=rtl] .card .cd { text-align: right; }
+  [dir=rtl] .card .cd { text-align: right; direction: rtl; }   /* Arabic reads right to left: hours on the right, then minutes */
   .card .sub { display: block; margin-top: 8px; padding-top: 9px; border-top: 1px solid var(--line); font-size: 12.5px; color: rgba(238,241,247,.78); line-height: 1.5; }
   .card .sub b { font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
   .pricebtn { display: flex; align-items: center; gap: 11px; height: 56px; padding: 0 16px; border-radius: 16px; background: rgba(12,18,34,.82); border: 1px solid var(--line); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); font-size: 15px; font-weight: 600; }
@@ -605,12 +605,15 @@ const NEWS = [
 
 // SAMPLE departure times (24-hour). Same sample times as the map page.
 // Replace with the real ones after you talk to the bus manager.
-const TIMES = {
-  A: ["05:30","06:00","06:30","07:00","07:30","08:00","08:30","09:30","10:30","11:30","12:30",
-      "13:30","14:30","15:00","15:30","16:00","16:30","17:30","18:30","19:30"],   // قرنايل ← بحمدون
-  B: ["06:00","06:45","07:15","07:45","08:15","09:00","10:00","11:00","12:00","13:00","14:00",
-      "15:15","16:15","17:00","17:45","18:45","19:45"]                           // بحمدون ← قرنايل
-};
+// The real Bus 16 departure times (from the driver's sheet). Same list both ways: Kornayel -> Kola and Kola -> Kornayel.
+// Times only: no names or phone numbers in the app.
+const DEPARTURES = [
+  "05:20","05:35","05:45","06:00","06:14","06:23","06:30","06:38","06:48","07:00","07:10",
+  "07:18","07:26","07:36","07:43","08:05","08:20","08:35","09:05","09:30","10:00","10:30",
+  "11:00","11:15","11:50","12:10","12:35","12:45","13:30","13:50","14:05","14:20","14:35",
+  "14:50","15:15","15:35","16:05","16:45","17:05","17:30","18:10",
+];
+const TIMES = { A: DEPARTURES, B: DEPARTURES };
 
 // Fares in LBP. "from" and "to" are the places (the label is built in the chosen language).
 const PRICES = [
@@ -843,7 +846,11 @@ function villageInfo() {
 const toSec = t => { const [h, m] = t.split(':'); return (+h * 60 + +m) * 60; };
 const p2 = n => String(n).padStart(2, '0');
 const nowSec = () => { const d = new Date(); return d.getHours() * 3600 + d.getMinutes() * 60 + d.getSeconds(); };
-const fmtCd = s => { const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), u = k => '<i class="u">' + t('u.' + k) + '</i>'; return h ? h + u('h') + ' ' + p2(m) + u('m') : p2(m) + u('m') + ' ' + p2(s % 60) + u('s'); };
+// (units fall back to plain h / min / s if an old i18n.js is still cached)
+const fmtCd = s => { const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), u = k => { let x = t('u.' + k); if (x === 'u.' + k) x = { h: 'h', m: 'min', s: 's' }[k]; return '<i class="u">' + x + '</i>'; };
+  // each number+unit is its own isolated pair, so right-to-left Arabic can't swap the units between the numbers
+  const pr = (n, k) => '<bdi class="pr">' + n + u(k) + '</bdi>';
+  return h ? pr(h, 'h') + ' ' + pr(p2(m), 'm') : pr(p2(m), 'm') + ' ' + pr(p2(s % 60), 's'); };
 
 function nextOf(list) {
   const n = nowSec(), secs = list.map(toSec);
