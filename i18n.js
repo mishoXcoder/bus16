@@ -88,7 +88,7 @@
     'h.times.note': 'Sample times to explain the idea. They will be replaced with the real times after we talk to the bus manager.',
     'h.price.lead': 'The fare depends on where you get off.', 'h.price.note': 'Prices are in Lebanese pounds (LBP).', 'h.cur': 'LBP',
     'h.service': 'Service',
-    'h.me': 'My account', 'h.guest.lead': 'Sign in with Google and pick a username to spin the daily wheel and collect Bus Points. Everything else works without an account.', 'h.bp.guest': 'BP are your Bus 16 points. Sign in to start collecting them with the daily wheel.', 'h.edit': 'Edit profile', 'h.signout': 'Sign out',
+    'h.me': 'My account', 'dev.title': 'Developer mode', 'dev.lead': 'You are testing without a login. Points and the daily spin are saved only on this phone, not in the database.', 'dev.reset': 'Reset today’s spin (spin again)', 'dev.zero': 'Reset my points to 0', 'dev.off': 'Test the real app (with Google login)', 'dev.on': 'Developer mode: spin without login', 'h.guest.lead': 'Sign in with Google and pick a username to spin the daily wheel and collect Bus Points. Everything else works without an account.', 'h.bp.guest': 'BP are your Bus 16 points. Sign in to start collecting them with the daily wheel.', 'h.edit': 'Edit profile', 'h.signout': 'Sign out',
     /* ----- places ----- */
     'place.kornayel': 'Kornayel', 'place.bhamdoun': 'Bhamdoun', 'place.kola': 'Kola',
     /* ----- map ----- */
@@ -196,7 +196,7 @@
     'h.times.note': 'أوقات تجريبية لشرح الفكرة. بتتبدّل بالأوقات الحقيقية بعد ما نحكي مع المسؤول عن الباصات.',
     'h.price.lead': 'الأجرة بتختلف حسب وين بتنزل.', 'h.price.note': 'الأسعار بالليرة اللبنانية.', 'h.cur': 'ل.ل',
     'h.service': 'سرفيس',
-    'h.me': 'حسابي', 'h.guest.lead': 'سجّل دخولك بحساب Google واختر اسم مستخدم لتلفّ دولاب اليوم وتجمع نقاط الباص. باقي التطبيق بيشتغل بدون حساب.', 'h.bp.guest': 'BP هي نقاطك على باص 16. سجّل دخولك لتبلّش تجمعها من دولاب اليوم.', 'h.edit': 'تعديل الملف الشخصي', 'h.signout': 'تسجيل الخروج',
+    'h.me': 'حسابي', 'dev.title': 'وضع المطوّر', 'dev.lead': 'أنت عم تجرّب بدون تسجيل دخول. النقاط ودولاب اليوم بينحفظوا بس عهالتلفون، مش بقاعدة البيانات.', 'dev.reset': 'رجّع دولاب اليوم (لفّ مرة تانية)', 'dev.zero': 'صفّر نقاطي', 'dev.off': 'جرّب التطبيق الحقيقي (مع تسجيل الدخول بـ Google)', 'dev.on': 'وضع المطوّر: لفّ الدولاب بدون تسجيل دخول', 'h.guest.lead': 'سجّل دخولك بحساب Google واختر اسم مستخدم لتلفّ دولاب اليوم وتجمع نقاط الباص. باقي التطبيق بيشتغل بدون حساب.', 'h.bp.guest': 'BP هي نقاطك على باص 16. سجّل دخولك لتبلّش تجمعها من دولاب اليوم.', 'h.edit': 'تعديل الملف الشخصي', 'h.signout': 'تسجيل الخروج',
     'place.kornayel': 'قرنايل', 'place.bhamdoun': 'بحمدون', 'place.kola': 'كولا',
     'm.doc': 'الخريطة · باص 16', 'm.back': 'رجوع',
     'm.rider': 'راكب', 'm.setup': 'الإعداد',
@@ -302,7 +302,7 @@
     'h.times.note': 'Horaires d’exemple pour expliquer l’idée. Ils seront remplacés par les vrais horaires après discussion avec le responsable des bus.',
     'h.price.lead': 'Le tarif dépend de l’endroit où vous descendez.', 'h.price.note': 'Les prix sont en livres libanaises (LBP).', 'h.cur': 'LBP',
     'h.service': 'Service',
-    'h.me': 'Mon compte', 'h.guest.lead': 'Connectez-vous avec Google et choisissez un nom d’utilisateur pour tourner la roue du jour et gagner des Bus Points. Tout le reste fonctionne sans compte.', 'h.bp.guest': 'Les BP sont vos points Bus 16. Connectez-vous pour commencer à en gagner avec la roue du jour.', 'h.edit': 'Modifier le profil', 'h.signout': 'Se déconnecter',
+    'h.me': 'Mon compte', 'dev.title': 'Mode développeur', 'dev.lead': 'Vous testez sans connexion. Les points et la roue du jour sont enregistrés uniquement sur ce téléphone, pas dans la base de données.', 'dev.reset': 'Réinitialiser la roue du jour (tourner à nouveau)', 'dev.zero': 'Remettre mes points à 0', 'dev.off': 'Tester la vraie application (avec connexion Google)', 'dev.on': 'Mode développeur : tourner la roue sans connexion', 'h.guest.lead': 'Connectez-vous avec Google et choisissez un nom d’utilisateur pour tourner la roue du jour et gagner des Bus Points. Tout le reste fonctionne sans compte.', 'h.bp.guest': 'Les BP sont vos points Bus 16. Connectez-vous pour commencer à en gagner avec la roue du jour.', 'h.edit': 'Modifier le profil', 'h.signout': 'Se déconnecter',
     'place.kornayel': 'Kornayel', 'place.bhamdoun': 'Bhamdoun', 'place.kola': 'Kola',
     'm.doc': 'Carte · Bus 16', 'm.back': 'Retour',
     'm.rider': 'Passager', 'm.setup': 'Configuration',

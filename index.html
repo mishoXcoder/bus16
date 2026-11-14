@@ -184,6 +184,8 @@
   .dbtn svg { flex: none; width: 26px; height: 26px; color: var(--amber); }
   .dbtn:active, .card:active, .pricebtn:active { transform: scale(.98); }
   html.short .card .sub { display: none; }
+  .acct { position: relative; }
+  .acct.dev #acctIni { font-size: 12px; font-weight: 800; letter-spacing: .05em; color: #ffd58a; }
   html.short .card { padding-bottom: 11px; }
   .dbtn .count { position: absolute; top: 9px; inset-inline-end: 10px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 99px; background: var(--amber); color: #1a1205; font-size: 12px; font-weight: 800; display: grid; place-items: center; }
 
@@ -918,13 +920,20 @@ function coinSvg(size) {
 }
 $('bpCoin').innerHTML = coinSvg(36);
 // A guest who touches something that needs points gets this: why, and a Google button. They come back to the same place afterwards.
+function langRow() {
+  return '<div class="lang"><span>' + t('lang.label') + '</span><div class="opts" role="group" aria-label="' + esc(t('lang.label')) + '">' +
+    ['en', 'ar', 'fr'].map(l => '<button type="button" data-l="' + l + '" lang="' + l + '" aria-pressed="' + (l === I18N.lang) + '">' + I18N.D[l]['lang.name'] + '</button>').join('') + '</div></div>';
+}
+function wireLang() { $('shBody').querySelectorAll('.lang button').forEach(b => b.onclick = () => { if (b.dataset.l !== I18N.lang) { I18N.set(b.dataset.l); location.reload(); } }); }
 function googleG(n) { return '<svg width="' + n + '" height="' + n + '" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>'; }
 function signInSheet(lead, withLang, next) {
   openSheet(t('l.si.title'),
     '<p class="muted">' + esc(lead || t('h.guest.lead')) + '</p>' +
     '<button class="btn gsi" id="gsiBtn" type="button">' + googleG(20) + '<span>' + esc(t('l.google')) + '</span></button>' +
     (withLang ? '<div class="lang"><span>' + t('lang.label') + '</span><div class="opts" role="group" aria-label="' + esc(t('lang.label')) + '">' +
-      ['en', 'ar', 'fr'].map(l => '<button type="button" data-l="' + l + '" lang="' + l + '" aria-pressed="' + (l === I18N.lang) + '">' + I18N.D[l]['lang.name'] + '</button>').join('') + '</div></div>' : ''));
+      ['en', 'ar', 'fr'].map(l => '<button type="button" data-l="' + l + '" lang="' + l + '" aria-pressed="' + (l === I18N.lang) + '">' + I18N.D[l]['lang.name'] + '</button>').join('') + '</div></div>' : '') +
+    (window.BUS16_DEV_TOOLS ? '<button class="btn ghost" id="devOnBtn" type="button" style="margin-top:12px">' + esc(t('dev.on')) + '</button>' : ''));
+  if ($('devOnBtn')) $('devOnBtn').onclick = () => window.bus16DevSet(true);
   $('gsiBtn').onclick = () => { if (window.bus16SignIn) window.bus16SignIn(next || 'index.html'); };
   if (withLang) $('shBody').querySelectorAll('.lang button').forEach(b => b.onclick = () => { if (b.dataset.l !== I18N.lang) { I18N.set(b.dataset.l); location.reload(); } });
 }
@@ -947,10 +956,12 @@ document.addEventListener('visibilitychange', () => { if (!document.hidden && wi
 function showUser() {
   const u = window.BUS16_USER;
   if (!u) {                                  // a guest: nothing to show except the plain account icon
+    $('acctBtn').classList.remove('dev');
     $('acctImg').hidden = true; $('acctIni').hidden = false; $('acctIni').innerHTML = icon('user', 20);
     $('acctBtn').setAttribute('aria-label', t('l.signin'));
     const was = $('cp').hidden; $('cp').hidden = true; showBP(); if (!was) fit(); return;
   }
+  $('acctBtn').classList.toggle('dev', !!u.dev);
   const p = u.profile || {};
   const ch = (u.name || u.username || u.email || '').trim().charAt(0);
   $('acctBtn').setAttribute('aria-label', t('h.account'));
@@ -958,7 +969,7 @@ function showUser() {
   if (p.photo) $('acctImg').src = p.photo;
   $('acctIni').hidden = !!p.photo;
   $('acctIni').innerHTML = ch ? '' : icon('user', 18);
-  if (ch) $('acctIni').textContent = ch;
+  if (ch) $('acctIni').textContent = u.dev ? 'DEV' : ch;
   const was = $('cp').hidden; $('cp').hidden = !!p.profileDone;
   showBP();
   if (was !== $('cp').hidden) fit();
@@ -967,6 +978,20 @@ addEventListener('bus16:user', showUser); showUser();
 $('acctBtn').onclick = () => {
   if (!window.BUS16_USER) return signInSheet(t('h.guest.lead'), true);
   const u = window.BUS16_USER || {};
+  if (u.dev) {                                  // developer mode: pretend account that lives only on this phone
+    openSheet(t('dev.title'),
+      '<div class="meav">DEV</div>' +
+      '<p class="muted">' + esc(t('dev.lead')) + '</p>' +
+      '<button class="btn" id="devReset" type="button">' + esc(t('dev.reset')) + '</button>' +
+      '<button class="btn ghost" id="devZero" type="button" style="margin-top:8px">' + esc(t('dev.zero')) + '</button>' +
+      '<button class="btn ghost" id="devOff" type="button" style="margin-top:8px">' + esc(t('dev.off')) + '</button>' +
+      langRow());
+    wireLang();
+    $('devReset').onclick = () => { window.bus16DevResetSpin(); closeSheet(); };
+    $('devZero').onclick = () => { window.bus16DevResetPoints(); closeSheet(); };
+    $('devOff').onclick = () => window.bus16DevSet(false);
+    return;
+  }
   openSheet(t('h.me'),
     '<div class="meav">' + (u.profile && u.profile.photo ? '<img alt="" src="' + esc(u.profile.photo) + '">' : esc(((u.name || u.username || u.email || '?').trim().charAt(0) || '?').toUpperCase())) + '</div>' +
     (u.name ? '<p><b dir="auto">' + esc(u.name) + '</b></p>' : '') +
